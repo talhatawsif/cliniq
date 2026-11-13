@@ -1,3 +1,4 @@
+import { auditChartView } from "@/lib/audit";
 import DataTable from "@/components/DataTable";
 import { JsonButton } from "@/components/JsonDrawer";
 import TrendChart from "@/components/TrendChart";
@@ -21,6 +22,7 @@ export default async function ObservationsView({
   category: "laboratory" | "vital-signs";
   title: string;
 }) {
+  await auditChartView(id, category);
   const trends = buildTrends(await getObservations(id, category));
   const charted = trends.series.filter((s) => s.points.length >= 2);
   const slug = (k: string) => `s-${k.replace(/[^A-Za-z0-9]+/g, "-")}`;

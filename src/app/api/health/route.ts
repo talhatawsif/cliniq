@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { env, flags, invalidSettings } from "@/lib/env";
 import { fhirFetch } from "@/lib/fhir/client";
 
@@ -21,7 +22,9 @@ async function deepCheck() {
 }
 
 export async function GET(request: Request) {
-  const deep = new URL(request.url).searchParams.get("deep") === "1" ? await deepCheck() : undefined;
+  const deep = z.literal("1").safeParse(new URL(request.url).searchParams.get("deep")).success
+    ? await deepCheck()
+    : undefined;
   const degraded = invalidSettings.length > 0 || (deep && (deep.fhir !== "ok" || deep.database === "down"));
   return Response.json(
     {

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Public_Sans } from "next/font/google";
 import Link from "next/link";
+import { signOut } from "@/app/actions";
+import { currentUserId } from "@/lib/supabase";
 import "./globals.css";
 
 const sans = Public_Sans({ variable: "--font-public-sans", subsets: ["latin"] });
@@ -11,7 +13,8 @@ export const metadata: Metadata = {
   description: "Clinical coding and interoperability prototype. Synthetic data only.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const signedIn = Boolean(await currentUserId());
   return (
     <html lang="en-AU" className={`${sans.variable} ${mono.variable} h-full`}>
       <body className="min-h-full flex flex-col">
@@ -32,6 +35,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             />
           </form>
           <span className="text-xs text-muted">Demo · synthetic data</span>
+          {signedIn && (
+            <>
+              <Link href="/audit" className="text-[13px]">
+                Audit
+              </Link>
+              <form action={signOut}>
+                <button type="submit" className="text-[13px] underline">
+                  Sign out
+                </button>
+              </form>
+            </>
+          )}
         </header>
         {children}
       </body>

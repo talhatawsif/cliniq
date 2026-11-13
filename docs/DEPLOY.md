@@ -29,3 +29,6 @@ Budget: 1 AUD alert on the billing account (it is AUD, not USD). An alert, not a
 
 ## JDBC settings that matter
 Add to the service env: `SPRING_DATASOURCE_URL` ending `&socketTimeout=15&connectTimeout=10&tcpKeepAlive=true`, `SPRING_DATASOURCE_HIKARI_MAXLIFETIME=120000`, `SPRING_DATASOURCE_HIKARI_KEEPALIVETIME=30000`. Without them the pool fills with dead connections after idle and every request returns 500.
+
+## M6 environment (Vercel, production and preview)
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `DEMO_CLINICIAN_EMAIL` (plain) and `DEMO_CLINICIAN_PASSWORD` (sensitive). The demo user is created once with the Supabase admin API (`email_confirm: true`); its password lives in `.env.local` and Vercel only.

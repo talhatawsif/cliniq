@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import DataTable from "@/components/DataTable";
 import FhirNotice from "@/components/FhirNotice";
 import { JsonButton } from "@/components/JsonDrawer";
+import { auditChartView } from "@/lib/audit";
 import { inputsForChart } from "@/lib/cds/prefetch";
 import { evaluate } from "@/lib/cds/rules";
 import {
@@ -43,6 +44,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default async function PatientChart({ params }: PageProps<"/patient/[id]">) {
   await connection();
   const { id } = await params;
+  await auditChartView(id, "summary");
   let data;
   try {
     const [patient, conditions, allergies, chart] = await Promise.all([

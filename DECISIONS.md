@@ -220,3 +220,9 @@ into tests; SPEC §0 makes this a rule.
 - The BMI is computed from the latest weight and height, not from a recorded BMI observation.
 - `uuid` is random per request, so cards are not stable across calls.
 - Not verified: the cds-hooks sandbox (needs a browser session by the owner; steps in `docs/cds-hooks.md`).
+
+## M6: sign-in, audit, quotas
+- One-click sign-in is a server action that signs in a shared Supabase user with a stored password (no typing). Anyone can press the button; that is the demo design.
+- Audit rows are written with `after()` so views are not slowed; written per chart tab render (summary, pathology, vitals), only for patients that exist. Export/write/review actions arrive in later milestones.
+- Quotas use one atomic SQL function (`consume_quota`, service_role only). The HL7/pipeline/assistant routes do not exist yet, so the 429 is tested on the helper (limit 2), not over HTTP.
+- CSP keeps `'unsafe-inline'` for scripts (shortcut, see SECURITY.md).

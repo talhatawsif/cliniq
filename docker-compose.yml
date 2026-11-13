@@ -30,6 +30,8 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
       SPRING_JPA_PROPERTIES_HIBERNATE_SEARCH_ENABLED: "false"
       HAPI_FHIR_FHIR_VERSION: R4
+      HAPI_FHIR_EXPUNGE_ENABLED: "true"
+      HAPI_FHIR_ALLOW_MULTIPLE_DELETE: "true"
       JAVA_TOOL_OPTIONS: -Xmx1400m
 
 volumes:

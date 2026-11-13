@@ -1,3 +1,4 @@
+import "server-only";
 import { createSign } from "node:crypto";
 import { env } from "@/lib/env";
 
