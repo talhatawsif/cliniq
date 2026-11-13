@@ -211,3 +211,12 @@ into tests; SPEC §0 makes this a rule.
 - Results table merges value and unit (`14 /min`, `7.0 % (53 mmol/mol)`) instead of a separate unit column; a BP panel shows `130/80 mmHg`.
 - The cohort has no reference ranges or interpretations, so no band or flag is drawn in the screenshots; unit tests cover both. Series with a single point are listed in the table but not charted.
 - Mixed units: only analytes in the SPEC conversion table are merged; other analytes are never converted. `valueQuantity.code` (UCUM) drives conversion.
+
+## 14 Nov 2026 — M5
+
+- Rules live in `src/lib/cds/rules.ts` as pure functions with an injected `now`; the CDS service and the chart share them and the prefetch queries, so the chart cannot drift from the service.
+- "Conditions the rules may use" = active and not unconfirmed/provisional/differential/refuted/entered-in-error (the spec lists three statuses; resolved and the other two are excluded too).
+- A BMI card is shown for every adult category including healthy weight (the spec classifies all four); a deliberate "not calculated" card is shown for under-18s and unknown sex only when a creatinine within 12 months exists.
+- The BMI is computed from the latest weight and height, not from a recorded BMI observation.
+- `uuid` is random per request, so cards are not stable across calls.
+- Not verified: the cds-hooks sandbox (needs a browser session by the owner; steps in `docs/cds-hooks.md`).

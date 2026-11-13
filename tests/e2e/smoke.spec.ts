@@ -86,6 +86,42 @@ test("charts: a blood pressure chart and a table toggle", async ({ page }) => {
   await expect(page.getByRole("columnheader", { name: /Value/ }).first()).toBeVisible();
 });
 
+test("CDS Hooks: discovery prefetch works against FHIR and returns cards", async ({ request }) => {
+  const discovery = await request.get("/cds-services");
+  expect(discovery.headers()["access-control-allow-origin"]).toBe("*");
+  const { prefetch: templates } = (await discovery.json()).services[0] as {
+    prefetch: Record<string, string>;
+  };
+  const [first] = await search<{ subject: { reference: string } }>("Observation?code=14682-9&_count=1");
+  const patientId = first.subject.reference.split("/")[1];
+  const prefetch: Record<string, unknown> = {};
+  for (const [key, template] of Object.entries(templates)) {
+    prefetch[key] = await (
+      await fetch(`${FHIR}/${template.replace("{{context.patientId}}", patientId)}`)
+    ).json();
+  }
+  const res = await request.post("/cds-services/cliniq-patient-view", {
+    data: { hook: "patient-view", hookInstance: crypto.randomUUID(), context: { patientId }, prefetch },
+  });
+  expect(res.status()).toBe(200);
+  const { cards } = (await res.json()) as { cards: { summary: string }[] };
+  expect(cards.some((c) => c.summary.startsWith("eGFR"))).toBe(true);
+  expect(
+    (
+      await request.post("/cds-services/cliniq-patient-view", {
+        data: { hook: "patient-view", hookInstance: "x", context: { patientId } },
+      })
+    ).status(),
+  ).toBe(200);
+});
+
+test("the chart shows decision support cards", async ({ page }) => {
+  const [first] = await search<{ subject: { reference: string } }>("Observation?code=14682-9&_count=1");
+  await page.goto(`/patient/${first.subject.reference.split("/")[1]}`);
+  await expect(page.getByRole("heading", { name: "Decision support" })).toBeVisible();
+  await expect(page.getByText(/eGFR .*CKD-EPI 2021/).first()).toBeVisible();
+});
+
 for (const scheme of ["light", "dark"] as const) {
   test.describe(scheme, () => {
     test.use({ colorScheme: scheme });

@@ -3,6 +3,8 @@ import { connection } from "next/server";
 import DataTable from "@/components/DataTable";
 import FhirNotice from "@/components/FhirNotice";
 import { JsonButton } from "@/components/JsonDrawer";
+import { inputsForChart } from "@/lib/cds/prefetch";
+import { evaluate } from "@/lib/cds/rules";
 import {
   FhirError,
   allergyStatus,
@@ -11,6 +13,7 @@ import {
   getAllergies,
   getChartData,
   getConditions,
+  getPatient,
   medicationName,
   problemList,
 } from "@/lib/fhir";
@@ -42,17 +45,20 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
   const { id } = await params;
   let data;
   try {
-    const [conditions, allergies, chart] = await Promise.all([
+    const [patient, conditions, allergies, chart] = await Promise.all([
+      getPatient(id),
       getConditions(id),
       getAllergies(id),
       getChartData(id),
     ]);
-    data = { conditions, allergies, ...chart };
+    // The same rules and prefetch queries as the CDS Hooks service.
+    const cards = patient ? evaluate(await inputsForChart(id, patient, conditions)) : [];
+    data = { conditions, allergies, cards, ...chart };
   } catch (e) {
     if (e instanceof FhirError) return <FhirNotice error={e} />;
     throw e;
   }
-  const { conditions, allergies, medications, medicationById, immunizations, encounters } = data;
+  const { conditions, allergies, cards, medications, medicationById, immunizations, encounters } = data;
   const problems = problemList(conditions);
   const allergyState = allergyStatus(allergies);
   const listedAllergies = allergies.filter(
@@ -64,6 +70,34 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
   return (
     <>
       <h1 className="sr-only">Patient chart</h1>
+
+      <Section title="Decision support">
+        {cards.length === 0 ? (
+          <p className="text-muted">No decision support cards for this record.</p>
+        ) : (
+          <ul className="border-y border-line bg-surface">
+            {cards.map((c) => (
+              <li key={c.uuid} className="border-b border-line px-3 py-2 last:border-b-0">
+                <p>
+                  <span
+                    className={
+                      c.indicator === "info"
+                        ? "text-muted"
+                        : c.indicator === "warning"
+                          ? "text-warning"
+                          : "text-critical"
+                    }
+                  >
+                    {c.indicator === "info" ? "Info" : c.indicator === "warning" ? "▲ Warning" : "▲ Critical"}
+                  </span>{" "}
+                  · {c.summary}
+                </p>
+                {c.detail && <p className="text-[13px] text-muted">{c.detail}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
 
       <Section title="Problems">
         <DataTable
