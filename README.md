@@ -76,7 +76,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback. Needs the invoker grant and `NLP_SERVICE_URL` |
 | M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally and the flow is verified live ([screenshot](docs/ui/screens/m11/live-review.png)) |
-| M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox ([docs](docs/smart.md)) |
+| M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
 | M13–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
