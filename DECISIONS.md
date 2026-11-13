@@ -3,6 +3,20 @@
 One entry per decision: what changed and why. Newest section first. Implementers add one line per
 decision made during a milestone.
 
+## 13 Nov 2026 — M0
+
+- `await connection()` on the home page instead of `export const dynamic`: Next.js 16 drops the
+  `dynamic` segment option under Cache Components, and patient data must never be read at build.
+- `fhirSearch` only follows a paging link on the same host as `FHIR_BASE_URL`: the link comes from
+  the server, and following it elsewhere would be a request-forgery path. M2 must confirm HAPI on
+  Cloud Run emits links with its public address.
+- Retries are short (2 retries, about 3 s in total) and the page then shows "not responding". A
+  full cold start is longer; the waiting state with automatic retry is built with the chart (M3).
+- `@types/node` moved to 24 (Vitest 5 requires 22 or 24+); CI runs Node 24.
+- Empty values in `.env` files are treated as unset, so the template can be copied as is.
+- Prettier ignores Markdown and fixtures so `npm run format` does not rewrap the documents.
+- `/api/health` is liveness only for now; the deep check belongs to M2.
+
 ## 13 Nov 2026 — UI and AI plans (`docs/UI.md`, `docs/AI.md`)
 
 | Decision | Why |

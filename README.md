@@ -6,13 +6,24 @@ SMART on FHIR and HL7 v2.
 
 > Portfolio prototype. Synthetic data only (Synthea). Not a medical device and not clinically validated.
 
-**Status:** Phase 1 (patient list, chart, vitals charts) works against HAPI FHIR. The full build is
-specified in [`SPEC.md`](SPEC.md); the plan and next steps are in [`docs/PLAN.md`](docs/PLAN.md).
+## Status
+
+| Milestone | State |
+|---|---|
+| M0 Foundation and live skeleton | Done in code (typed FHIR layer, env, tests, CI); live URL pending |
+| M1–M7 (MVP) | Not started |
+| M8–M15 | Not started |
+
+The build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
+[`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
 
 ## Run locally
 
 ```bash
 cp .env.example .env.local   # fill in values
 npm install
-npm run dev
+npm run dev     # app on http://localhost:3000
+npm run ci      # lint, typecheck, unit tests, build
 ```
+
+Without `FHIR_BASE_URL` the app starts and shows a "FHIR server not configured" notice.

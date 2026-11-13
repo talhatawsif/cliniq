@@ -1,29 +1,38 @@
-import { getPatientDetail } from "@/lib/fhir";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import FhirNotice from "@/components/FhirNotice";
 import VitalsChart from "@/components/VitalsChart";
+import { FhirError, codeableText, formatDate, getPatientDetail, humanName, quantityText } from "@/lib/fhir";
 
 export default async function PatientDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const detail = await getPatientDetail(id);
+  let detail;
+  try {
+    detail = await getPatientDetail(id);
+  } catch (e) {
+    if (e instanceof FhirError) return <FhirNotice error={e} />;
+    throw e;
+  }
   if (!detail) notFound();
   const { patient, observations, conditions, allergies } = detail;
 
   return (
     <main className="p-8 max-w-3xl mx-auto">
-      <Link href="/" className="text-blue-600 text-sm">&larr; Back to patients</Link>
-      <h1 className="text-2xl font-bold mt-2 mb-6">
-        {patient.name?.[0]?.given?.join(" ")} {patient.name?.[0]?.family}
-      </h1>
-      <p className="text-sm text-gray-500 mb-6">DOB: {patient.birthDate} · Gender: {patient.gender}</p>
+      <Link href="/" className="text-blue-600 text-sm">
+        &larr; Back to patients
+      </Link>
+      <h1 className="text-2xl font-bold mt-2 mb-6">{humanName(patient.name)}</h1>
+      <p className="text-sm text-gray-500 mb-6">
+        DOB: {formatDate(patient.birthDate)} · Gender: {patient.gender ?? "not recorded"}
+      </p>
 
       {allergies.length > 0 && (
         <section className="mb-6">
           <h2 className="font-semibold text-red-700 mb-2">⚠ Allergies</h2>
           <ul className="space-y-1">
-            {allergies.map((a: any) => (
+            {allergies.map((a) => (
               <li key={a.id} className="bg-red-50 border border-red-200 rounded p-2 text-sm">
-                {a.code?.text || a.code?.coding?.[0]?.display || "Unknown allergen"}
+                {codeableText(a.code, "Unknown allergen")}
               </li>
             ))}
           </ul>
@@ -33,9 +42,9 @@ export default async function PatientDetail({ params }: { params: Promise<{ id: 
       <section className="mb-6">
         <h2 className="font-semibold mb-2">Active Conditions</h2>
         <ul className="space-y-1">
-          {conditions.map((c: any) => (
+          {conditions.map((c) => (
             <li key={c.id} className="border rounded p-2 text-sm">
-              {c.code?.text || c.code?.coding?.[0]?.display || "Unknown condition"}
+              {codeableText(c.code, "Unknown condition")}
             </li>
           ))}
         </ul>
@@ -49,10 +58,9 @@ export default async function PatientDetail({ params }: { params: Promise<{ id: 
       <section>
         <h2 className="font-semibold mb-2">Recent Observations</h2>
         <ul className="space-y-1">
-          {observations.map((o: any) => (
+          {observations.map((o) => (
             <li key={o.id} className="border rounded p-2 text-sm">
-              {o.code?.text || o.code?.coding?.[0]?.display || "Unknown"}:{" "}
-              {o.valueQuantity ? `${o.valueQuantity.value} ${o.valueQuantity.unit || ""}` : "—"}
+              {codeableText(o.code)}: {quantityText(o.valueQuantity)}
             </li>
           ))}
         </ul>

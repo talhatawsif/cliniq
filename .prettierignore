@@ -1,0 +1,4 @@
+package-lock.json
+.next
+*.md
+tests/fixtures

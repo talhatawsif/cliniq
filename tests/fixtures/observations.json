@@ -1,0 +1,741 @@
+[
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-20b4-d6f25399b5e1",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-blood-pressure"
+   ]
+  },
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "vital-signs",
+      "display": "Vital signs"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "85354-9",
+     "display": "Blood pressure panel with all children optional"
+    }
+   ],
+   "text": "Blood pressure panel with all children optional"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T08:26:48+10:00",
+  "issued": "2017-04-21T08:26:48.255+10:00",
+  "component": [
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8462-4",
+       "display": "Diastolic Blood Pressure"
+      }
+     ],
+     "text": "Diastolic Blood Pressure"
+    },
+    "valueQuantity": {
+     "value": 80,
+     "unit": "mm[Hg]",
+     "system": "http://unitsofmeasure.org",
+     "code": "mm[Hg]"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "8480-6",
+       "display": "Systolic Blood Pressure"
+      }
+     ],
+     "text": "Systolic Blood Pressure"
+    },
+    "valueQuantity": {
+     "value": 133,
+     "unit": "mm[Hg]",
+     "system": "http://unitsofmeasure.org",
+     "code": "mm[Hg]"
+    }
+   }
+  ]
+ },
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-d01f-91fb87478f45",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment",
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+   ]
+  },
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "survey",
+      "display": "Survey"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "93025-5",
+     "display": "Protocol for Responding to and Assessing Patients' Assets, Risks, and Experiences [PRAPARE]"
+    }
+   ],
+   "text": "Protocol for Responding to and Assessing Patients' Assets, Risks, and Experiences [PRAPARE]"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T09:23:20+10:00",
+  "issued": "2017-04-21T09:23:20.255+10:00",
+  "component": [
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "76501-6",
+       "display": "Within the last year, have you been afraid of your partner or ex-partner"
+      }
+     ],
+     "text": "Within the last year, have you been afraid of your partner or ex-partner"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93026-3",
+       "display": "Do you feel physically and emotionally safe where you currently live [PRAPARE]"
+      }
+     ],
+     "text": "Do you feel physically and emotionally safe where you currently live [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA33-6",
+       "display": "Yes"
+      }
+     ],
+     "text": "Yes"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93027-1",
+       "display": "Are you a refugee"
+      }
+     ],
+     "text": "Are you a refugee"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93028-9",
+       "display": "Have you spent more than 2 nights in a row in a jail, prison, detention center, or juvenile correctional facility in past 1 year [PRAPARE]"
+      }
+     ],
+     "text": "Have you spent more than 2 nights in a row in a jail, prison, detention center, or juvenile correctional facility in past 1 year [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93038-8",
+       "display": "Stress level"
+      }
+     ],
+     "text": "Stress level"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA13909-9",
+       "display": "Somewhat"
+      }
+     ],
+     "text": "Somewhat"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93029-7",
+       "display": "How often do you see or talk to people that you care about and feel close to [PRAPARE]"
+      }
+     ],
+     "text": "How often do you see or talk to people that you care about and feel close to [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA30132-7",
+       "display": "5 or more times a week"
+      }
+     ],
+     "text": "5 or more times a week"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93030-5",
+       "display": "Has lack of transportation kept you from medical appointments, meetings, work, or from getting things needed for daily living"
+      }
+     ],
+     "text": "Has lack of transportation kept you from medical appointments, meetings, work, or from getting things needed for daily living"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93031-3",
+       "display": "Have you or any family members you live with been unable to get any of the following when it was really needed in past 1 year [PRAPARE]"
+      }
+     ],
+     "text": "Have you or any family members you live with been unable to get any of the following when it was really needed in past 1 year [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA30122-8",
+       "display": "I choose not to answer this question"
+      }
+     ],
+     "text": "I choose not to answer this question"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "63586-2",
+       "display": "What was your best estimate of the total income of all family members from all sources, before taxes, in last year [PhenX]"
+      }
+     ],
+     "text": "What was your best estimate of the total income of all family members from all sources, before taxes, in last year [PhenX]"
+    },
+    "valueQuantity": {
+     "value": 148930,
+     "unit": "/a",
+     "system": "http://unitsofmeasure.org",
+     "code": "/a"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "76437-3",
+       "display": "Primary insurance"
+      }
+     ],
+     "text": "Primary insurance"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA6350-8",
+       "display": "Private insurance"
+      }
+     ],
+     "text": "Private insurance"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "67875-5",
+       "display": "Employment status - current"
+      }
+     ],
+     "text": "Employment status - current"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA30138-4",
+       "display": "Part-time or temporary work"
+      }
+     ],
+     "text": "Part-time or temporary work"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "82589-3",
+       "display": "Highest level of education"
+      }
+     ],
+     "text": "Highest level of education"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA30193-9",
+       "display": "More than high school"
+      }
+     ],
+     "text": "More than high school"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "56799-0",
+       "display": "Address"
+      }
+     ],
+     "text": "Address"
+    },
+    "valueString": "158 Champlin Alley"
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93033-9",
+       "display": "Are you worried about losing your housing [PRAPARE]"
+      }
+     ],
+     "text": "Are you worried about losing your housing [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "71802-3",
+       "display": "Housing status"
+      }
+     ],
+     "text": "Housing status"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA30189-7",
+       "display": "I have housing"
+      }
+     ],
+     "text": "I have housing"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "63512-8",
+       "display": "How many people are living or staying at this address [#]"
+      }
+     ],
+     "text": "How many people are living or staying at this address [#]"
+    },
+    "valueQuantity": {
+     "value": 2,
+     "unit": "{#}",
+     "system": "http://unitsofmeasure.org",
+     "code": "{#}"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "54899-0",
+       "display": "Preferred language"
+      }
+     ],
+     "text": "Preferred language"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA43-5",
+       "display": "English"
+      }
+     ],
+     "text": "English"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93034-7",
+       "display": "Discharged from the U.S. Armed Forces"
+      }
+     ],
+     "text": "Discharged from the U.S. Armed Forces"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "93035-4",
+       "display": "Has season or migrant farm work been your or your family's main source of income at any point in past 2 years [PRAPARE]"
+      }
+     ],
+     "text": "Has season or migrant farm work been your or your family's main source of income at any point in past 2 years [PRAPARE]"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "32624-9",
+       "display": "Race"
+      }
+     ],
+     "text": "Race"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA4457-3",
+       "display": "White"
+      }
+     ],
+     "text": "White"
+    }
+   },
+   {
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "56051-6",
+       "display": "Hispanic or Latino"
+      }
+     ],
+     "text": "Hispanic or Latino"
+    },
+    "valueCodeableConcept": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "LA32-8",
+       "display": "No"
+      }
+     ],
+     "text": "No"
+    }
+   }
+  ]
+ },
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-420d-b0d0d0c31a70",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+   ]
+  },
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "laboratory",
+      "display": "Laboratory"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "4548-4",
+     "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+    }
+   ],
+   "text": "Hemoglobin A1c/Hemoglobin.total in Blood"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T08:26:48+10:00",
+  "issued": "2017-04-21T08:26:48.255+10:00",
+  "valueQuantity": {
+   "value": 6.33,
+   "unit": "%",
+   "system": "http://unitsofmeasure.org",
+   "code": "%"
+  }
+ },
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-bcdd-138bfe554985",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-height"
+   ]
+  },
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "vital-signs",
+      "display": "Vital signs"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "8302-2",
+     "display": "Body Height"
+    }
+   ],
+   "text": "Body Height"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T08:26:48+10:00",
+  "issued": "2017-04-21T08:26:48.255+10:00",
+  "valueQuantity": {
+   "value": 179.6,
+   "unit": "cm",
+   "system": "http://unitsofmeasure.org",
+   "code": "cm"
+  }
+ },
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-1fff-dcc466ab62b8",
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "vital-signs",
+      "display": "Vital signs"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "72514-3",
+     "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+    }
+   ],
+   "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T08:26:48+10:00",
+  "issued": "2017-04-21T08:26:48.255+10:00",
+  "valueQuantity": {
+   "value": 1,
+   "unit": "{score}",
+   "system": "http://unitsofmeasure.org",
+   "code": "{score}"
+  }
+ },
+ {
+  "resourceType": "Observation",
+  "id": "badd4e07-f52f-8d01-8b3a-9592d55c3e51",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+   ]
+  },
+  "status": "final",
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "vital-signs",
+      "display": "Vital signs"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://loinc.org",
+     "code": "29463-7",
+     "display": "Body Weight"
+    }
+   ],
+   "text": "Body Weight"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-6b04-4440fedad5bd"
+  },
+  "effectiveDateTime": "2017-04-21T08:26:48+10:00",
+  "issued": "2017-04-21T08:26:48.255+10:00",
+  "valueQuantity": {
+   "value": 97.4,
+   "unit": "kg",
+   "system": "http://unitsofmeasure.org",
+   "code": "kg"
+  }
+ }
+]

@@ -1,8 +1,9 @@
 "use client";
 
+import type { Observation } from "fhir/r4";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-export default function VitalsChart({ observations }: { observations: any[] }) {
+export default function VitalsChart({ observations }: { observations: Observation[] }) {
   const grouped: Record<string, { date: string; value: number }[]> = {};
 
   observations.forEach((o) => {

@@ -1,0 +1,164 @@
+[
+ {
+  "resourceType": "Condition",
+  "id": "badd4e07-f52f-8d01-3670-17eae0f9bc79",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+   ]
+  },
+  "clinicalStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+     "code": "active"
+    }
+   ]
+  },
+  "verificationStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+     "code": "confirmed"
+    }
+   ]
+  },
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+      "code": "encounter-diagnosis",
+      "display": "Encounter Diagnosis"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://snomed.info/sct",
+     "code": "224299000",
+     "display": "Received higher education (finding)"
+    }
+   ],
+   "text": "Received higher education (finding)"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-69ad-d5374efab2ad"
+  },
+  "onsetDateTime": "1996-04-05T09:01:36+10:00",
+  "recordedDate": "1996-04-05T09:01:36+10:00"
+ },
+ {
+  "resourceType": "Condition",
+  "id": "badd4e07-f52f-8d01-f7f3-976c810a6de4",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+   ]
+  },
+  "clinicalStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+     "code": "active"
+    }
+   ]
+  },
+  "verificationStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+     "code": "confirmed"
+    }
+   ]
+  },
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+      "code": "encounter-diagnosis",
+      "display": "Encounter Diagnosis"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://snomed.info/sct",
+     "code": "714628002",
+     "display": "Prediabetes (finding)"
+    }
+   ],
+   "text": "Prediabetes (finding)"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-12fe-329cb45b2063"
+  },
+  "onsetDateTime": "2003-04-18T08:26:48+10:00",
+  "recordedDate": "2003-04-18T08:26:48+10:00"
+ },
+ {
+  "resourceType": "Condition",
+  "id": "badd4e07-f52f-8d01-01c6-5ce2fa783629",
+  "meta": {
+   "profile": [
+    "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+   ]
+  },
+  "clinicalStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+     "code": "active"
+    }
+   ]
+  },
+  "verificationStatus": {
+   "coding": [
+    {
+     "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+     "code": "confirmed"
+    }
+   ]
+  },
+  "category": [
+   {
+    "coding": [
+     {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+      "code": "encounter-diagnosis",
+      "display": "Encounter Diagnosis"
+     }
+    ]
+   }
+  ],
+  "code": {
+   "coding": [
+    {
+     "system": "http://snomed.info/sct",
+     "code": "271737000",
+     "display": "Anemia (disorder)"
+    }
+   ],
+   "text": "Anemia (disorder)"
+  },
+  "subject": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-81f6-eb89dad7d132"
+  },
+  "encounter": {
+   "reference": "urn:uuid:badd4e07-f52f-8d01-12fe-329cb45b2063"
+  },
+  "onsetDateTime": "2003-04-18T08:26:48+10:00",
+  "recordedDate": "2003-04-18T08:26:48+10:00"
+ }
+]
