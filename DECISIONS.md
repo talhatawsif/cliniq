@@ -183,3 +183,12 @@ into tests; SPEC §0 makes this a rule.
 - Whether the public CSIRO Ontoserver endpoint may be used for a public demo.
 - The exact Tier 2 price multiplier for Cloud Run in Sydney (third-party sources say about 1.4×).
 - Cold-start time of HAPI against Supabase; M2 measures it.
+
+## 13 Nov 2026 — M2
+
+- HAPI v8.12.0-2 on Cloud Run `australia-southeast1`, private; Supabase session pooler (aws-0, port 5432), schema `hapi`, pool 5. Database 74 MB after loading 20 patients.
+- Billing is in **AUD**, so the budget is 1 AUD. A budget only alerts: the hard cap is `infra/billing-cap` (budget → Pub/Sub → function that detaches billing). The no-trip path is tested; the detach itself is not (it would switch billing off). Billing data lags by hours, so spend can overshoot slightly.
+- The cap function needed Cloud Build/Artifact Registry (SPEC said none); costs are inside the free tiers.
+- App auth to Cloud Run uses a service-account key (`GCP_SA_KEY`, Sensitive in Vercel) and a hand-signed ID token (no new dependency). Shortcut: long-lived key; move to workload identity federation if the project outlives the demo.
+- The database password is a plain env var on the Cloud Run service. Shortcut: move to Secret Manager.
+- Open: real cold start (deploys leave the revision warm, so early timings were not cold); pinger; 48 h cost check. The Supabase secret key and the service-account key were shared in chat — rotate both.
