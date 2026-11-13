@@ -202,3 +202,4 @@ into tests; SPEC §0 makes this a rule.
 - Unconfirmed conditions use the machine treatment, but no fixture patient has one, so it is not yet seen in screenshots.
 - E2E runs against local Docker HAPI (`docker compose up -d && npm run load && npm run e2e`); paging past one page is untested because 20 patients fit on one page.
 - Not done: shadcn/Radix primitives (no drawer or dialog needed yet) and the frontend-design / Playwright MCP tools (not installed; Playwright runs as a test dependency instead).
+- 14 Nov 2026: after an idle period the Sydney HAPI hung with all 5 Hikari connections stuck (dead sockets; Cloud Run freezes CPU between requests and the pooler drops idle connections). Fixed on the service with `socketTimeout=15&connectTimeout=10&tcpKeepAlive=true` on the JDBC URL plus Hikari `maxLifetime=120000` and `keepaliveTime=30000`. Verified fresh, **not yet verified after a long idle** — check after the next idle gap.

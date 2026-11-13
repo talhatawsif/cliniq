@@ -26,3 +26,6 @@ Budget: 1 AUD alert on the billing account (it is AUD, not USD). An alert, not a
 - 403 without a token; 200 with one. 20 patients; still 20 after three new revisions.
 - Database 74 MB (limit 250 MB). Warm patient list 0.6–1.5 s.
 - Cold start: **not yet measured** — deploys leave the new revision warm. Measure after ~20 min idle.
+
+## JDBC settings that matter
+Add to the service env: `SPRING_DATASOURCE_URL` ending `&socketTimeout=15&connectTimeout=10&tcpKeepAlive=true`, `SPRING_DATASOURCE_HIKARI_MAXLIFETIME=120000`, `SPRING_DATASOURCE_HIKARI_KEEPALIVETIME=30000`. Without them the pool fills with dead connections after idle and every request returns 500.
