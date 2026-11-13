@@ -45,6 +45,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // A fresh clone without Supabase keys: say so instead of crashing every page.
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+    if (pathname.startsWith("/api/"))
+      return Response.json({ error: "Sign-in is not configured" }, { status: 503 });
+    return NextResponse.redirect(new URL("/sign-in?error=config", request.url));
+  }
+
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

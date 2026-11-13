@@ -11,7 +11,9 @@ export type Filtered =
 // Citations may be followed by a full stop, which models often add after the brackets.
 const TRAILING = /((?:\s*\[F\d+\])+)[\s.;]*$/;
 const stripIds = (s: string) => s.replace(/\[F\d+\]/g, "");
-const numbers = (s: string): string[] => stripIds(s).match(/\d+(?:\.\d+)?/g) ?? [];
+// A date (10/11/2026, 11/2026) is one token: its parts must not count as support for a value such as "11".
+const numbers = (s: string): string[] =>
+  stripIds(s).match(/\d{1,2}\/\d{1,2}\/\d{4}|\d{1,2}\/\d{4}|\d+(?:\.\d+)?/g) ?? [];
 
 /**
  * One sentence per line, each ending with fact ids. A sentence is kept only if it cites at least one id,

@@ -1,5 +1,5 @@
 import "server-only";
-import type { Bundle } from "fhir/r4";
+import type { Bundle, Patient } from "fhir/r4";
 import { audit } from "@/lib/audit";
 import { fhirFetch } from "@/lib/fhir/client";
 import { validateBundle, writeBundle } from "@/lib/fhir/write";
@@ -11,6 +11,9 @@ export const liveDeps: Deps = {
   async findPatientIds(query) {
     const bundle = await fhirFetch<Bundle>(`${query}&_elements=id`);
     return (bundle?.entry ?? []).flatMap((e) => (e.resource?.id ? [e.resource.id] : []));
+  },
+  async birthDateOf(id) {
+    return (await fhirFetch<Patient>(`Patient/${id}`))?.birthDate;
   },
   validate: validateBundle,
   async write(bundle) {
@@ -42,6 +45,8 @@ export async function runHl7(text: string, opts: { dryRun?: boolean; agent?: str
   if (result.status === "accepted") {
     const subject = result.bundle?.entry?.[0]?.resource as { subject?: { reference?: string } } | undefined;
     await audit("write", subject?.subject?.reference ?? null, "hl7v2 ORU^R01", "success", opts.agent);
+  } else if (result.status === "failed" && !opts.dryRun) {
+    await audit("write", null, `hl7v2 refused (${result.code})`, "failure", opts.agent);
   }
   return result;
 }

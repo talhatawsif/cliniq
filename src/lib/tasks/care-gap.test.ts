@@ -33,6 +33,11 @@ describe("care gaps", () => {
     const gaps = careGaps(inputs({ conditions: [cond("44054006"), cond("38341003")] }), NOW);
     expect(gaps.map((g) => g.type)).toEqual(["diabetes-hba1c", "hypertension-bp"]);
   });
+  it("a deceased patient has no care gaps, so the sweep never raises a Task for them", () => {
+    const dead = inputs({ conditions: [cond("44054006")] });
+    dead.patient.deceasedDateTime = "2025-01-01";
+    expect(careGaps(dead, NOW)).toEqual([]);
+  });
   it("a recent result closes the gap", () => {
     expect(careGaps(inputs({ conditions: [cond("44054006")], hba1c: [obs("2026-06-01")] }), NOW)).toEqual([]);
   });

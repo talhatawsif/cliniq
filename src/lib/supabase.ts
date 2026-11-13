@@ -27,6 +27,7 @@ export async function sessionClient() {
 
 /** The signed-in user's id, or null. Verified against the JWT signing keys. */
 export async function currentUserId() {
+  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return null; // not configured
   const { data } = await (await sessionClient()).auth.getClaims();
   return data?.claims.sub ?? null;
 }

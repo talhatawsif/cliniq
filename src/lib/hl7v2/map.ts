@@ -81,14 +81,29 @@ const uuidOf = (s: string) =>
 /** The patient's IHI from PID-3 (identifier type NI), if present. */
 export function ihiOf(msg: Hl7Message): string | undefined {
   const pid = msg.segments.find((s) => s.name === "PID");
-  return reps(pid, 3, msg.delims).find((r) => r[4] === "NI" && r[0])?.[0];
+  // Exactly 16 digits: the value goes into a FHIR search, so nothing else (commas, "&", another system) may pass.
+  return reps(pid, 3, msg.delims).find((r) => r[4] === "NI" && /^\d{16}$/.test(r[0] ?? ""))?.[0];
+}
+
+/** PID-7 as a FHIR date (YYYY-MM-DD), when the message carries a full date of birth. */
+export function birthDateOf(msg: Hl7Message): string | undefined {
+  const pid = msg.segments.find((s) => s.name === "PID");
+  const d = hl7Time(val(pid, 7, msg.delims).slice(0, 8));
+  return d && d.length === 10 ? d : undefined;
 }
 export const patientQuery = (ihi: string) => `Patient?identifier=${IHI_SYSTEM}|${ihi}`;
 
 function observation(
   obx: Segment,
   msg: Hl7Message,
-  ctx: { patientId: string; filler: string; effective?: string; offset?: string },
+  ctx: {
+    patientId: string;
+    scope: string;
+    filler: string;
+    effective?: string;
+    offset?: string;
+    repeat: number;
+  },
   notes: string[],
 ): Observation {
   const d = msg.delims;
@@ -97,7 +112,7 @@ function observation(
   const unit = comps(obx, 6, d);
   const o: Observation = {
     resourceType: "Observation",
-    id: hashId(ctx.filler, code[0] ?? "", val(obx, 4, d)),
+    id: hashId(ctx.scope, ctx.filler, code[0] ?? "", val(obx, 4, d), ctx.repeat ? String(ctx.repeat) : ""),
     status: OBX_STATUS[val(obx, 11, d)] ?? "unknown",
     category: [
       {
@@ -158,9 +173,19 @@ export function mapOru(msg: Hl7Message, patientId: string): Bundle {
   const observations: Observation[] = [];
   const reportNotes: string[] = [];
   let current: { obx: Segment; notes: string[] } | undefined;
-  const flush = () =>
-    current &&
-    observations.push(observation(current.obx, msg, { patientId, filler, effective, offset }, current.notes));
+  // Ids are scoped to the patient and the sender: the same filler number from another lab, or on a message for a
+  // different patient, must never overwrite (and so re-assign) an existing result.
+  const scope = [patientId, val(msh, 3, d), val(msh, 4, d), comps(obr, 3, d)[1] ?? ""].join("^");
+  const seen = new Map<string, number>(); // the same test and sub-id twice in one message: 2nd, 3rd... get their own id
+  const flush = () => {
+    if (!current) return;
+    const key = `${val(current.obx, 3, d)}|${val(current.obx, 4, d)}`;
+    const repeat = seen.get(key) ?? 0;
+    seen.set(key, repeat + 1);
+    observations.push(
+      observation(current.obx, msg, { patientId, scope, filler, effective, offset, repeat }, current.notes),
+    );
+  };
   for (const s of msg.segments) {
     if (s.name === "OBX") {
       flush();
@@ -175,7 +200,7 @@ export function mapOru(msg: Hl7Message, patientId: string): Bundle {
   const issued = hl7Time(val(obr, 22, d), offset);
   const report: DiagnosticReport = {
     resourceType: "DiagnosticReport",
-    id: hashId(filler),
+    id: hashId(scope, filler),
     identifier: [{ system: `${FILLER_SYSTEM}/${comps(obr, 3, d)[1] ?? ""}`, value: filler }],
     status: OBR_STATUS[val(obr, 25, d)] ?? "unknown",
     category: [{ coding: [{ system: "http://terminology.hl7.org/CodeSystem/v2-0074", code: "LAB" }] }],

@@ -1,7 +1,7 @@
 import "server-only";
 import type { Bundle, Condition, DocumentReference } from "fhir/r4";
 import { audit } from "@/lib/audit";
-import { fhirFetch, fhirSearch } from "@/lib/fhir/client";
+import { fhirFetch, fhirSearch, isFhirId } from "@/lib/fhir/client";
 import { createdId, validateBundle, writeBundle } from "@/lib/fhir/write";
 import { extractEntities } from "@/lib/nlp";
 import { codeCondition } from "@/lib/terminology";
@@ -70,6 +70,8 @@ export async function runPipeline(input: {
       }
       if (!input.patientId || !input.text?.trim())
         throw new Error("Pick a note, or paste text and choose a patient");
+      if (!isFhirId(input.patientId) || !(await fhirFetch(`Patient/${input.patientId}`)))
+        throw new Error("Unknown patient");
       const doc = buildNote(input.patientId, input.text, now);
       if (!input.dryRun) {
         await writeBundle({

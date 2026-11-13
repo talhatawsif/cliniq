@@ -146,6 +146,7 @@ export type CareGap = { type: "diabetes-hba1c" | "hypertension-bp"; summary: str
 
 /** Open care gaps: confirmed, active diabetes with no HbA1c, or hypertension with no blood pressure, in 12 months. */
 export function careGaps(i: Inputs, now: Date): CareGap[] {
+  if (i.patient.deceasedDateTime || i.patient.deceasedBoolean) return []; // no follow-up for a deceased patient
   const within = (obs: Observation[]) => {
     const o = latest(obs);
     return o !== undefined && (now.getTime() - ms(o)) / DAY <= 365;

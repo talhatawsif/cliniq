@@ -57,8 +57,19 @@ export async function decide(itemId: string, decision: Decision, userId: string,
   }
   const condition = await fhirFetch<Condition>(`Condition/${item.condition_id}`);
   if (!condition) throw new Error("The Condition no longer exists");
-  if (condition.verificationStatus?.coding?.[0]?.code !== "unconfirmed")
-    throw new Error("The Condition was already changed");
+  const verification = condition.verificationStatus?.coding?.[0]?.code;
+  if (verification !== "unconfirmed") {
+    // The record was decided but the queue row was not updated (a failure between the two writes): close the row.
+    await db
+      .from("review_items")
+      .update({
+        status: verification === "refuted" ? "rejected" : "confirmed",
+        decided_at: new Date().toISOString(),
+      })
+      .eq("id", itemId)
+      .eq("status", "pending");
+    throw new Error("This finding was already decided in the record; the queue has been updated");
+  }
 
   const bundle = buildDecision(
     condition,

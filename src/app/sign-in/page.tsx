@@ -19,7 +19,9 @@ export default async function SignIn({ searchParams }: PageProps<"/sign-in">) {
       </form>
       {error && (
         <p role="alert" className="mt-3 text-critical">
-          Sign-in failed. The demo account may not be set up.
+          {error === "config"
+            ? "Sign-in is not configured: set the Supabase keys and the demo clinician account (see docs/DEPLOY.md)."
+            : "Sign-in failed. The demo account may not be set up."}
         </p>
       )}
     </main>

@@ -2,11 +2,13 @@ import type { Bundle } from "fhir/r4";
 import { type AckCode, buildAck } from "./ack";
 
 const AR: AckCode = "AR";
-import { Hl7MapError, ihiOf, mapOru, patientQuery } from "./map";
+import { Hl7MapError, birthDateOf, ihiOf, mapOru, patientQuery } from "./map";
 import { type Hl7Message, Hl7ParseError, parseMessage, val } from "./parse";
 
 export type Deps = {
   findPatientIds: (query: string) => Promise<string[]>;
+  /** The matched patient's birthDate, for the wrong-patient cross-check. */
+  birthDateOf?: (patientId: string) => Promise<string | undefined>;
   /** Error messages from $validate; empty when the Bundle is valid. */
   validate: (bundle: Bundle) => Promise<string[]>;
   write: (bundle: Bundle) => Promise<void>;
@@ -82,6 +84,12 @@ export async function processMessage(
         ? "More than one patient has that IHI"
         : "No patient has that IHI. Patients are never created.",
     );
+
+  // Wrong-patient guard: an IHI typed wrongly can still be someone's IHI. If both sides have a date of birth they must agree.
+  const sent = birthDateOf(msg);
+  const onFile = sent ? await deps.birthDateOf?.(ids[0]) : undefined;
+  if (sent && onFile && onFile.slice(0, 10) !== sent)
+    return done("AE", "Date of birth in PID-7 does not match the patient with that IHI; nothing written");
 
   let bundle: Bundle;
   try {

@@ -57,7 +57,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
 | Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
 
-Not built yet: n8n workflows, the extraction evaluation report. ICD-10-AM is not included: it is licensed by
+Not measured yet: extraction precision and recall (the evaluation needs the owner's gold labels; `eval/REPORT.md` says N = 0). ICD-10-AM is not included: it is licensed by
 IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
 ## Status
@@ -73,11 +73,11 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M6 | Done: one-click demo sign-in, audit log, daily quotas, security headers (`docs/SECURITY.md`) |
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
-| M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback. Needs the invoker grant and `NLP_SERVICE_URL` |
+| M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback; used live by the pipeline |
 | M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally and the flow is verified live ([screenshot](docs/ui/screens/m11/live-review.png)) |
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
-| M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). Needs `OPENROUTER_API_KEY` in Vercel |
+| M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). The evaluation is a first run (7/10 answerable); a re-run after fixes is pending |
 | M14 | Built: n8n pathology inbox (retry, done/failed) and weekly care-gap sweep (FHIR Tasks, idempotent); [workflows](n8n/README.md), [diagrams](docs/n8n/README.md). Screen recording is an owner step |
 | M15 | Mostly built: axe clean on every page (light/dark, desktop/tablet), [hazard log](docs/CLINICAL-SAFETY.md) (17 hazards, each checked against the repo), [ADRs](docs/adr/README.md), extraction evaluation harness (`npm run eval`). **Extraction numbers need the owner's gold labels** ([how](eval/gold/README.md)) |
 
@@ -89,7 +89,7 @@ Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is 
 Needs Node 24+ and Docker.
 
 ```bash
-cp .env.example .env.local   # FHIR_BASE_URL=http://localhost:8080/fhir is already set
+cp .env.example .env.local   # FHIR_BASE_URL is already set; add the Supabase keys and demo account (docs/DEPLOY.md)
 npm install
 docker compose up -d         # HAPI FHIR + Postgres on localhost:8080
 npm run load                 # loads the 20 synthetic patients (safe to run twice)
@@ -97,7 +97,10 @@ npm run dev                  # app on http://localhost:3000
 npm run ci                   # lint, typecheck, unit tests, build
 ```
 
-Without `FHIR_BASE_URL` the app starts and shows a "FHIR server not configured" notice.
+Sign-in needs a Supabase project (free): without `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`,
+`SUPABASE_SECRET_KEY` and the demo clinician account, every protected page sends you to a sign-in page that says it is not
+configured. Only `/about`, `/cds-services` and `/api/health` work without it. Without `FHIR_BASE_URL` the chart shows a
+"FHIR server not configured" notice. `npm run e2e` needs both.
 
 The cohort in `data/cohort/` is built from Synthea output by `npm run cohort:build` and validated
 against AU Core by `npm run cohort:validate` (see [`docs/validation`](docs/validation/README.md)).

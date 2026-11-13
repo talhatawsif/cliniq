@@ -43,19 +43,32 @@ export const getPatient = cache(async (id: string): Promise<Patient | null> => {
   // Also stops the id from adding query parameters or path segments.
   return isFhirId(id) ? fhirFetch<Patient>(`Patient/${id}`) : null;
 });
+// Every getter below checks the id first: it comes from the URL, and an unchecked one could add search parameters.
+const none = async <T>(): Promise<T[]> => [];
 export const getConditions = cache((id: string) =>
-  fhirSearch<Condition>(`Condition?patient=${id}&_count=100`),
+  isFhirId(id) ? fhirSearch<Condition>(`Condition?patient=${id}&_count=100`) : none<Condition>(),
 );
 export const getAllergies = cache((id: string) =>
-  fhirSearch<AllergyIntolerance>(`AllergyIntolerance?patient=${id}`),
+  isFhirId(id)
+    ? fhirSearch<AllergyIntolerance>(`AllergyIntolerance?patient=${id}`)
+    : none<AllergyIntolerance>(),
 );
 
 /** Every observation in a category, all pages. */
 export const getObservations = cache((id: string, category: "laboratory" | "vital-signs") =>
-  fhirSearch<Observation>(`Observation?patient=${id}&category=${category}&_sort=-date&_count=200`),
+  isFhirId(id)
+    ? fhirSearch<Observation>(`Observation?patient=${id}&category=${category}&_sort=-date&_count=200`)
+    : none<Observation>(),
 );
 
 export async function getChartData(id: string) {
+  if (!isFhirId(id))
+    return {
+      medications: [],
+      medicationById: new Map<string, Medication>(),
+      immunizations: [],
+      encounters: [],
+    };
   const [medicationBundle, immunizations, encounters] = await Promise.all([
     fhirSearch<MedicationRequest | Medication>(
       `MedicationRequest?patient=${id}&status=active&_include=MedicationRequest:medication&_count=100`,

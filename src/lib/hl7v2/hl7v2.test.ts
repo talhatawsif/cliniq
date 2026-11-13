@@ -166,4 +166,38 @@ describe("HL7 v2 to FHIR (H1-H16)", () => {
     const r = await processMessage("hello", fakes().deps);
     expect(r.ack).toContain("MSA|AR||");
   });
+
+  it("wrong-patient guards: ids are scoped to patient and sender, IHI must be 16 digits, DOB must agree", async () => {
+    // The same filler number for another patient, or from another lab, never maps onto the same resources.
+    const ids = (text: string, pid: string) =>
+      mapOru(parseMessage(text), pid).entry!.map((e) => e.resource!.id);
+    expect(ids(REF, "p1")).toEqual(ids(REF, "p1"));
+    expect(ids(REF, "p2").some((id) => ids(REF, "p1").includes(id))).toBe(false);
+    expect(
+      ids(REF.replace("|LABSYS|PATHLAB|", "|LABSYS|OTHERLAB|"), "p1").some((id) =>
+        ids(REF, "p1").includes(id),
+      ),
+    ).toBe(false);
+
+    // An IHI field that is not exactly 16 digits is not an IHI (it would otherwise reach the FHIR search as written).
+    expect(ihiOf(parseMessage(REF.replace(IHI, `${IHI},http://x\\F\\1`)))).toBeUndefined();
+    expect(ihiOf(parseMessage(REF.replace(IHI, "800360883335736")))).toBeUndefined();
+
+    // PID-7 is 19700101 in the reference message.
+    const mismatch = fakes({ birthDateOf: async () => "1980-05-05" });
+    const r = await processMessage(REF, mismatch.deps);
+    expect(r.ack).toContain("MSA|AE|MSG00001|Date of birth");
+    expect(mismatch.written).toHaveLength(0);
+    const same = fakes({ birthDateOf: async () => "1970-01-01" });
+    expect((await processMessage(REF, same.deps)).code).toBe("AA");
+  });
+
+  it("the same test twice in one message gets two resources, not a clash", () => {
+    const twice =
+      REF.replace(/\r$/, "") + "\rOBX|4|NM|14682-9^Creatinine^LN||140|umol/L^umol/L^UCUM|45-90|H|||F\r";
+    const all = obs(twice);
+    expect(all).toHaveLength(4);
+    expect(new Set(all.map((o) => o.id)).size).toBe(4);
+    expect(all[0].id).toBe(obs(REF)[0].id); // the first keeps its id, so a correction still finds it
+  });
 });

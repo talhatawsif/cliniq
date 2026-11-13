@@ -1,5 +1,5 @@
 import type { Bundle, Condition, Observation, Patient } from "fhir/r4";
-import { fhirSearch } from "@/lib/fhir/client";
+import { fhirSearch, isFhirId } from "@/lib/fhir/client";
 import type { Inputs } from "./rules";
 
 const obs = (codes: string, count: number) =>
@@ -43,6 +43,8 @@ export function inputsFromPrefetch(prefetch: Record<string, unknown> | undefined
 
 /** The chart reads the same data through the same templates, from our own FHIR server. */
 export async function inputsForChart(id: string, patient: Patient, conditions: Condition[]): Promise<Inputs> {
+  if (!isFhirId(id))
+    return { patient, conditions, creatinine: [], weight: [], height: [], hba1c: [], bp: [] };
   const q = (t: string) => t.replace("{{context.patientId}}", id);
   const [creatinine, weight, height, hba1c, bp] = await Promise.all(
     (["creatinine", "weight", "height", "hba1c", "bp"] as const).map((k) =>

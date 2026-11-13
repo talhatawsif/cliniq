@@ -181,6 +181,17 @@ describe("A4, A5, A13 the output filter", () => {
     expect(r).toMatchObject({ kind: "ok", removed: 1 });
     expect(r.kind === "ok" && r.sentences[0].text).toContain("118");
   });
+  it("part of a date or a reference range bound cannot stand in for a value", () => {
+    // The cited fact reads "... 132 µmol/L (High, range 45–90 µmol/L) on 10/11/2026": "11" is only part of the date.
+    expect(filterReply(`Creatinine was 11 µmol/L [${f1}]`, f)).toMatchObject({
+      kind: "no_answer",
+      removed: 1,
+    });
+    expect(filterReply(`Creatinine was 132 µmol/L on 10/11/2026 [${f1}]`, f)).toMatchObject({
+      kind: "ok",
+      removed: 0,
+    });
+  });
   it("a correct, cited reply passes untouched", () => {
     const r = filterReply(
       `Creatinine rose from 118 µmol/L on 02/05/2026 to 132 µmol/L on 10/11/2026 [${f2}][${f1}]`,

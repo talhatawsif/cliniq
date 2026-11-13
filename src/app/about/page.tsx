@@ -87,7 +87,7 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>Not built yet: n8n workflows and the extraction evaluation report.</li>
+          <li>Extraction accuracy on the sample notes is not measured yet (it needs human gold labels).</li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
           <li>
             The chart assistant sends one patient&rsquo;s record facts to a free OpenRouter model (prompts
