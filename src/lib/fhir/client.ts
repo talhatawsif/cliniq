@@ -1,5 +1,6 @@
 import type { Bundle, FhirResource } from "fhir/r4";
 import { env } from "@/lib/env";
+import { fhirAuthHeader } from "@/lib/fhir/auth";
 
 export type FhirErrorKind = "not-configured" | "unavailable" | "timeout" | "http" | "bad-link";
 
@@ -50,7 +51,7 @@ export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {
     try {
       res = await fetch(url, {
         cache: "no-store",
-        headers: { Accept: "application/fhir+json" },
+        headers: { Accept: "application/fhir+json", ...(await fhirAuthHeader(new URL(url).origin)) },
         signal: AbortSignal.timeout(timeoutMs),
       });
     } catch (e) {

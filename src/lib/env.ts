@@ -8,6 +8,7 @@ const schema = z.preprocess(
   z.object({
     FHIR_BASE_URL: z.url({ protocol: /^https?$/ }).optional(), // "localhost:8080/fhir" is not a web address
     FHIR_AUTH: z.enum(["none", "gcp-iam"]).default("none"),
+    GCP_SA_KEY: optional,
     NEXT_PUBLIC_SUPABASE_URL: optional,
     SUPABASE_SECRET_KEY: optional,
     NLP_SERVICE_URL: optional,
