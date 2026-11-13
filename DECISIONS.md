@@ -252,3 +252,9 @@ into tests; SPEC §0 makes this a rule.
 - "is unlikely" maps to `uncertain`, so "Heart failure is unlikely" is held back from coding rather than affirmed.
 - The service's output for the 12 sample notes is committed (`data/nlp/precomputed.json`) and used, labelled, when `NLP_SERVICE_URL` is unset or the service does not answer.
 - The service-account invoker grant for `cliniq-nlp` is an owner step (the auto-mode classifier blocks IAM grants).
+
+## Measurements (14 Nov 2026)
+- FHIR server cold start (scaled to zero, CPU boost on): 56.6 s for the first request, 0.25 s warm.
+- Idle-connection fix: after 13 minutes idle with the instance still running, the next request took 1.1 s and `/api/health?deep=1` on Vercel reported FHIR and database ok. Not tested beyond 13 minutes.
+- NLP service: image 131 MB compressed (561 MB unpacked); cold start 3.8 s after about 18 minutes idle, 0.18 s warm.
+- Not done: the 48 hour cost check for the FHIR server, the billing-cap detach path (testing it would switch billing off), and the cron-job.org pinger (needs the owner's account).

@@ -10,7 +10,7 @@ trends, a CDS Hooks decision-support service, and HL7 v2 pathology results mappe
 
 **Live:** https://cliniq-inky-ten.vercel.app. Sign in with the "Sign in as demo clinician" button.
 Outside Australian daytime the FHIR server is asleep (Cloud Run scales to zero), so the first
-request can take up to two minutes to wake it.
+request can take about a minute to wake it (57 s measured).
 
 ## What it does
 
@@ -63,7 +63,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 |---|---|
 | M0 Foundation and live skeleton | Done |
 | M1 Australian cohort | Done — 20 patients, [AU Core validation report](docs/validation/au-core-cohort.md) |
-| M2 Private FHIR server in Sydney | Built — final checks pending (cold start, 48 h cost) |
+| M2 Private FHIR server in Sydney | Built. Cold start measured (about 57 s); 48 h cost check and keep-alive pinger pending |
 | M3 Design system and chart | Built — worklist, patient chart, tokens, Playwright smoke + axe, [screenshots](docs/ui/screens/m3) |
 | M4 Pathology, vitals, FHIR JSON | Built — L1–L11 pass, [screenshots](docs/ui/screens/m4) |
 | M5 CDS Hooks service | Built — E1–E14, BMI and care-gap tests pass; sandbox check pending ([docs](docs/cds-hooks.md)) |
