@@ -31,6 +31,11 @@ export default function About() {
         <ul className="list-disc pl-5">
           <li>FHIR R4 on HAPI FHIR 8.12; cohort resources validated against AU Core 2.0.0</li>
           <li>IHI identifiers (reserved test values), LOINC, UCUM</li>
+          <li>
+            SNOMED CT-AU for coding (CSIRO Ontoserver test endpoint, or NCTS with credentials), with an
+            offline subset when neither is reachable. SNOMED CT® is a registered trademark of SNOMED
+            International.
+          </li>
           <li>HL7 v2.4 ORU^R01 in the style of Australian pathology (AS 4700.2)</li>
           <li>AU Patient Summary 1.0.0 export as a FHIR document Bundle</li>
           <li>CDS Hooks patient-view; CKD-EPI 2021 eGFR and BMI calculators</li>

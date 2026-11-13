@@ -1,5 +1,10 @@
 # Changelog
 
+## M10 — Terminology coding (14 Nov 2026)
+
+- `src/lib/terminology/`: `$expand` client (NCTS, CSIRO test endpoint, offline), deterministic ranker, no-code threshold.
+  Live acceptance run: 0 mismatches; offline recordings for all `targets.json` terms; attribution in the footer.
+
 ## M9 — NLP extraction service (14 Nov 2026)
 
 - `services/nlp/`: FastAPI + medspaCy (targets, ConText with Australian rules, sectioniser); C1–C16 pass.

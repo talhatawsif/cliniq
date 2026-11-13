@@ -16,6 +16,8 @@ const schema = z.preprocess(
     DEMO_CLINICIAN_PASSWORD: optional,
     NLP_SERVICE_URL: optional,
     TERMINOLOGY_BASE_URL: optional,
+    TERMINOLOGY_CLIENT_ID: optional,
+    TERMINOLOGY_CLIENT_SECRET: optional,
     OPENROUTER_API_KEY: optional,
     SMART_CLIENT_ID: optional,
     INTEGRATION_API_KEY: optional,

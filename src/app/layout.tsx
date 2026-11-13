@@ -52,6 +52,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           )}
         </header>
         {children}
+        <footer className="border-t border-line px-4 py-3 text-xs text-muted xl:px-6">
+          Synthetic data only; not a medical device. SNOMED CT® is a registered trademark of SNOMED
+          International. SNOMED CT-AU is published by the Australian Digital Health Agency and accessed
+          through the CSIRO Ontoserver test endpoint. ICD-10-AM mapping needs an IHACPA licence and is not
+          included.
+        </footer>
       </body>
     </html>
   );

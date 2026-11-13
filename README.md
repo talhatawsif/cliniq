@@ -47,7 +47,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | FHIR | R4 (4.0.1), HAPI FHIR server `hapiproject/hapi:v8.12.0-2` |
 | Profiles | AU Patient Summary 1.0.0 export (validated); AU Core 2.0.0: every cohort resource that claims an AU Core profile validates ([report](docs/validation/au-core-cohort.md)) |
 | Identifiers | IHI (`http://ns.electronichealth.net.au/id/hi/ihi/1.0`), reserved test values |
-| Codes | LOINC for pathology and vitals, UCUM units, SNOMED CT where Synthea supplies it |
+| Codes | LOINC for pathology and vitals, UCUM units, SNOMED CT-AU 20261031 for coding conditions, SNOMED CT from Synthea in the cohort |
 | HL7 v2 | 2.4 ORU^R01 in the style of Australian pathology (AS 4700.2), mapped following the HL7 v2-to-FHIR guide. Hand-written parser |
 | CDS Hooks | `patient-view`, prefetch only. Sandbox check still to do |
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
@@ -71,7 +71,8 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback. Needs the invoker grant and `NLP_SERVICE_URL` |
-| M10–M15 | Not started |
+| M10 | Built: SNOMED CT-AU coding (CSIRO / NCTS / offline), live run 0 mismatches ([report](docs/validation/terminology.md)) |
+| M11–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
