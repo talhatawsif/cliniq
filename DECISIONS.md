@@ -337,3 +337,6 @@ Found by crawling every page for every patient, odd inputs, validating all 20 pa
 - The pre-filter refused record questions such as "What was prescribed?" and "What dose of lisinopril is she on?". It now refuses only forward-looking prescribing language.
 - Scripted answers did not find HbA1c, HDL, LDL, ALT, AST and other tests by the names clinicians use (the record's names are long LOINC names). Aliases added.
 Known and left: on a one-line note everything after "FHx:" counts as family history until a blank line, so a later finding on that line is withheld (the safe direction; the table shows why).
+
+## Keep-alive pinger (14 Nov 2026)
+cron-job.org allows 30 s per request, but a cold FHIR server takes about 57 s. `/api/health?deep=1` now gives the FHIR check 12 s and reports `waking` (HTTP 200) when it times out: the request has already started the instance, so the next ping finds it warm, and the pinger does not raise a false failure. Real errors are still `down` (HTTP 503). Pinger: every 10 minutes, 07:00 to 19:50, Monday to Friday, time zone Australia/Sydney.
