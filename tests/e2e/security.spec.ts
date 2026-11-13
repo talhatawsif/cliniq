@@ -34,11 +34,24 @@ test("opening a chart writes exactly one audit row with the patient reference", 
   const ctx = await browser.newContext({ storageState: "tests/e2e/.auth.json" });
   const page = await ctx.newPage();
   const FHIR = process.env.FHIR_BASE_URL ?? "http://localhost:8080/fhir";
-  const id = (
-    (await (await fetch(`${FHIR}/Patient?_count=1&_getpagesoffset=19&_sort=family`)).json()) as {
-      entry: { resource: { id: string } }[];
-    }
-  ).entry[0].resource.id;
+  // A patient that no other test opens, so a parallel test cannot add a view: not one of the sample notes' patients,
+  // and not the first (several tests use it).
+  const bundle = async <T>(q: string) =>
+    (
+      (await (await fetch(`${FHIR}/${q}`, { headers: { "Cache-Control": "no-cache" } })).json()) as {
+        entry?: { resource: T }[];
+      }
+    ).entry?.map((e) => e.resource) ?? [];
+  const noted = new Set(
+    (
+      await bundle<{ subject: { reference: string } }>(
+        "DocumentReference?_tag=https://github.com/talhatawsif/cliniq/fhir/CodeSystem/tags|sample-note&_count=50",
+      )
+    ).map((d) => d.subject.reference.split("/")[1]),
+  );
+  const id = (await bundle<{ id: string }>("Patient?_count=50&_sort=family"))
+    .slice(1)
+    .find((p) => !noted.has(p.id))!.id;
   const count = async () =>
     (
       await db()

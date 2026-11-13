@@ -1,5 +1,10 @@
 # Changelog
 
+## M13 — Chart assistant (14 Nov 2026)
+
+- `src/lib/assistant/`: pre-filter, facts, scripted answerer, prompt, OpenRouter free-model chain, output filter, orchestrator;
+  `POST /api/patients/[id]/assistant`; "Ask about this record" panel; `llm_calls` table; `npm run llm:probe` and `npm run assistant:eval`.
+
 ## M12 — SMART on FHIR (14 Nov 2026)
 
 - `/smart/launch`, `/smart/callback`, `/smart/exit`; PKCE and `state`; sealed httpOnly session cookie; SMART mode reads from the

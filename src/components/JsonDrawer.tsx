@@ -99,3 +99,6 @@ export function JsonButton({ resource, label }: { resource: Resource; label: str
     </button>
   );
 }
+
+/** Opens the chart's FHIR JSON drawer for a resource. */
+export const useJsonDrawer = () => useContext(Ctx);

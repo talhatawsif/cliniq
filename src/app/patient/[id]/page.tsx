@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import AssistantPanel from "@/components/AssistantPanel";
 import DataTable from "@/components/DataTable";
 import FhirNotice from "@/components/FhirNotice";
 import { JsonButton } from "@/components/JsonDrawer";
 import { auditChartView } from "@/lib/audit";
+import { quotaRemaining } from "@/lib/quota";
+import { smartSession } from "@/lib/smart/session";
 import { inputsForChart } from "@/lib/cds/prefetch";
 import { evaluate } from "@/lib/cds/rules";
 import {
@@ -45,6 +48,8 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
   await connection();
   const { id } = await params;
   await auditChartView(id, "summary");
+  // Not offered in SMART mode: the sandbox record would go to a third-party model.
+  const assistantLeft = (await smartSession()) ? null : await quotaRemaining("assistant");
   let data;
   try {
     const [patient, conditions, allergies, chart] = await Promise.all([
@@ -100,6 +105,12 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
           </ul>
         )}
       </Section>
+
+      {assistantLeft !== null && (
+        <Section title="Ask about this record">
+          <AssistantPanel patientId={id} remaining={assistantLeft} />
+        </Section>
+      )}
 
       <Section title="Problems">
         <DataTable

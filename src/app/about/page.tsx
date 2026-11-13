@@ -55,8 +55,14 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>Not built yet: the chart assistant.</li>
+          <li>Not built yet: n8n workflows and the extraction evaluation report.</li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
+          <li>
+            The chart assistant sends one patient&rsquo;s record facts to a free OpenRouter model (prompts
+            leave Australia and free endpoints may keep them, which is why it is demo-only). Advice requests
+            are refused, common questions are answered without a model, and every model sentence must cite the
+            record or it is removed. It can be unavailable when the free daily limit is used up.
+          </li>
         </ul>
       </Section>
 

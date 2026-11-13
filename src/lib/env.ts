@@ -19,6 +19,7 @@ const schema = z.preprocess(
     TERMINOLOGY_CLIENT_ID: optional,
     TERMINOLOGY_CLIENT_SECRET: optional,
     OPENROUTER_API_KEY: optional,
+    OPENROUTER_MODELS: optional, // comma list; every id must end in ":free"
     SMART_CLIENT_ID: optional,
     SMART_REDIRECT_URI: optional,
     SESSION_SECRET: z.string().min(32).optional(), // seals the SMART cookies
@@ -49,7 +50,7 @@ export function parseEnv(raw: Record<string, string | undefined>) {
       supabase: Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SECRET_KEY),
       nlp: Boolean(env.NLP_SERVICE_URL),
       terminology: Boolean(env.TERMINOLOGY_BASE_URL),
-      ai: Boolean(env.OPENROUTER_API_KEY),
+      ai: Boolean(env.OPENROUTER_API_KEY && env.OPENROUTER_MODELS),
       smart: Boolean(env.SMART_CLIENT_ID && env.SESSION_SECRET),
       n8n: Boolean(env.INTEGRATION_API_KEY),
     },

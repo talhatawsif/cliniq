@@ -57,7 +57,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
 | Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
 
-Not built yet: the chart assistant, the evaluation report. ICD-10-AM is not included: it is licensed by
+Not built yet: n8n workflows, the extraction evaluation report. ICD-10-AM is not included: it is licensed by
 IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
 ## Status
@@ -77,7 +77,8 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally and the flow is verified live ([screenshot](docs/ui/screens/m11/live-review.png)) |
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
-| M13–M15 | Not started |
+| M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). Needs `OPENROUTER_API_KEY` in Vercel |
+| M14–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).

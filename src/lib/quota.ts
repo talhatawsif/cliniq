@@ -35,3 +35,14 @@ export async function guardRequest(
   const text = await request.text();
   return (await guardText(text, name, limit)) ?? text;
 }
+
+/** Units left today for a quota (does not take one). */
+export async function quotaRemaining(name: keyof typeof LIMITS, limit: number = LIMITS[name]) {
+  const { data } = await admin()
+    .from("quotas")
+    .select("used")
+    .eq("name", name)
+    .eq("day", new Date().toISOString().slice(0, 10))
+    .maybeSingle();
+  return Math.max(0, limit - (data?.used ?? 0));
+}
