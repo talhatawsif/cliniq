@@ -3,7 +3,7 @@
 const PROJECT = process.env.GCP_PROJECT;
 
 exports.capBilling = async (event) => {
-  const msg = JSON.parse(Buffer.from(event.data.message.data, "base64").toString());
+  const msg = JSON.parse(Buffer.from(event.data?.message?.data ?? event.data, "base64").toString());
   if (msg.costAmount < msg.budgetAmount) return console.log(`cost ${msg.costAmount} < budget ${msg.budgetAmount}`);
   const meta = await fetch(
     "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
