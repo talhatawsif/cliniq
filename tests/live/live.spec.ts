@@ -6,7 +6,10 @@ test("live: sign in, send the demo HL7 message, see creatinine 132 in the chart"
   await page.goto("/sign-in");
   await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
   await page.waitForURL("**/patients", { timeout: 180_000 });
-  const msg = readFileSync("data/hl7v2/oru-demo-creatinine.hl7", "utf8").replace("DEMO00001", `LIVE${Date.now().toString(36)}`);
+  const msg = readFileSync("data/hl7v2/oru-demo-creatinine.hl7", "utf8").replace(
+    "DEMO00001",
+    `LIVE${Date.now().toString(36)}`,
+  );
   const res = await page.request.post("/api/hl7v2", { data: msg, timeout: 180_000 });
   const ack = await res.text();
   console.log(ack.replace(/\r/g, "\n"));
@@ -16,4 +19,14 @@ test("live: sign in, send the demo HL7 message, see creatinine 132 in the chart"
   await page.getByRole("link", { name: "Pathology" }).click();
   await expect(page.getByText(/132/).first()).toBeVisible();
   await page.screenshot({ path: "docs/ui/screens/m7/live-pathology.png", fullPage: true });
+});
+
+test("live: the patient summary export works", async ({ page }) => {
+  await page.goto("/sign-in");
+  await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
+  await page.waitForURL("**/patients", { timeout: 180_000 });
+  await page.getByRole("link", { name: /BEIER/ }).first().click();
+  await page.getByRole("link", { name: "Export summary" }).click();
+  await expect(page.getByRole("heading", { name: "Patient Summary" })).toBeVisible({ timeout: 60_000 });
+  await page.screenshot({ path: "docs/ui/screens/m8/live-summary.png", fullPage: true });
 });

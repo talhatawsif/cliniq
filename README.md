@@ -45,7 +45,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Area | Used |
 |---|---|
 | FHIR | R4 (4.0.1), HAPI FHIR server `hapiproject/hapi:v8.12.0-2` |
-| Profiles | AU Core 2.0.0: every cohort resource that claims an AU Core profile validates ([report](docs/validation/au-core-cohort.md)) |
+| Profiles | AU Patient Summary 1.0.0 export (validated); AU Core 2.0.0: every cohort resource that claims an AU Core profile validates ([report](docs/validation/au-core-cohort.md)) |
 | Identifiers | IHI (`http://ns.electronichealth.net.au/id/hi/ihi/1.0`), reserved test values |
 | Codes | LOINC for pathology and vitals, UCUM units, SNOMED CT where Synthea supplies it |
 | HL7 v2 | 2.4 ORU^R01 in the style of Australian pathology (AS 4700.2), mapped following the HL7 v2-to-FHIR guide. Hand-written parser |
@@ -53,7 +53,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
 | Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
 
-Not built yet: AU Patient Summary export, SNOMED CT-AU coding from notes (needs the terminology
+Not built yet: SNOMED CT-AU coding from notes (needs the terminology
 service), SMART on FHIR launch, the chart assistant. ICD-10-AM is not included: it is licensed by
 IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
@@ -69,7 +69,8 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M5 CDS Hooks service | Built — E1–E14, BMI and care-gap tests pass; sandbox check pending ([docs](docs/cds-hooks.md)) |
 | M6 | Done: one-click demo sign-in, audit log, daily quotas, security headers (`docs/SECURITY.md`) |
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
-| M8–M15 | Not started |
+| M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
+| M9–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).

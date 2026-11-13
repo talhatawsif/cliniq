@@ -32,6 +32,7 @@ export default function About() {
           <li>FHIR R4 on HAPI FHIR 8.12; cohort resources validated against AU Core 2.0.0</li>
           <li>IHI identifiers (reserved test values), LOINC, UCUM</li>
           <li>HL7 v2.4 ORU^R01 in the style of Australian pathology (AS 4700.2)</li>
+          <li>AU Patient Summary 1.0.0 export as a FHIR document Bundle</li>
           <li>CDS Hooks patient-view; CKD-EPI 2021 eGFR and BMI calculators</li>
         </ul>
       </Section>
@@ -44,9 +45,7 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>
-            Not built yet: AU Patient Summary export, terminology coding of notes, SMART launch, assistant.
-          </li>
+          <li>Not built yet: terminology coding of notes, SMART launch, assistant.</li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
         </ul>
       </Section>

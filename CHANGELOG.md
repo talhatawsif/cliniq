@@ -1,5 +1,10 @@
 # Changelog
 
+## M8 — AU Patient Summary export (14 Nov 2026)
+
+- `src/lib/ps/build.ts` builds an AU PS 1.0.0 document Bundle from confirmed data; `/patient/[id]/summary` (readable view from the
+  same Bundle) and `summary.json` (download, audited as an export). `npm run validate:ps`: 0 errors on three patients.
+
 ## M7 — HL7 v2 pathology to FHIR (14 Nov 2026)
 
 - `src/lib/hl7v2/`: parser, ORU^R01 to FHIR transaction mapper, ACK builder, processor (pure, injected

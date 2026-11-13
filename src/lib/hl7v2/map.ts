@@ -72,7 +72,11 @@ const OBR_STATUS: Record<string, DiagnosticReport["status"]> = {
 const hashId = (...parts: string[]) =>
   "hl7-" + createHash("sha256").update(parts.join("|")).digest("hex").slice(0, 24);
 
-const uuidOf = (s: string) => createHash("sha256").update(s).digest("hex").replace(/^(.{8})(.{4}).(.{3}).(.{3})(.{12}).*$/, "$1-$2-4$3-8$4-$5");
+const uuidOf = (s: string) =>
+  createHash("sha256")
+    .update(s)
+    .digest("hex")
+    .replace(/^(.{8})(.{4}).(.{3}).(.{3})(.{12}).*$/, "$1-$2-4$3-8$4-$5");
 
 /** The patient's IHI from PID-3 (identifier type NI), if present. */
 export function ihiOf(msg: Hl7Message): string | undefined {

@@ -78,3 +78,8 @@ test("the integration key is accepted for /api/hl7v2 without a session", async (
   expect(res.status()).toBe(200);
   expect(await res.text()).toContain("MSA|AR|"); // reached the processor, which rejects the text
 });
+
+test("the patient summary download needs a session", async ({ request }) => {
+  const res = await request.get("/patient/x/summary.json", { maxRedirects: 0 });
+  expect([302, 307, 308]).toContain(res.status());
+});

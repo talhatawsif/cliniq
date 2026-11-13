@@ -100,3 +100,8 @@ a {
     animation: none !important;
   }
 }
+
+.ps-narrative ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}

@@ -15,6 +15,7 @@
     "cohort:check": "node scripts/cohort/checks.ts",
     "cohort:validate": "node scripts/cohort/validate.ts",
     "load": "node scripts/load.ts",
+    "validate:ps": "node scripts/ps/validate.ts",
     "reset-demo": "node scripts/reset-demo.ts",
     "e2e": "playwright test"
   },

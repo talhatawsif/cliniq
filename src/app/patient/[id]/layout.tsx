@@ -82,6 +82,9 @@ export default async function PatientLayout({ children, params }: LayoutProps<"/
             <li>
               <Link href={`/patient/${id}/vitals`}>Vitals</Link>
             </li>
+            <li>
+              <Link href={`/patient/${id}/summary`}>Export summary</Link>
+            </li>
             <li className="md:mt-3">
               <Link href="/patients">All patients</Link>
             </li>
