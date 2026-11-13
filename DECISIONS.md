@@ -3,6 +3,47 @@
 One entry per decision: what changed and why. Newest section first. Implementers add one line per
 decision made during a milestone.
 
+## 13 Nov 2026 — M1 (Australian cohort)
+
+- **Cohort is a curated list, checked by code.** `scripts/cohort/selection.ts` names the 20
+  patients and the criteria each was picked for; the build fails if a claim is not true of the
+  source record. Only one living woman aged 75+ exists in the source, so that criterion is now
+  "woman aged 70 or over" (SPEC §3 updated).
+- **One build script, not four.** Select, trim, Australianise and check run as steps of
+  `npm run cohort:build`; validation is separate because it takes minutes and needs Java.
+- **History window shrinks per patient until the bundle fits** (5 years down to 3 for the three
+  heaviest patients) instead of capping observations arbitrarily.
+- **Validation uses HL7 Australia's terminology server** (`tx.dev.hl7.org.au`). With the validator's
+  default server almost every resource "failed" because it cannot evaluate SNOMED CT-AU value
+  sets; that was a tooling artefact, not a data fault.
+- **Result: every resource with an AU Core profile passes it** (Patient, Condition, Encounter,
+  Procedure, medicines, immunisations, allergies, pathology results, vital signs, organisations,
+  practitioners, locations). This corrects the v3 spec's expectation that RxNorm and CVX coded
+  resources would fail: AU Core prefers Australian codes but does not require them. They are still
+  labelled as US codes in the app. Extensible-binding misses are warnings and are listed in the report.
+- **Fixes the validator forced:** the SNOMED CT codes each AU Core vital-sign profile fixes were
+  added next to LOINC; four LOINC displays with wrong capitalisation were corrected; one display
+  the servers disagree on was removed; SNOMED codes Synthea filed under the LOINC system were
+  re-filed; resources coded only in the US SNOMED extension (not in SNOMED CT-AU) were dropped.
+- **ClinIQ's own URLs use `https://github.com/talhatawsif/cliniq/fhir`**: the validator rejects
+  `example.org` inside data.
+- **Organisations, practitioners and locations are Australianised too** (names, addresses, HPI-O
+  and HPI-I with valid check digits) and stored once in `data/cohort/_shared.json`. Synthea's
+  search-style references to them are rewritten to plain `Type/id` references.
+- **Bundles are stored as transactions of `PUT` by id, one entry per line**: loading twice changes
+  nothing (verified: same counts, no new versions), and diffs stay readable.
+- **Measured database size: 74 MB** for the whole cohort on local Postgres (budget 250 MB), about
+  8× the 9 MB of JSON. The v2 guess of 7× was close.
+- **Codes confirmed by `$lookup`:** all molar LOINC codes and note-type codes on tx.fhir.org, the
+  vital-sign SNOMED codes on the HL7 AU server. The indigenous-status code system and code "9"
+  were accepted by the validator.
+- **Known data oddities left as generated:** some creatinine values are implausibly high for the
+  reported eGFR (Synthea), which will matter for the eGFR card in M5; note text is Synthea template
+  prose apart from the 12 hand-written notes.
+- `package.json` now has `"type": "module"` so Node runs the TypeScript scripts directly without a
+  build step or an extra dependency. HAPI is pinned to `v8.12.0-2` in `docker-compose.yml`.
+- Not verified: the ACMA fictional phone numbers were written from memory.
+
 ## 13 Nov 2026 — M0
 
 - `await connection()` on the home page instead of `export const dynamic`: Next.js 16 drops the

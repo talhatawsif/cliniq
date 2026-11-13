@@ -1,0 +1,86 @@
+[
+  {
+    "file": "01-referral-nephrology.txt",
+    "patient": "edb8edfe",
+    "date": "2026-06-10",
+    "type": "referral",
+    "title": "Referral to nephrology outpatients"
+  },
+  {
+    "file": "02-discharge-pneumonia.txt",
+    "patient": "a61af391",
+    "date": "2026-03-05",
+    "type": "discharge",
+    "title": "Discharge summary: community-acquired pneumonia"
+  },
+  {
+    "file": "03-consult-diabetes-review.txt",
+    "patient": "4cca3f0b",
+    "date": "2026-07-14",
+    "type": "consult",
+    "title": "GP consultation: diabetes cycle of care"
+  },
+  {
+    "file": "04-referral-podiatry.txt",
+    "patient": "fc48751c",
+    "date": "2026-06-02",
+    "type": "referral",
+    "title": "Referral to high-risk foot clinic"
+  },
+  {
+    "file": "05-consult-cardiology.txt",
+    "patient": "7da46686",
+    "date": "2026-08-20",
+    "type": "consult",
+    "title": "Cardiology outpatient clinic letter"
+  },
+  {
+    "file": "06-discharge-fall.txt",
+    "patient": "39c3c21f",
+    "date": "2026-09-12",
+    "type": "discharge",
+    "title": "Discharge summary: fall with wrist fracture"
+  },
+  {
+    "file": "07-consult-back-pain.txt",
+    "patient": "022542fe",
+    "date": "2026-06-18",
+    "type": "consult",
+    "title": "GP consultation: low back pain"
+  },
+  {
+    "file": "08-consult-asthma-allergy.txt",
+    "patient": "9621db72",
+    "date": "2026-04-15",
+    "type": "consult",
+    "title": "GP consultation: asthma and allergy review"
+  },
+  {
+    "file": "09-consult-adolescent.txt",
+    "patient": "cb7b5012",
+    "date": "2026-09-01",
+    "type": "consult",
+    "title": "GP consultation: allergy review"
+  },
+  {
+    "file": "10-discharge-heart-failure.txt",
+    "patient": "8e032e58",
+    "date": "2025-03-18",
+    "type": "discharge",
+    "title": "Discharge summary: decompensated heart failure"
+  },
+  {
+    "file": "11-referral-weight-management.txt",
+    "patient": "41c722a4",
+    "date": "2026-06-09",
+    "type": "referral",
+    "title": "Referral to weight management clinic"
+  },
+  {
+    "file": "12-consult-cough.txt",
+    "patient": "6fe996e7",
+    "date": "2026-10-06",
+    "type": "consult",
+    "title": "GP consultation: cough"
+  }
+]

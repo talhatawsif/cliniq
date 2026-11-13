@@ -115,7 +115,7 @@ scan of that folder that shape this plan:
 **Steps** (all offline, deterministic, seeded; output committed to `data/cohort/`):
 
 1. `select-cohort` — 20 patients by criteria, each with notes: CKD + hypertension (2), diabetes
-   with hypertension or lipids (5), polypharmacy ≥ 8 active medications (1), women ≥ 75 (2), ≥ 3
+   with hypertension or lipids (5), polypharmacy ≥ 8 active medications (1), women ≥ 70 (2), ≥ 3
    allergies (3), aged < 25 including one child (4), one deceased, two others for variety. Writes
    `data/cohort/manifest.json` (id, criteria met).
 2. `trim` — keep `Patient, Encounter, Condition, Observation, DiagnosticReport` (laboratory only),
@@ -149,7 +149,9 @@ scan of that folder that shape this plan:
    - Attach 12 hand-written Australian-style notes (`data/sample-notes/`, GP letters and discharge
      summaries using Australian abbreviations: PMHx, FHx, Nil, HTN, T2DM, IHD, GORD) to cohort
      patients as `DocumentReference`. They must agree with the patient's record.
-4. `validate-cohort` — HL7 validator CLI against `hl7.fhir.au.core#2.0.0`. A resource carries an
+4. `validate-cohort` — HL7 validator CLI against `hl7.fhir.au.core#2.0.0`, using HL7 Australia's
+   terminology server (`tx.dev.hl7.org.au`; the default server cannot evaluate Australian value
+   sets). A resource carries an
    AU Core profile in `meta.profile` **only if it validates with 0 errors**. Writes
    `docs/validation/au-core-cohort.md`.
 
@@ -182,7 +184,7 @@ the assistant and n8n add breadth last.
 
 ### M1 — Australian cohort (offline)
 The four steps of §3 as scripts under `scripts/`, with unit tests; `docker-compose.yml` for local
-HAPI + Postgres; `npm run load -- --target local` (organisations and practitioners first,
+HAPI + Postgres; `npm run load` (organisations and practitioners first,
 idempotent `PUT` by id, concurrency-limited, report with pass/fail and database size).
 
 **Done when**

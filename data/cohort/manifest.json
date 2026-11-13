@@ -1,0 +1,272 @@
+{
+  "source": "Synthea (Apache 2.0), Australianised; all data synthetic",
+  "referenceDate": "2026-11-13",
+  "patients": [
+    {
+      "id": "edb8edfe-931e-bd70-a520-90b9fcdca5a5",
+      "file": "villasenor-patricio.json",
+      "criteria": [
+        "ckd",
+        "hypertension"
+      ],
+      "historyYears": 2,
+      "bytes": 484756,
+      "resources": 405,
+      "notes": 9,
+      "observations": 214
+    },
+    {
+      "id": "a61af391-f916-2293-bb55-982247619880",
+      "file": "murray-sherwood.json",
+      "criteria": [
+        "ckd",
+        "hypertension",
+        "lipids"
+      ],
+      "historyYears": 4,
+      "bytes": 659521,
+      "resources": 559,
+      "notes": 11,
+      "observations": 316
+    },
+    {
+      "id": "4cca3f0b-f4f8-2587-d97e-938e64b4823a",
+      "file": "hackett-celesta.json",
+      "criteria": [
+        "diabetes",
+        "hypertension",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 413775,
+      "resources": 353,
+      "notes": 11,
+      "observations": 141
+    },
+    {
+      "id": "74249e03-7225-a3ac-78e3-e970ae5f9f4d",
+      "file": "spinka-ghislaine.json",
+      "criteria": [
+        "diabetes",
+        "hypertension",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 365124,
+      "resources": 319,
+      "notes": 10,
+      "observations": 113
+    },
+    {
+      "id": "b50160cf-6624-8173-430a-1ecd186cda96",
+      "file": "ruecker-daina.json",
+      "criteria": [
+        "diabetes",
+        "hypertension",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 459253,
+      "resources": 395,
+      "notes": 10,
+      "observations": 160
+    },
+    {
+      "id": "fc48751c-6c1b-c03d-b59a-e2237f557bd2",
+      "file": "mayer-sung.json",
+      "criteria": [
+        "diabetes",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 669223,
+      "resources": 577,
+      "notes": 11,
+      "observations": 303
+    },
+    {
+      "id": "91e835e5-cbd4-df08-50e1-8098fd57ee5f",
+      "file": "lowe-vernon.json",
+      "criteria": [
+        "diabetes",
+        "lipids"
+      ],
+      "historyYears": 4,
+      "bytes": 649677,
+      "resources": 574,
+      "notes": 10,
+      "observations": 225
+    },
+    {
+      "id": "7da46686-8199-aa05-29c5-c2bd7343942a",
+      "file": "flatley-whitley.json",
+      "criteria": [
+        "polypharmacy"
+      ],
+      "historyYears": 5,
+      "bytes": 320814,
+      "resources": 258,
+      "notes": 11,
+      "observations": 45
+    },
+    {
+      "id": "39c3c21f-6143-c546-f205-c33396e1a063",
+      "file": "cronin-cameron.json",
+      "criteria": [
+        "older-woman",
+        "polypharmacy",
+        "hypertension"
+      ],
+      "historyYears": 5,
+      "bytes": 366517,
+      "resources": 301,
+      "notes": 11,
+      "observations": 104
+    },
+    {
+      "id": "022542fe-9527-66ce-41cc-af2a3b7a3002",
+      "file": "beier-tandra.json",
+      "criteria": [
+        "older-woman",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 454719,
+      "resources": 383,
+      "notes": 11,
+      "observations": 182
+    },
+    {
+      "id": "9621db72-2444-75b2-11c2-b290ea8c9d14",
+      "file": "mcglynn-twila.json",
+      "criteria": [
+        "allergies",
+        "hypertension"
+      ],
+      "historyYears": 5,
+      "bytes": 325027,
+      "resources": 268,
+      "notes": 11,
+      "observations": 100
+    },
+    {
+      "id": "c8501e5a-1488-040e-4287-dbb270826cca",
+      "file": "parisian-luke.json",
+      "criteria": [
+        "allergies"
+      ],
+      "historyYears": 5,
+      "bytes": 302806,
+      "resources": 252,
+      "notes": 10,
+      "observations": 100
+    },
+    {
+      "id": "ba4a716c-7b47-9018-51f4-eb96bc5b118b",
+      "file": "smith-claretta.json",
+      "criteria": [
+        "allergies"
+      ],
+      "historyYears": 5,
+      "bytes": 414788,
+      "resources": 368,
+      "notes": 10,
+      "observations": 84
+    },
+    {
+      "id": "29ed4d98-efe7-16c4-22ab-9282e6fd3dad",
+      "file": "ritchie-claudio.json",
+      "criteria": [
+        "under-25",
+        "child",
+        "allergies"
+      ],
+      "historyYears": 5,
+      "bytes": 308660,
+      "resources": 260,
+      "notes": 10,
+      "observations": 75
+    },
+    {
+      "id": "cb7b5012-85b9-9f77-06e4-84ad2685a554",
+      "file": "hills-suzan.json",
+      "criteria": [
+        "under-25",
+        "child"
+      ],
+      "historyYears": 5,
+      "bytes": 365271,
+      "resources": 310,
+      "notes": 11,
+      "observations": 71
+    },
+    {
+      "id": "cac48590-2d89-99f3-09df-31e8e0ac1290",
+      "file": "mitchell-kasie.json",
+      "criteria": [
+        "under-25",
+        "child"
+      ],
+      "historyYears": 5,
+      "bytes": 238562,
+      "resources": 201,
+      "notes": 10,
+      "observations": 66
+    },
+    {
+      "id": "7fe5eed8-a0cd-0d18-f78e-81696ee95747",
+      "file": "gleichner-rufus.json",
+      "criteria": [
+        "under-25",
+        "allergies"
+      ],
+      "historyYears": 5,
+      "bytes": 186231,
+      "resources": 158,
+      "notes": 8,
+      "observations": 42
+    },
+    {
+      "id": "8e032e58-00ae-7036-fc20-0fbfab45fab3",
+      "file": "hoppe-duncan.json",
+      "criteria": [
+        "deceased",
+        "diabetes",
+        "polypharmacy"
+      ],
+      "historyYears": 3,
+      "bytes": 685162,
+      "resources": 601,
+      "notes": 11,
+      "observations": 240
+    },
+    {
+      "id": "41c722a4-2345-6381-2cac-21704e1bbfc5",
+      "file": "abshire-lita.json",
+      "criteria": [
+        "variety",
+        "allergies",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 310286,
+      "resources": 253,
+      "notes": 11,
+      "observations": 87
+    },
+    {
+      "id": "6fe996e7-f6bd-7f61-2487-e908917fa87a",
+      "file": "boyle-carlo.json",
+      "criteria": [
+        "variety",
+        "hypertension",
+        "lipids"
+      ],
+      "historyYears": 5,
+      "bytes": 239117,
+      "resources": 206,
+      "notes": 9,
+      "observations": 84
+    }
+  ]
+}

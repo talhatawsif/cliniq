@@ -8,13 +8,13 @@ looks the way it does is in [`../DECISIONS.md`](../DECISIONS.md). Original notes
 
 ## Where it stands (13 Nov 2026)
 
-- **Phase 1 dashboard shell works locally** (patient list, detail, vitals charts) against a local
-  Docker HAPI. It still has a hard-coded `localhost` FHIR URL and untyped data.
-- **109 Synthea patients** in `~/synthea/output/fhir/` (422 MB, US-shaped).
-- **HAPI on Cloud Run in `us-central1`** is up, public, and empty (its built-in database is lost
-  on scale-to-zero). It is replaced in M2 by a private service in Sydney.
+- **M0 done:** typed FHIR layer, tests, CI, live at https://cliniq-inky-ten.vercel.app (no data yet).
+- **M1 done:** 20 Australianised patients in `data/cohort/`, validated against AU Core 2.0.0, loading
+  into a local Docker HAPI + Postgres (74 MB).
+- **HAPI on Cloud Run in `us-central1`** is still up, public and empty. M2 replaces it with a
+  private service in Sydney.
 - **Supabase project `cliniq`** exists in Sydney (`jzrmearcbiuqjbtsecfn`), empty.
-- **Spec reviewed and reordered (v3).** No feature code yet.
+- Next: **M2** (needs the Supabase database password and Google Cloud access).
 
 ## Fixed constraints
 

@@ -1,0 +1,36 @@
+# Local FHIR server for development: HAPI FHIR R4 on Postgres (the same pairing used in the cloud).
+#   docker compose up -d      then      npm run load
+# Data lives in the "hapi-db" volume; `docker compose down -v` wipes it.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hapi
+      POSTGRES_USER: hapi
+      POSTGRES_PASSWORD: hapi # local development only
+    volumes:
+      - hapi-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hapi -d hapi"]
+      interval: 5s
+      retries: 20
+
+  hapi:
+    image: hapiproject/hapi:v8.12.0-2
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hapi
+      SPRING_DATASOURCE_USERNAME: hapi
+      SPRING_DATASOURCE_PASSWORD: hapi
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_SEARCH_ENABLED: "false"
+      HAPI_FHIR_FHIR_VERSION: R4
+      JAVA_TOOL_OPTIONS: -Xmx1400m
+
+volumes:
+  hapi-db:

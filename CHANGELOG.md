@@ -1,5 +1,18 @@
 # Changelog
 
+## M1 — Australian cohort (13 Nov 2026)
+
+- `data/cohort/`: 20 curated, trimmed, Australianised Synthea patients (9 MB) plus shared
+  organisations, practitioners and locations; `manifest.json` lists the criteria each patient meets.
+- Australianisation: IHI and Medicare numbers with valid check digits, HPI-I/HPI-O, Australian
+  addresses and phone numbers, indigenous status "not stated", pathology in SI units re-coded to
+  molar LOINC codes, US extensions and billing resources removed, notes scrubbed.
+- `data/sample-notes/`: 12 hand-written Australian-style notes attached to cohort patients.
+- `docs/validation/au-core-cohort.md`: every resource with an AU Core 2.0.0 profile validates
+  against it; 0 errors in the proof run.
+- `docker-compose.yml` (HAPI + Postgres) and `npm run load`: idempotent load, 74 MB database.
+- Scripts: `cohort:build`, `cohort:check`, `cohort:validate`, `load`; 13 new unit tests.
+
 ## M0 — Foundation and live skeleton (13 Nov 2026)
 
 - Typed FHIR layer in `src/lib/fhir/` (`@types/fhir`): `fhirFetch` with timeout, retry while the
