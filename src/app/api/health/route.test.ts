@@ -19,16 +19,17 @@ async function health(fhir: () => Promise<unknown>) {
 
 describe("deep health check", () => {
   it("a FHIR server that is still waking is a 200 (a keep-alive pinger must not see a failure)", async () => {
-    const { FhirError } = await import("@/lib/fhir/client");
     const r = await health(async () => {
+      // Imported here, after the module reset, so it is the same class the route sees (instanceof).
+      const { FhirError } = await import("@/lib/fhir/client");
       throw new FhirError("timeout", "slow");
     });
     expect(r.status).toBe(200);
     expect(r.body.deep.fhir).toBe("waking");
   });
   it("a real failure is still a 503", async () => {
-    const { FhirError } = await import("@/lib/fhir/client");
     const r = await health(async () => {
+      const { FhirError } = await import("@/lib/fhir/client");
       throw new FhirError("http", "boom", 500);
     });
     expect(r.status).toBe(503);
