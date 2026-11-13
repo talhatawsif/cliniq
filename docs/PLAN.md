@@ -1,7 +1,8 @@
 # ClinIQ — Plan
 
 Human-readable plan: where the project stands, what the owner does by hand, and the build order.
-The build spec (milestone cards with acceptance tests) is [`../SPEC.md`](../SPEC.md). Why the spec
+The build spec (milestone cards with acceptance tests) is [`../SPEC.md`](../SPEC.md); the design
+contract is [`UI.md`](UI.md) and the AI design is [`AI.md`](AI.md). Why the spec
 looks the way it does is in [`../DECISIONS.md`](../DECISIONS.md). Original notes are in
 [`history/`](history/).
 
@@ -65,6 +66,13 @@ Before M2
 - [ ] Google Cloud: confirm you can deploy to `australia-southeast1`; set a $1 budget alert on
       `cliniq-507000`. The alert does not stop spending — look at the billing page weekly.
 - [ ] Create a free cron-job.org account (the card gives the URL and schedule).
+
+Before M3 (design tools for the building sessions; run once in the project folder)
+- [ ] In Claude Code: `/plugin install frontend-design@claude-plugins-official`
+- [ ] `npx shadcn@latest mcp init --client claude`
+- [ ] `claude mcp add playwright -- npx @playwright/mcp@latest`
+- [ ] Look at the screenshots each UI card commits to `docs/ui/screens/`. If a screen looks
+      generic, say so and reopen the card — that check is yours.
 
 Before M10
 - [ ] Register at the NCTS portal (healthterminologies.gov.au), accept the SNOMED CT-AU licence

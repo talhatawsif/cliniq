@@ -3,6 +3,27 @@
 One entry per decision: what changed and why. Newest section first. Implementers add one line per
 decision made during a milestone.
 
+## 13 Nov 2026 — UI and AI plans (`docs/UI.md`, `docs/AI.md`)
+
+| Decision | Why |
+|---|---|
+| A written design contract with tokens, a banned list and screenshot checks, set up in M3 | "Professional, not generic" cannot be left to each session's taste; the contract and the committed screenshots make it checkable, and the owner signs off visually. |
+| Dense clinical workstation look: neutral greys, colour for meaning only, hairlines not cards, Public Sans + IBM Plex Mono | Reads as hospital software; avoids the gradient/purple/card-grid look of generated dashboards. Replaces the Next.js starter fonts. |
+| One visual treatment for all machine output; teal, not purple; no sparkle icons | Reviewers must be able to tell at a glance what a clinician has not verified. |
+| shadcn/ui (Radix) primitives restyled to the tokens; plain tables; Recharts kept | Accessible dialogs, drawers and comboboxes are not worth hand-writing; a data-grid library is not needed for 20 patients. |
+| Building sessions use the frontend-design plugin, shadcn MCP and Playwright MCP | Design guidance, correct component usage, and the ability to look at the result before calling a card done. |
+| Medicines follow the ACSQHC on-screen medicines display guidance; the patient banner uses the common family-name-in-capitals convention | The v3 spec cited an "Australian on-screen identification guidance" for the banner that could not be confirmed; the claim is removed and only the medicines guidance is cited. |
+| Assistant is deterministic first (pre-filter, scripted answerer, cache) and calls a model only for free-form questions | Most questions cost no request, which matters with 50 a day, and the default experience is instant. |
+| Output filter also drops any sentence whose numbers or dates are not in its cited facts (test A13) | Citations alone do not stop an invented value attached to a real citation. |
+| Plain-line output format, not JSON mode; no streaming of unfiltered text | Free models support structured output unevenly; unfiltered text must never reach the screen. |
+| The UI says when the filter removed sentences, and labels rule-based output as rule-based, not "AI" | Honesty about what is and is not a language model, and about its reliability. |
+| Assistant hidden in SMART mode by default | Sandbox data would be sent to a third-party model. |
+| `llm:probe` and `assistant:eval` scripts; `llm_calls` logs metadata only | Free models change weekly; swapping must be configuration, and results must be dated evidence. |
+
+Not verified: that shadcn's current CLI works unchanged with this Next.js version and Tailwind 4
+(M3 checks and logs it); the install commands for the three tools are from current documentation
+and third-party guides.
+
 ## 13 Nov 2026 — OpenRouter key
 
 The owner keeps the OpenRouter key that was once pasted into a chat instead of rotating it. Accepted
@@ -64,8 +85,7 @@ Australian integration and interoperability roles screen for. Headline line afte
 ### Added (free, expected by an Australian health-IT engineer)
 
 AU Patient Summary 1.0.0 export · IHI with a valid check digit and correct identifier system ·
-indigenous-status extension set to "not stated" · patient banner per Australian on-screen
-identification guidance · Australian ConText rules ("nil", PMHx, FHx) and spellings (GORD) ·
+indigenous-status extension set to "not stated" · consistent patient banner · Australian ConText rules ("nil", PMHx, FHx) and spellings (GORD) ·
 clinical-safety hazard log · Path to production covering TGA, Privacy Act, My Health Records Act,
 Healthcare Identifiers Act and licensing · `docker-compose` so a reviewer can run it locally ·
 optional Inferno AU Core run *(unverified that it fits on the 8 GB Mac)*.
