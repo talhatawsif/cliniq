@@ -30,3 +30,24 @@ test("live: the patient summary export works", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Patient Summary" })).toBeVisible({ timeout: 60_000 });
   await page.screenshot({ path: "docs/ui/screens/m8/live-summary.png", fullPage: true });
 });
+
+test("live: paste-free flow — run sample note 1, confirm in /review, see it confirmed on the chart", async ({ page }) => {
+  await page.goto("/sign-in");
+  await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
+  await page.waitForURL("**/patients", { timeout: 180_000 });
+  await page.goto("/pipeline");
+  await page.getByRole("checkbox", { name: /Dry run/ }).uncheck();
+  await page.getByRole("button", { name: "Run" }).click();
+  const result = page.getByTestId("pipeline-result");
+  await expect(result).toBeVisible({ timeout: 180_000 });
+  console.log((await result.innerText()).slice(0, 1500));
+  await expect(result).toContainText("Written, pending review");
+  await page.screenshot({ path: "docs/ui/screens/m11/live-pipeline.png", fullPage: true });
+  await page.goto("/review");
+  const card = page.getByTestId("review-item").first();
+  const text = (await card.innerText()).slice(0, 400);
+  console.log(text);
+  await page.screenshot({ path: "docs/ui/screens/m11/live-review.png", fullPage: true });
+  await card.getByRole("button", { name: "Confirm" }).click();
+  await expect(page.getByTestId("review-item").first()).not.toHaveAttribute("data-item-id", (await card.getAttribute("data-item-id")) ?? "");
+});
