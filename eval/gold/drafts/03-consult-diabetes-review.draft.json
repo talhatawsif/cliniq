@@ -1,0 +1,85 @@
+{
+  "file": "03-consult-diabetes-review.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 112,
+      "end": 116,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 118,
+      "end": 121,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 123,
+      "end": 144,
+      "text": "hypertriglyceridaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 146,
+      "end": 153,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 155,
+      "end": 172,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 419,
+      "end": 429,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 687,
+      "end": 702,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 722,
+      "end": 735,
+      "text": "breast cancer",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 753,
+      "end": 757,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 771,
+      "end": 774,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 791,
+      "end": 801,
+      "text": "Depression",
+      "assertion": "affirmed",
+      "snomed": null
+    }
+  ]
+}

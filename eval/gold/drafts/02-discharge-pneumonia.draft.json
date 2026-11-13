@@ -1,0 +1,99 @@
+{
+  "file": "02-discharge-pneumonia.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 131,
+      "end": 159,
+      "text": "Community-acquired pneumonia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 215,
+      "end": 231,
+      "text": "productive cough",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 233,
+      "end": 238,
+      "text": "fever",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 253,
+      "end": 263,
+      "text": "chest pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 272,
+      "end": 275,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 277,
+      "end": 280,
+      "text": "CKD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 290,
+      "end": 311,
+      "text": "chronic low back pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 313,
+      "end": 320,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 611,
+      "end": 632,
+      "text": "myocardial infarction",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 690,
+      "end": 709,
+      "text": "atrial fibrillation",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 1027,
+      "end": 1048,
+      "text": "myocardial infarction",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 1173,
+      "end": 1187,
+      "text": "breathlessness",
+      "assertion": "hypothetical",
+      "snomed": null
+    },
+    {
+      "start": 1191,
+      "end": 1202,
+      "text": "haemoptysis",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "file": "04-referral-podiatry.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 140,
+      "end": 144,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 191,
+      "end": 206,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 208,
+      "end": 215,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 217,
+      "end": 224,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 452,
+      "end": 466,
+      "text": "osteoarthritis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 525,
+      "end": 540,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 555,
+      "end": 561,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    }
+  ]
+}

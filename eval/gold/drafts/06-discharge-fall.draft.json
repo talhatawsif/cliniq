@@ -1,0 +1,64 @@
+{
+  "file": "06-discharge-fall.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 215,
+      "end": 238,
+      "text": "Urinary tract infection",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 269,
+      "end": 272,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 274,
+      "end": 277,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 279,
+      "end": 291,
+      "text": "osteoporosis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 293,
+      "end": 300,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 302,
+      "end": 319,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 449,
+      "end": 459,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 463,
+      "end": 475,
+      "text": "palpitations",
+      "assertion": "negated",
+      "snomed": null
+    }
+  ]
+}

@@ -79,7 +79,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
 | M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). Needs `OPENROUTER_API_KEY` in Vercel |
 | M14 | Built: n8n pathology inbox (retry, done/failed) and weekly care-gap sweep (FHIR Tasks, idempotent); [workflows](n8n/README.md), [diagrams](docs/n8n/README.md). Screen recording is an owner step |
-| M15 | Not started |
+| M15 | Mostly built: axe clean on every page (light/dark, desktop/tablet), [hazard log](docs/CLINICAL-SAFETY.md) (17 hazards, each checked against the repo), [ADRs](docs/adr/README.md), extraction evaluation harness (`npm run eval`). **Extraction numbers need the owner's gold labels** ([how](eval/gold/README.md)) |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).

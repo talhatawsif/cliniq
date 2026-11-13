@@ -27,6 +27,38 @@ export default function About() {
         </p>
       </Section>
 
+      <Section title="How a note becomes FHIR">
+        <p>
+          A clinical note goes through rule-based language processing (sections, negation, family history,
+          uncertainty), then a SNOMED CT-AU search, then FHIR validation. Only affirmed findings are written,
+          as <em>unconfirmed</em> Conditions with Provenance. A clinician confirms, changes the code, or
+          rejects each one in the review queue. No language model is involved in extraction, coding or
+          writing.
+        </p>
+      </Section>
+
+      <Section title="Evaluation">
+        <ul className="list-disc pl-5">
+          <li>
+            Extraction context rules: 16 of 16 acceptance sentences pass (negation, family, historical,
+            uncertain, hypothetical).
+          </li>
+          <li>
+            Coding: 12 of 12 acceptance terms and their abbreviations return the expected SNOMED CT code on
+            the live terminology server, and a nonsense term returns no code.
+          </li>
+          <li>
+            Extraction precision, recall and F1 on the sample notes: not yet measured. It needs gold labels
+            written by a person who has read the notes, and none have been supplied or invented.
+          </li>
+          <li>Chart assistant: measured on 20 questions; the report states what passed and what did not.</li>
+          <li>
+            The hazard log (17 hazards, each pointing to a test or control) and the architecture decision
+            records are in the repository under docs/.
+          </li>
+        </ul>
+      </Section>
+
       <Section title="Standards and versions">
         <ul className="list-disc pl-5">
           <li>FHIR R4 on HAPI FHIR 8.12; cohort resources validated against AU Core 2.0.0</li>

@@ -1,5 +1,10 @@
 # Changelog
 
+## M15 — Evaluation, safety documents, polish (14 Nov 2026)
+
+- `npm run eval` / `eval:draft` (gold labels are the owner's), hazard log with a test that checks its evidence exists, 8 ADRs, About page
+  sections, an axe test over every page in both themes and two sizes (one link-in-text violation fixed).
+
 ## M14 — n8n workflows (14 Nov 2026)
 
 - `POST /api/care-gaps/sweep` (one idempotent FHIR Task per open care gap; `careGaps()` shared with the CDS card), integration-key auth,

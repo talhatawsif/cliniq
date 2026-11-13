@@ -1,0 +1,127 @@
+{
+  "file": "05-consult-cardiology.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 112,
+      "end": 135,
+      "text": "Ischaemic heart disease",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 149,
+      "end": 155,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 160,
+      "end": 193,
+      "text": "Gastro-oesophageal reflux disease",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 493,
+      "end": 503,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 564,
+      "end": 574,
+      "text": "orthopnoea",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 578,
+      "end": 607,
+      "text": "paroxysmal nocturnal dyspnoea",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 613,
+      "end": 625,
+      "text": "palpitations",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 629,
+      "end": 636,
+      "text": "syncope",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 660,
+      "end": 681,
+      "text": "myocardial infarction",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 687,
+      "end": 693,
+      "text": "reflux",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 757,
+      "end": 778,
+      "text": "myocardial infarction",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 851,
+      "end": 857,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 862,
+      "end": 879,
+      "text": "peripheral oedema",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 904,
+      "end": 923,
+      "text": "atrial fibrillation",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 967,
+      "end": 970,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 999,
+      "end": 1012,
+      "text": "Heart failure",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 1104,
+      "end": 1114,
+      "text": "chest pain",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

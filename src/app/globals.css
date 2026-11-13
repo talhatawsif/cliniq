@@ -83,6 +83,11 @@ a {
   color: var(--accent);
 }
 
+/* A link inside running text must differ from the text by more than colour. */
+p a {
+  text-decoration: underline;
+}
+
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

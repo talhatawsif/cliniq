@@ -1,0 +1,64 @@
+{
+  "file": "07-consult-back-pain.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 110,
+      "end": 131,
+      "text": "chronic low back pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 154,
+      "end": 175,
+      "text": "Chronic low back pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 177,
+      "end": 194,
+      "text": "chronic neck pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 196,
+      "end": 211,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 229,
+      "end": 236,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 618,
+      "end": 630,
+      "text": "night sweats",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 719,
+      "end": 731,
+      "text": "bowel cancer",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 905,
+      "end": 918,
+      "text": "low back pain",
+      "assertion": "affirmed",
+      "snomed": null
+    }
+  ]
+}

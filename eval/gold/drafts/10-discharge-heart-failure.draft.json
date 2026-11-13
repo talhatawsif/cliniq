@@ -1,0 +1,120 @@
+{
+  "file": "10-discharge-heart-failure.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 148,
+      "end": 161,
+      "text": "heart failure",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 184,
+      "end": 203,
+      "text": "Atrial fibrillation",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 249,
+      "end": 252,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 281,
+      "end": 294,
+      "text": "heart failure",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 296,
+      "end": 300,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 329,
+      "end": 332,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 334,
+      "end": 348,
+      "text": "osteoarthritis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 362,
+      "end": 374,
+      "text": "osteoporosis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 376,
+      "end": 389,
+      "text": "breast cancer",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 442,
+      "end": 456,
+      "text": "breathlessness",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 458,
+      "end": 468,
+      "text": "orthopnoea",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 473,
+      "end": 487,
+      "text": "ankle swelling",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 582,
+      "end": 603,
+      "text": "myocardial infarction",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 634,
+      "end": 643,
+      "text": "pneumonia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 671,
+      "end": 690,
+      "text": "atrial fibrillation",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 1096,
+      "end": 1102,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    }
+  ]
+}

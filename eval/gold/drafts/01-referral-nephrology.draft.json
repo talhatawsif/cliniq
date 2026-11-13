@@ -1,0 +1,85 @@
+{
+  "file": "01-referral-nephrology.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 187,
+      "end": 190,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 192,
+      "end": 195,
+      "text": "CKD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 252,
+      "end": 259,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 261,
+      "end": 278,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 549,
+      "end": 559,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 563,
+      "end": 582,
+      "text": "shortness of breath",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 591,
+      "end": 624,
+      "text": "gastro-oesophageal reflux disease",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 703,
+      "end": 718,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 731,
+      "end": 743,
+      "text": "hypertension",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 921,
+      "end": 924,
+      "text": "CKD",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 956,
+      "end": 968,
+      "text": "hypertension",
+      "assertion": "affirmed",
+      "snomed": null
+    }
+  ]
+}

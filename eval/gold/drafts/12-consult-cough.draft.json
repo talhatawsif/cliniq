@@ -1,0 +1,127 @@
+{
+  "file": "12-consult-cough.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 97,
+      "end": 102,
+      "text": "Cough",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 125,
+      "end": 128,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 130,
+      "end": 141,
+      "text": "prediabetes",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 143,
+      "end": 150,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 254,
+      "end": 259,
+      "text": "cough",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 267,
+      "end": 278,
+      "text": "sore throat",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 298,
+      "end": 303,
+      "text": "fever",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 312,
+      "end": 331,
+      "text": "shortness of breath",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 335,
+      "end": 345,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 351,
+      "end": 362,
+      "text": "haemoptysis",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 367,
+      "end": 373,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 379,
+      "end": 384,
+      "text": "cough",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 447,
+      "end": 452,
+      "text": "cough",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 483,
+      "end": 495,
+      "text": "hypertension",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 500,
+      "end": 523,
+      "text": "ischaemic heart disease",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 683,
+      "end": 692,
+      "text": "Pneumonia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 776,
+      "end": 781,
+      "text": "cough",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

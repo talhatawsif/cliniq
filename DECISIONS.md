@@ -307,3 +307,9 @@ into tests; SPEC §0 makes this a rule.
 - Workflow exports reference the Header Auth credential by name and id only. `tests/n8n-workflows.test.ts` (part of `npm test`, so CI) fails on secret-looking strings.
 - Care-gap sweep: `POST /api/care-gaps/sweep` finds gaps with the same `careGaps()` the CDS card uses and creates one `Task` per patient and gap by conditional create on an identifier, in one validated transaction. A Task that was completed still blocks a new one for the same gap (shortcut: closing a gap and reopening it later needs a new identifier scheme). Needs the integration key or a session.
 - `INTEGRATION_API_KEY` (random, 48 hex) is in `.env.local`, in Vercel (Sensitive) and in the n8n credential.
+
+## M15: evaluation and safety documents
+- The extraction evaluation (`npm run eval`) is built and tested (`eval/extraction/lib.test.ts`) but reports **N = 0** until the owner supplies gold labels. I did not label the notes: the spec says never to fabricate gold labels, and labelling from the pipeline's own output would measure nothing. `npm run eval:draft` writes pre-filled drafts (labelledBy null, ignored) to speed the owner's work. I ran the scoring path once on a throwaway self-test file, deleted it, and regenerated the N = 0 report.
+- Coding in the evaluation uses the live CSIRO terminology server (the offline data only covers the acceptance terms), and says so in the report.
+- Skipped: the optional comparison against a free language model (it would spend the free daily quota; the extraction is deliberately not model-based).
+- The hazard log is checked by `tests/hazard-log.test.ts`: at least ten hazards, each naming evidence files that exist.

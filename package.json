@@ -16,6 +16,8 @@
     "cohort:validate": "node scripts/cohort/validate.ts",
     "load": "node scripts/load.ts",
     "validate:ps": "node scripts/ps/validate.ts",
+    "eval": "vitest run -c eval/vitest.config.mts extraction",
+    "eval:draft": "EVAL_MODE=draft vitest run -c eval/vitest.config.mts extraction",
     "assistant:eval": "vitest run -c eval/vitest.config.mts assistant",
     "llm:probe": "node scripts/llm-probe.ts",
     "test:terminology": "node scripts/terminology/live.ts",

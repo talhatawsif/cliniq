@@ -1,0 +1,99 @@
+{
+  "file": "08-consult-asthma-allergy.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 18,
+      "end": 24,
+      "text": "ASTHMA",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 114,
+      "end": 120,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 122,
+      "end": 125,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 127,
+      "end": 134,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 136,
+      "end": 143,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 381,
+      "end": 387,
+      "text": "Asthma",
+      "assertion": "historical",
+      "snomed": null
+    },
+    {
+      "start": 418,
+      "end": 424,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 505,
+      "end": 522,
+      "text": "allergic rhinitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 648,
+      "end": 654,
+      "text": "asthma",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 725,
+      "end": 731,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 808,
+      "end": 814,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 837,
+      "end": 854,
+      "text": "Allergic rhinitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 863,
+      "end": 869,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": null
+    }
+  ]
+}

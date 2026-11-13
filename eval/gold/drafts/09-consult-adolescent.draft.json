@@ -1,0 +1,29 @@
+{
+  "file": "09-consult-adolescent.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 370,
+      "end": 376,
+      "text": "asthma",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 486,
+      "end": 498,
+      "text": "leg swelling",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 530,
+      "end": 536,
+      "text": "asthma",
+      "assertion": "family",
+      "snomed": null
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "file": "11-referral-weight-management.txt",
+  "labelledBy": null,
+  "labelledOn": null,
+  "note": "DRAFT from the pipeline, not gold. Correct it, set labelledBy, move it to eval/gold/.",
+  "entities": [
+    {
+      "start": 165,
+      "end": 172,
+      "text": "Obesity",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 174,
+      "end": 189,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 414,
+      "end": 428,
+      "text": "osteoarthritis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 587,
+      "end": 597,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 615,
+      "end": 625,
+      "text": "depression",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 644,
+      "end": 659,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 674,
+      "end": 680,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 788,
+      "end": 805,
+      "text": "peripheral oedema",
+      "assertion": "negated",
+      "snomed": null
+    }
+  ]
+}
