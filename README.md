@@ -68,7 +68,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M4 Pathology, vitals, FHIR JSON | Built — L1–L11 pass, [screenshots](docs/ui/screens/m4) |
 | M5 CDS Hooks service | Built — E1–E14, BMI and care-gap tests pass; sandbox check pending ([docs](docs/cds-hooks.md)) |
 | M6 | Done: one-click demo sign-in, audit log, daily quotas, security headers (`docs/SECURITY.md`) |
-| M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Live check needs the demo password set in Vercel |
+| M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
