@@ -12,13 +12,8 @@ export async function consumeQuota(name: string, limit: number) {
   return data === true;
 }
 
-/** For route handlers: reads a body of at most 50 kB, then takes one unit. Returns the text or an error Response. */
-export async function guardRequest(
-  request: Request,
-  name: keyof typeof LIMITS,
-  limit: number = LIMITS[name],
-) {
-  const text = await request.text();
+/** Checks a text body is at most 50 kB, then takes one unit. Returns null when allowed, else the refusal. */
+export async function guardText(text: string, name: keyof typeof LIMITS, limit: number = LIMITS[name]) {
   if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) {
     return Response.json({ error: "Request body over 50 kB" }, { status: 413 });
   }
@@ -28,5 +23,15 @@ export async function guardRequest(
       { status: 429 },
     );
   }
-  return text;
+  return null;
+}
+
+/** For route handlers: reads the body and applies guardText. Returns the text or an error Response. */
+export async function guardRequest(
+  request: Request,
+  name: keyof typeof LIMITS,
+  limit: number = LIMITS[name],
+) {
+  const text = await request.text();
+  return (await guardText(text, name, limit)) ?? text;
 }

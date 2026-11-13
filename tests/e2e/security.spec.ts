@@ -62,3 +62,19 @@ test("the anon key cannot read audit_events", async ({ request }) => {
   });
   expect(await r.json()).toEqual([]);
 });
+
+test("POST /api/hl7v2 without a session or key is 401", async ({ request }) => {
+  expect((await request.post("/api/hl7v2", { data: "MSH|^~\\&" })).status()).toBe(401);
+  expect((await request.post("/api/hl7v2", { data: "x", headers: { "x-api-key": "wrong" } })).status()).toBe(
+    401,
+  );
+});
+
+test("the integration key is accepted for /api/hl7v2 without a session", async ({ request }) => {
+  const res = await request.post("/api/hl7v2?dryRun=1", {
+    data: "not hl7",
+    headers: { "x-api-key": "e2e-integration-key" },
+  });
+  expect(res.status()).toBe(200);
+  expect(await res.text()).toContain("MSA|AR|"); // reached the processor, which rejects the text
+});

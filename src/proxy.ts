@@ -9,6 +9,9 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (isPublic(pathname)) return NextResponse.next();
 
+  // The HL7 endpoint also accepts an integration key; the route checks it.
+  if (pathname === "/api/hl7v2" && request.headers.has("x-api-key")) return NextResponse.next();
+
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

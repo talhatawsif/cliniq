@@ -7,6 +7,7 @@ export default defineConfig({
     command: "npm run build && npx next start -p 3100",
     url: "http://localhost:3100/api/health",
     timeout: 240_000,
+    env: { INTEGRATION_API_KEY: "e2e-integration-key" },
   },
   use: { baseURL: "http://localhost:3100" },
   projects: [

@@ -90,3 +90,41 @@ export async function fhirSearch<T extends FhirResource>(
   }
   return resources;
 }
+
+/**
+ * POST a JSON body (transaction, $validate). Returns the status and parsed body for any answer
+ * except a server that is still waking, which is retried. Network failure throws FhirError.
+ */
+export async function fhirPost(path: string, body: unknown, opts: FhirFetchOptions = {}) {
+  const { timeoutMs = 30_000, retries = 2, retryDelayMs = 1_000 } = opts;
+  const url = resolveUrl(path, opts.baseUrl ?? env.FHIR_BASE_URL);
+  let last = new FhirError("unavailable", "FHIR server is unreachable");
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, retryDelayMs * attempt));
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          Accept: "application/fhir+json",
+          "Content-Type": "application/fhir+json",
+          ...(await fhirAuthHeader(new URL(url).origin)),
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (RETRYABLE.has(res.status)) {
+        last = new FhirError("unavailable", `FHIR server returned ${res.status}`, res.status);
+        continue;
+      }
+      return { status: res.status, json: (await res.json().catch(() => null)) as unknown };
+    } catch (e) {
+      if (e instanceof FhirError) throw e;
+      last =
+        e instanceof Error && e.name === "TimeoutError"
+          ? new FhirError("timeout", `FHIR server did not answer within ${timeoutMs} ms`)
+          : new FhirError("unavailable", "FHIR server is unreachable");
+    }
+  }
+  throw last;
+}

@@ -12,8 +12,9 @@ export async function audit(
   entity: string | null,
   detail?: string,
   outcome = "success",
+  agentOverride?: string,
 ) {
-  const agent = (await currentUserId()) ?? "anonymous";
+  const agent = agentOverride ?? (await currentUserId()) ?? "anonymous";
   after(async () => {
     const { error } = await admin().from("audit_events").insert({ agent, action, entity, outcome, detail });
     if (error) console.error("audit write failed:", error.code);

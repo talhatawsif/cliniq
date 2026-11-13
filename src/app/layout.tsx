@@ -37,6 +37,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <span className="text-xs text-muted">Demo · synthetic data</span>
           {signedIn && (
             <>
+              <Link href="/hl7" className="text-[13px]">
+                HL7
+              </Link>
               <Link href="/audit" className="text-[13px]">
                 Audit
               </Link>

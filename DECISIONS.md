@@ -226,3 +226,12 @@ into tests; SPEC §0 makes this a rule.
 - Audit rows are written with `after()` so views are not slowed; written per chart tab render (summary, pathology, vitals), only for patients that exist. Export/write/review actions arrive in later milestones.
 - Quotas use one atomic SQL function (`consume_quota`, service_role only). The HL7/pipeline/assistant routes do not exist yet, so the 429 is tested on the helper (limit 2), not over HTTP.
 - CSP keeps `'unsafe-inline'` for scripts (shortcut, see SECURITY.md).
+
+## M7: HL7 v2 ORU^R01 → FHIR
+- Resource ids are a hash of filler order number (+ test code + OBX-4), written as a transaction of PUTs. A resend or a correction updates the same resource (version 2) instead of duplicating; no search-then-write race.
+- Bundle `fullUrl` values are deterministic `urn:uuid`s because HAPI's validator requires absolute URLs; references stay `Type/id`.
+- A timestamp with no offset in the field or MSH-7 is cut to a date rather than guessing a time zone.
+- Duplicate = same MSH-10 already stored as accepted. Failed messages are logged, so a corrected resend of the same id is processed.
+- ACK text escapes `^` etc. (`ADT\S\A01`), as HL7 requires. HTTP status is 200 for every processed message; the ACK carries the result. FHIR down returns 503 and nothing is logged, so the sender retries.
+- Spec reference message uses IHI 8003608833357361, which is not in the cohort, so it is the "unknown patient" sample; `oru-demo-creatinine.hl7` targets a real cohort patient.
+- Shortcut: one OBR per message; extra orders are ignored.

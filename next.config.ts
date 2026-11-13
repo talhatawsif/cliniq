@@ -15,6 +15,8 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // The /hl7 page lists sample messages with readdirSync, which the file tracer cannot follow.
+  outputFileTracingIncludes: { "/hl7": ["./data/hl7v2/**"] },
   async headers() {
     return [
       {
