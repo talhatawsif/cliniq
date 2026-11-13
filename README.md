@@ -71,7 +71,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback. Needs the invoker grant and `NLP_SERVICE_URL` |
-| M10 | Built: SNOMED CT-AU coding (CSIRO / NCTS / offline), live run 0 mismatches ([report](docs/validation/terminology.md)) |
+| M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in

@@ -1,19 +1,18 @@
-// Records live $expand answers for every term and synonym in targets.json into data/terminology/offline.json,
-// the offline backend. Usage: npm run terminology:record   (needs network; uses the CSIRO test endpoint)
+// Records live $expand answers for the M10 acceptance terms into data/terminology/offline.json, the offline backend. Usage: npm run terminology:record   (needs network; uses the CSIRO test endpoint)
 import { writeFileSync } from "node:fs";
 import targets from "../../services/nlp/targets.json" with { type: "json" };
-import { type Config, expand } from "../../src/lib/terminology/client.ts";
+import { type Config, expand, queriesFor } from "../../src/lib/terminology/client.ts";
 import { ACCEPTANCE, NONSENSE } from "../../src/lib/terminology/acceptance.ts";
 
 const BASE = process.env.TERMINOLOGY_BASE_URL ?? "https://tx.ontoserver.csiro.au/fhir";
 const cfg: Config = { backend: "csiro", base: BASE };
+// Only what the M10 acceptance terms need (the spec allows recorded responses for those terms, no more): the
+// queries made to code each acceptance term and the nonsense term.
 const queries = [
   ...new Set(
-    [
-      ...ACCEPTANCE.map((a) => a[0]),
-      NONSENSE,
-      ...targets.targets.flatMap((t) => [t.term, ...t.synonyms]),
-    ].map((q) => q.toLowerCase()),
+    [...ACCEPTANCE.map((a) => a[0]), NONSENSE]
+      .flatMap((q) => queriesFor(q, targets.targets))
+      .map((q) => q.toLowerCase()),
   ),
 ];
 const expansions: Record<string, unknown> = {};

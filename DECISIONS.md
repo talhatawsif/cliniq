@@ -260,9 +260,11 @@ into tests; SPEC §0 makes this a rule.
 - Not done: the 48 hour cost check for the FHIR server, the billing-cap detach path (testing it would switch billing off), and the cron-job.org pinger (needs the owner's account).
 
 ## M10: terminology coding
-- Backends: NCTS (if `TERMINOLOGY_CLIENT_ID`/`SECRET` are set; written to the NCTS token and base URLs but untested, there are no credentials) → the server in `TERMINOLOGY_BASE_URL` (the CSIRO test endpoint, which does serve SNOMED CT-AU 20261031 and `$expand` with ECL) → offline (163 recorded queries in `data/terminology/offline.json`, covering every term and synonym in `targets.json`). A live server that fails falls back to offline and the result says so.
+- Backends: NCTS (if `TERMINOLOGY_CLIENT_ID`/`SECRET` are set; written to the NCTS token and base URLs but untested, there are no credentials) → the server in `TERMINOLOGY_BASE_URL` (the CSIRO test endpoint, which does serve SNOMED CT-AU 20261031 and `$expand` with ECL) → offline (recorded answers for the acceptance terms only, 37 queries in `data/terminology/offline.json`; the spec allows no more SNOMED CT-AU content than that, and a test keeps it that way). A live server that fails falls back to offline and the result says so.
 - Only terms sent to the external server are the clinical phrases being coded, never patient identifiers or note text.
 - Ranking is documented in `src/lib/terminology/rank.ts`: exact preferred term 1.0, exact synonym 0.95, listed expansion 0.9, else 0.8 × word overlap; nothing below 0.5 is coded (so "xyzzy", which the server fuzzy-matches to "49,XYYYY syndrome", returns no code); alternatives need 0.3, at most four. Australian and US spellings are folded together.
 - All 12 spec codes were confirmed with `$lookup` in SNOMED CT-AU 20261031 before use; the spec's table was right.
 - The live run (`npm run test:terminology`, report in `docs/validation/terminology.md`) matched all 17 queries and the nonsense term with 0 mismatches.
 - Attribution and the ICD-10-AM licence note are in the footer and on `/about`.
+- Scope correction: the first version recorded every term and synonym in `targets.json` (163 queries). That went beyond "recorded responses for the acceptance terms", so it was cut back to the acceptance terms, and the earlier commit is still in the git history.
+- Tests and the demo's fallback use the offline data. `TERMINOLOGY_BASE_URL` stays set in Vercel, so the deployed app tries the CSIRO test endpoint first and falls back to offline; NCTS credentials are not available yet.

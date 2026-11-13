@@ -95,12 +95,17 @@ export type CodingResult = {
   note?: string;
 };
 
+/** The server queries made to code a term: the term itself and up to three listed expansions. */
+export function queriesFor(query: string, targets: Target[]): string[] {
+  return [query, ...aliasesFor(query, targets).expansions.slice(0, 3)];
+}
+
 /** Candidates for the query and its expansions, ranked. */
 export async function codeTerm(query: string, cfg: Config, targets: Target[]): Promise<CodingResult> {
   const { expansions } = aliasesFor(query, targets);
   const seen = new Map<string, Candidate>();
   let edition: string | null = null;
-  for (const term of [query, ...expansions.slice(0, 3)]) {
+  for (const term of queriesFor(query, targets)) {
     const r = await expand(cfg, term);
     edition ??= r.edition;
     for (const c of r.candidates) if (!seen.has(c.code)) seen.set(c.code, c);

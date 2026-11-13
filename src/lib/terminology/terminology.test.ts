@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import targets from "../../../services/nlp/targets.json";
 import { ACCEPTANCE, NONSENSE } from "./acceptance";
-import { type Config, type Recorded, codeTerm, editionLabel, parseExpansion } from "./client";
+import { type Config, type Recorded, codeTerm, editionLabel, parseExpansion, queriesFor } from "./client";
 import { type Candidate, aliasesFor, norm, pick, rank } from "./rank";
 
 const recorded = JSON.parse(readFileSync("data/terminology/offline.json", "utf8")) as Recorded;
@@ -32,6 +32,18 @@ describe("offline backend (the M10 acceptance terms)", () => {
     const a = await codeTerm("heart failure", offline, targets.targets);
     const b = await codeTerm("heart failure", offline, targets.targets);
     expect(a).toEqual(b);
+  });
+});
+
+describe("offline data scope", () => {
+  it("holds recorded answers for the acceptance terms only (no wider SNOMED CT-AU content is committed)", () => {
+    const allowed = new Set(
+      [...ACCEPTANCE.map((a) => a[0]), NONSENSE]
+        .flatMap((q) => queriesFor(q, targets.targets))
+        .map((q) => q.toLowerCase()),
+    );
+    expect(Object.keys(recorded.expansions).filter((k) => !allowed.has(k))).toEqual([]);
+    expect(Object.values(recorded.expansions).every((c) => c.length <= 10)).toBe(true);
   });
 });
 
