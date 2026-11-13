@@ -1,0 +1,126 @@
+{
+  "file": "04-referral-podiatry.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 140,
+      "end": 144,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": "44054006"
+    },
+    {
+      "start": 168,
+      "end": 189,
+      "text": "peripheral neuropathy",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 191,
+      "end": 206,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": "55822004"
+    },
+    {
+      "start": 208,
+      "end": 215,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": "271737000"
+    },
+    {
+      "start": 217,
+      "end": 224,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": "414916001"
+    },
+    {
+      "start": 295,
+      "end": 316,
+      "text": "Numbness and tingling",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 368,
+      "end": 379,
+      "text": "foot ulcers",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 388,
+      "end": 400,
+      "text": "claudication",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 404,
+      "end": 413,
+      "text": "rest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 452,
+      "end": 480,
+      "text": "osteoarthritis of both knees",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 525,
+      "end": 540,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 555,
+      "end": 561,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 577,
+      "end": 607,
+      "text": "Reduced monofilament sensation",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 663,
+      "end": 669,
+      "text": "callus",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 674,
+      "end": 688,
+      "text": "skin breakdown",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 691,
+      "end": 712,
+      "text": "Early Charcot changes",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 804,
+      "end": 809,
+      "text": "ulcer",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

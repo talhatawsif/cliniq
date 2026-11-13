@@ -1,0 +1,175 @@
+{
+  "file": "01-referral-nephrology.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 187,
+      "end": 190,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 192,
+      "end": 203,
+      "text": "CKD stage 2",
+      "assertion": "affirmed",
+      "snomed": "431856006"
+    },
+    {
+      "start": 205,
+      "end": 228,
+      "text": "diabetic kidney disease",
+      "assertion": "affirmed",
+      "snomed": "127013003"
+    },
+    {
+      "start": 234,
+      "end": 250,
+      "text": "microalbuminuria",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 252,
+      "end": 259,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": "271737000"
+    },
+    {
+      "start": 261,
+      "end": 278,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": "40055000"
+    },
+    {
+      "start": 428,
+      "end": 445,
+      "text": "rising creatinine",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 488,
+      "end": 498,
+      "text": "haematuria",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 500,
+      "end": 512,
+      "text": "frothy urine",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 516,
+      "end": 526,
+      "text": "flank pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 532,
+      "end": 544,
+      "text": "ankle oedema",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 549,
+      "end": 559,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 563,
+      "end": 582,
+      "text": "shortness of breath",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 591,
+      "end": 624,
+      "text": "gastro-oesophageal reflux disease",
+      "assertion": "affirmed",
+      "snomed": "235595009"
+    },
+    {
+      "start": 630,
+      "end": 639,
+      "text": "heartburn",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 656,
+      "end": 665,
+      "text": "dysphagia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 673,
+      "end": 684,
+      "text": "weight loss",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 703,
+      "end": 718,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 731,
+      "end": 743,
+      "text": "hypertension",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 766,
+      "end": 791,
+      "text": "polycystic kidney disease",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 921,
+      "end": 924,
+      "text": "CKD",
+      "assertion": "affirmed",
+      "snomed": "709044004"
+    },
+    {
+      "start": 943,
+      "end": 951,
+      "text": "diabetes",
+      "assertion": "affirmed",
+      "snomed": "73211009"
+    },
+    {
+      "start": 956,
+      "end": 968,
+      "text": "hypertension",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 971,
+      "end": 992,
+      "text": "Renal artery stenosis",
+      "assertion": "uncertain",
+      "snomed": null
+    }
+  ]
+}

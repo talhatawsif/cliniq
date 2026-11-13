@@ -1,0 +1,126 @@
+{
+  "file": "10-discharge-heart-failure.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 128,
+      "end": 161,
+      "text": "Acute decompensated heart failure",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 184,
+      "end": 203,
+      "text": "Atrial fibrillation",
+      "assertion": "affirmed",
+      "snomed": "49436004"
+    },
+    {
+      "start": 249,
+      "end": 252,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": "414545008"
+    },
+    {
+      "start": 273,
+      "end": 294,
+      "text": "chronic heart failure",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 296,
+      "end": 300,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": "44054006"
+    },
+    {
+      "start": 306,
+      "end": 327,
+      "text": "peripheral neuropathy",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 329,
+      "end": 332,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 334,
+      "end": 360,
+      "text": "osteoarthritis of the knee",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 362,
+      "end": 374,
+      "text": "osteoporosis",
+      "assertion": "affirmed",
+      "snomed": "64859006"
+    },
+    {
+      "start": 376,
+      "end": 389,
+      "text": "breast cancer",
+      "assertion": "affirmed",
+      "snomed": "254837009"
+    },
+    {
+      "start": 442,
+      "end": 456,
+      "text": "breathlessness",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 458,
+      "end": 468,
+      "text": "orthopnoea",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 473,
+      "end": 487,
+      "text": "ankle swelling",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 582,
+      "end": 603,
+      "text": "myocardial infarction",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 634,
+      "end": 643,
+      "text": "pneumonia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 671,
+      "end": 690,
+      "text": "atrial fibrillation",
+      "assertion": "affirmed",
+      "snomed": "49436004"
+    },
+    {
+      "start": 1096,
+      "end": 1102,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    }
+  ]
+}

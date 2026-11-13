@@ -129,9 +129,21 @@ none are fabricated. See \`eval/gold/README.md\`: run \`npm run eval:draft\`, co
     "eval/REPORT.md",
     `# Extraction evaluation (${today})
 
-- **N = ${gold.length} notes** (of ${files.length}), labelled by ${labellers}.
+- **N = ${gold.length} notes** (of ${files.length}), labelled by: ${labellers}
 - Extraction: ${[...engines].join(", ")}. Coding: ${cfg.backend} terminology server, ${edition}.
 - Matching: a predicted span matches a gold span when their overlap is at least half of their union.
+
+## How to read these numbers
+
+- Gold labels cover **every** condition, symptom and clinical finding mentioned in a note, including ones the pipeline is not built to
+  look for. The extractor only finds terms from its target list (\`services/nlp/targets.json\`, about 100 conditions and symptoms),
+  so **recall is limited by design** and precision is the better measure of how much to trust what it writes.
+- The extractor and its rules were fixed after a first run of this evaluation (a "History:" heading was marking findings historical;
+  "unlikely" was read as negated; "CKD stage 2" was split). Those fixes are general. No note-specific terms were added to the
+  target list to raise the score, because the notes are also the test set.
+- Coding accuracy is measured only on mentions the extractor found and the labeller gave a code, so it is not a measure of coding
+  coverage.
+- Twelve notes, one labeller, no second opinion: treat the figures as a baseline, not a validation.
 
 ## Extraction (does it find the mentions)
 

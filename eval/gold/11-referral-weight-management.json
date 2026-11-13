@@ -1,0 +1,98 @@
+{
+  "file": "11-referral-weight-management.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 165,
+      "end": 172,
+      "text": "Obesity",
+      "assertion": "affirmed",
+      "snomed": "414916001"
+    },
+    {
+      "start": 174,
+      "end": 189,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": "55822004"
+    },
+    {
+      "start": 354,
+      "end": 365,
+      "text": "weight gain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 414,
+      "end": 446,
+      "text": "osteoarthritis of the right knee",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 491,
+      "end": 503,
+      "text": "loud snoring",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 506,
+      "end": 530,
+      "text": "Obstructive sleep apnoea",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 570,
+      "end": 578,
+      "text": "diabetes",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 587,
+      "end": 597,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 615,
+      "end": 625,
+      "text": "depression",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 644,
+      "end": 659,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 674,
+      "end": 680,
+      "text": "stroke",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 788,
+      "end": 805,
+      "text": "peripheral oedema",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 879,
+      "end": 891,
+      "text": "sleep apnoea",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

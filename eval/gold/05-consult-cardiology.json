@@ -1,0 +1,140 @@
+{
+  "file": "05-consult-cardiology.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 112,
+      "end": 135,
+      "text": "Ischaemic heart disease",
+      "assertion": "affirmed",
+      "snomed": "414545008"
+    },
+    {
+      "start": 149,
+      "end": 155,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": "195967001"
+    },
+    {
+      "start": 160,
+      "end": 193,
+      "text": "Gastro-oesophageal reflux disease",
+      "assertion": "affirmed",
+      "snomed": "235595009"
+    },
+    {
+      "start": 482,
+      "end": 503,
+      "text": "exertional chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 564,
+      "end": 574,
+      "text": "orthopnoea",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 578,
+      "end": 607,
+      "text": "paroxysmal nocturnal dyspnoea",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 613,
+      "end": 625,
+      "text": "palpitations",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 629,
+      "end": 636,
+      "text": "syncope",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 660,
+      "end": 681,
+      "text": "myocardial infarction",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 687,
+      "end": 702,
+      "text": "reflux symptoms",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 757,
+      "end": 778,
+      "text": "myocardial infarction",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 826,
+      "end": 833,
+      "text": "murmurs",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 851,
+      "end": 857,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 862,
+      "end": 879,
+      "text": "peripheral oedema",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 904,
+      "end": 923,
+      "text": "atrial fibrillation",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 928,
+      "end": 945,
+      "text": "ischaemic changes",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 967,
+      "end": 970,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": "414545008"
+    },
+    {
+      "start": 999,
+      "end": 1012,
+      "text": "Heart failure",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 1104,
+      "end": 1114,
+      "text": "chest pain",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

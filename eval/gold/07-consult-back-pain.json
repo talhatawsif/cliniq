@@ -1,0 +1,126 @@
+{
+  "file": "07-consult-back-pain.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 110,
+      "end": 131,
+      "text": "chronic low back pain",
+      "assertion": "affirmed",
+      "snomed": "278860009"
+    },
+    {
+      "start": 154,
+      "end": 175,
+      "text": "Chronic low back pain",
+      "assertion": "affirmed",
+      "snomed": "278860009"
+    },
+    {
+      "start": 177,
+      "end": 194,
+      "text": "chronic neck pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 196,
+      "end": 211,
+      "text": "hyperlipidaemia",
+      "assertion": "affirmed",
+      "snomed": "55822004"
+    },
+    {
+      "start": 213,
+      "end": 236,
+      "text": "iron deficiency anaemia",
+      "assertion": "affirmed",
+      "snomed": "87522002"
+    },
+    {
+      "start": 238,
+      "end": 252,
+      "text": "colonic polyps",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 541,
+      "end": 559,
+      "text": "saddle anaesthesia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 568,
+      "end": 596,
+      "text": "bladder or bowel disturbance",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 602,
+      "end": 613,
+      "text": "weight loss",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 618,
+      "end": 630,
+      "text": "night sweats",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 646,
+      "end": 652,
+      "text": "cancer",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 662,
+      "end": 670,
+      "text": "insomnia",
+      "assertion": "affirmed",
+      "snomed": "193462001"
+    },
+    {
+      "start": 719,
+      "end": 731,
+      "text": "bowel cancer",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 894,
+      "end": 918,
+      "text": "Mechanical low back pain",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 934,
+      "end": 942,
+      "text": "Sciatica",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 1054,
+      "end": 1066,
+      "text": "leg weakness",
+      "assertion": "hypothetical",
+      "snomed": null
+    },
+    {
+      "start": 1070,
+      "end": 1078,
+      "text": "numbness",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

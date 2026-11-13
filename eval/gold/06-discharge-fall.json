@@ -1,0 +1,119 @@
+{
+  "file": "06-discharge-fall.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 133,
+      "end": 167,
+      "text": "Fracture of the left distal radius",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 215,
+      "end": 238,
+      "text": "Urinary tract infection",
+      "assertion": "affirmed",
+      "snomed": "68566005"
+    },
+    {
+      "start": 240,
+      "end": 260,
+      "text": "Postural hypotension",
+      "assertion": "affirmed",
+      "snomed": "28651003"
+    },
+    {
+      "start": 269,
+      "end": 272,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 274,
+      "end": 277,
+      "text": "IHD",
+      "assertion": "affirmed",
+      "snomed": "414545008"
+    },
+    {
+      "start": 279,
+      "end": 291,
+      "text": "osteoporosis",
+      "assertion": "affirmed",
+      "snomed": "64859006"
+    },
+    {
+      "start": 293,
+      "end": 300,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": "414916001"
+    },
+    {
+      "start": 302,
+      "end": 319,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": "40055000"
+    },
+    {
+      "start": 419,
+      "end": 440,
+      "text": "loss of consciousness",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 449,
+      "end": 459,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 463,
+      "end": 475,
+      "text": "palpitations",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 523,
+      "end": 557,
+      "text": "undisplaced distal radius fracture",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 581,
+      "end": 593,
+      "text": "hip fracture",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 725,
+      "end": 738,
+      "text": "postural drop",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 1162,
+      "end": 1174,
+      "text": "hip fracture",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 1267,
+      "end": 1284,
+      "text": "postural symptoms",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

@@ -12,11 +12,12 @@ Service: `POST /cds-services/cliniq-patient-view` (`patient-view` hook). CORS is
   365 days). Conditions must be active and not unconfirmed, refuted or entered in error.
   Deceased patients get no cards. Rules and tests: `src/lib/cds/`.
 
-## Try it in the CDS Hooks sandbox (owner step — not yet done)
-1. Open https://sandbox.cds-hooks.org, choose **Settings → Add CDS Services**, paste the discovery URL above.
-2. Pick a patient in the sandbox's own FHIR server. Its data differs from ClinIQ's, so cards appear only
-   if that patient has creatinine, weight/height, HbA1c or BP results.
-3. Save a screenshot of the cards in this folder (`docs/ui/screens/m5/sandbox.png`) and tick M5 in the README.
+## The CDS Hooks sandbox check (done, 14 Nov 2026)
+The public sandbox (https://sandbox.cds-hooks.org) accepted the discovery URL above, found `cliniq-patient-view`, called it with its
+own patient's prefetch (Casimira Nicolas) and showed the cards: BMI 29.5 (overweight) and the diabetes and hypertension care gaps.
+Screenshot: [`docs/ui/screens/m5/sandbox.png`](ui/screens/m5/sandbox.png). To repeat it by hand: Settings, Add CDS Services,
+paste the discovery URL. To repeat it automatically: `npx playwright test -c playwright.sandbox.config.ts`.
+The sandbox's patients carry different data from ClinIQ's, so which cards appear depends on the patient.
 
 Without the sandbox, the same behaviour is covered by `src/lib/cds/route.test.ts` and the Playwright test
 "CDS Hooks: discovery prefetch works against FHIR and returns cards".

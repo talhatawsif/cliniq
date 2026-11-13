@@ -1,0 +1,91 @@
+{
+  "file": "09-consult-adolescent.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 107,
+      "end": 119,
+      "text": "fish allergy",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 167,
+      "end": 179,
+      "text": "Fish allergy",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 325,
+      "end": 343,
+      "text": "allergic reactions",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 370,
+      "end": 376,
+      "text": "asthma",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 382,
+      "end": 388,
+      "text": "eczema",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 398,
+      "end": 411,
+      "text": "acne vulgaris",
+      "assertion": "affirmed",
+      "snomed": "11381005"
+    },
+    {
+      "start": 473,
+      "end": 482,
+      "text": "headaches",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 486,
+      "end": 498,
+      "text": "leg swelling",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 530,
+      "end": 536,
+      "text": "asthma",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 559,
+      "end": 581,
+      "text": "venous thromboembolism",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 663,
+      "end": 677,
+      "text": "comedonal acne",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 829,
+      "end": 849,
+      "text": "breathing difficulty",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

@@ -44,6 +44,7 @@ CONTEXT = [
     ("ruled out", "NEGATED_EXISTENCE", "BACKWARD"),
     ("was ruled out", "NEGATED_EXISTENCE", "BACKWARD"),
     ("is unlikely", "POSSIBLE_EXISTENCE", "BACKWARD"),
+    ("unlikely", "POSSIBLE_EXISTENCE", "BACKWARD"),
     ("?", "POSSIBLE_EXISTENCE", "FORWARD"),
     ("possible", "POSSIBLE_EXISTENCE", "FORWARD"),
     ("query", "POSSIBLE_EXISTENCE", "FORWARD"),
@@ -75,9 +76,13 @@ def build() -> "spacy.Language":
             pattern = [{"TEXT": phrase}] if re.fullmatch(r"[A-Z0-9]{2,6}", phrase) else phrase
             rules.append(TargetRule(literal=phrase, category=t["term"], pattern=pattern if not isinstance(pattern, str) else None))
     matcher.add(rules)
-    nlp.add_pipe("medspacy_context", config={"rules": "default"}).add(
-        [ConTextRule(p, c, direction=d) for p, c, d in CONTEXT]
-    )
+    # medspaCy's defaults, minus two rules that are wrong for clinical letters: a bare "history" marks everything under a
+    # "History:" heading historical (so "History: dry cough, sore throat" was never written), and "unlikely" means
+    # negated where a clinician means "probably not" (uncertain).
+    context = nlp.add_pipe("medspacy_context", config={"rules": None})
+    defaults = ConTextRule.from_json(context.DEFAULT_RULES_FILEPATH)
+    context.add([r for r in defaults if r.literal.lower() not in ("history", "unlikely")])
+    context.add([ConTextRule(p, c, direction=d) for p, c, d in CONTEXT])
     sectionizer = nlp.add_pipe("medspacy_sectionizer", config={"rules": None, "span_attrs": None})
     sectionizer.add([SectionRule(h, cat) for cat, heads in SECTIONS for h in heads])
     return nlp

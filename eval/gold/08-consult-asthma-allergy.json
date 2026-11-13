@@ -1,0 +1,147 @@
+{
+  "file": "08-consult-asthma-allergy.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 114,
+      "end": 120,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": "195967001"
+    },
+    {
+      "start": 122,
+      "end": 125,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 127,
+      "end": 134,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": "271737000"
+    },
+    {
+      "start": 136,
+      "end": 143,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": "414916001"
+    },
+    {
+      "start": 381,
+      "end": 387,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": "195967001"
+    },
+    {
+      "start": 408,
+      "end": 424,
+      "text": "nocturnal wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 432,
+      "end": 445,
+      "text": "exacerbations",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 505,
+      "end": 522,
+      "text": "allergic rhinitis",
+      "assertion": "affirmed",
+      "snomed": "61582004"
+    },
+    {
+      "start": 528,
+      "end": 536,
+      "text": "sneezing",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 541,
+      "end": 555,
+      "text": "nasal blockage",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 582,
+      "end": 593,
+      "text": "anaphylaxis",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 602,
+      "end": 617,
+      "text": "chest tightness",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 648,
+      "end": 654,
+      "text": "asthma",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 664,
+      "end": 670,
+      "text": "eczema",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 725,
+      "end": 731,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 808,
+      "end": 814,
+      "text": "Asthma",
+      "assertion": "affirmed",
+      "snomed": "195967001"
+    },
+    {
+      "start": 837,
+      "end": 854,
+      "text": "Allergic rhinitis",
+      "assertion": "affirmed",
+      "snomed": "61582004"
+    },
+    {
+      "start": 940,
+      "end": 948,
+      "text": "rhinitis",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 966,
+      "end": 982,
+      "text": "throat tightness",
+      "assertion": "hypothetical",
+      "snomed": null
+    },
+    {
+      "start": 986,
+      "end": 1006,
+      "text": "difficulty breathing",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

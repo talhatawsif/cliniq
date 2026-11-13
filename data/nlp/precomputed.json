@@ -17,10 +17,10 @@
      "uncertain": false
     },
     {
-     "text": "CKD",
+     "text": "CKD stage 2",
      "start": 192,
-     "end": 195,
-     "term": "chronic kidney disease",
+     "end": 203,
+     "term": "chronic kidney disease stage 2",
      "section": "past_medical_history",
      "negated": false,
      "family": false,
@@ -202,10 +202,10 @@
      "uncertain": false
     },
     {
-     "text": "CKD",
+     "text": "CKD stage 2",
      "start": 277,
-     "end": 280,
-     "term": "chronic kidney disease",
+     "end": 288,
+     "term": "chronic kidney disease stage 2",
      "section": "past_medical_history",
      "negated": false,
      "family": false,
@@ -1007,7 +1007,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1257,7 +1257,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1269,7 +1269,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1281,7 +1281,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1495,7 +1495,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1507,7 +1507,7 @@
      "section": "unknown",
      "negated": false,
      "family": false,
-     "historical": true,
+     "historical": false,
      "hypothetical": false,
      "uncertain": false
     },
@@ -1625,11 +1625,11 @@
      "end": 692,
      "term": "pneumonia",
      "section": "assessment",
-     "negated": true,
+     "negated": false,
      "family": false,
      "historical": false,
      "hypothetical": false,
-     "uncertain": false
+     "uncertain": true
     },
     {
      "text": "cough",

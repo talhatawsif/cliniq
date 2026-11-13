@@ -32,3 +32,11 @@ yours** (or a clinician's), written from reading each note. Nobody else can supp
   ]
 }
 ```
+
+## Current labels
+
+The twelve files in this folder were written by Claude Sonnet 5.5 on 14 Nov 2026 at the owner's request, by reading each note (not by
+copying the pipeline's output), and are marked as such in `labelledBy`. They have **not** been reviewed by a clinician. Every SNOMED
+code in them was confirmed with `$lookup` on the terminology server (SNOMED CT-AU 20261031). Scope: every condition, symptom or
+clinical finding mentioned, with the assertion the sentence gives it; medicines, allergens, procedures, social history and
+examination routine are not labelled. If you correct a file, put your name in `labelledBy` instead.

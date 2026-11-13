@@ -96,11 +96,38 @@
   },
   {
    "term": "chronic kidney disease stage 1",
-   "synonyms": []
+   "synonyms": [
+    "CKD 1",
+    "CKD stage 1"
+   ]
   },
   {
    "term": "chronic kidney disease stage 2",
-   "synonyms": []
+   "synonyms": [
+    "CKD 2",
+    "CKD stage 2"
+   ]
+  },
+  {
+   "term": "chronic kidney disease stage 3",
+   "synonyms": [
+    "CKD 3",
+    "CKD stage 3"
+   ]
+  },
+  {
+   "term": "chronic kidney disease stage 4",
+   "synonyms": [
+    "CKD 4",
+    "CKD stage 4"
+   ]
+  },
+  {
+   "term": "chronic kidney disease stage 5",
+   "synonyms": [
+    "CKD 5",
+    "CKD stage 5"
+   ]
   },
   {
    "term": "chronic neck pain",

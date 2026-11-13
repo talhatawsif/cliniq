@@ -48,8 +48,10 @@ export default function About() {
             the live terminology server, and a nonsense term returns no code.
           </li>
           <li>
-            Extraction precision, recall and F1 on the sample notes: not yet measured. It needs gold labels
-            written by a person who has read the notes, and none have been supplied or invented.
+            Extraction on the 12 sample notes (labelled by an AI, not reviewed by a clinician; a baseline, not
+            a validation): precision 93%, recall 58% (it only looks for about 100 listed terms), assertion
+            accuracy 99%, and 57 of 57 coded mentions correct. The evaluation also found and led to fixes for
+            two rule bugs.
           </li>
           <li>Chart assistant: measured on 20 questions; the report states what passed and what did not.</li>
           <li>
@@ -87,7 +89,9 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>Extraction accuracy on the sample notes is not measured yet (it needs human gold labels).</li>
+          <li>
+            The extraction evaluation uses AI-written labels with no clinician review, and a single labeller.
+          </li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
           <li>
             The chart assistant sends one patient&rsquo;s record facts to a free OpenRouter model (prompts

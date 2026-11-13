@@ -82,3 +82,16 @@ def test_section_ends_at_a_blank_line():
     text = "Allergies: Nil known.\n\nShe has chest pain."
     assert [e["section"] for e in extract(text)] == ["unknown"]
     assert [e["family"] for e in extract("FHx: IHD.\n\nShe has asthma.")] == [True, False]
+
+
+def test_history_heading_does_not_make_findings_historical():
+    # Found by the extraction evaluation: "History:" is a heading, not "history of".
+    e = {x["text"].lower(): x for x in extract("History: Dry cough with a sore throat. One week of orthopnoea.")}
+    assert not any(v["historical"] for v in e.values())
+    assert state(e["orthopnoea"]) == "affirmed"
+    assert state(extract("Past history of myocardial infarction in 2015.")[0]) == "historical"  # C9 still holds
+
+
+def test_unlikely_means_uncertain_not_negated():
+    assert state(extract("Pneumonia unlikely.")[0]) == "uncertain"
+    assert state(extract("Heart failure is unlikely given a normal examination.")[0]) == "uncertain"

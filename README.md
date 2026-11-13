@@ -53,11 +53,11 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Identifiers | IHI (`http://ns.electronichealth.net.au/id/hi/ihi/1.0`), reserved test values |
 | Codes | LOINC for pathology and vitals, UCUM units, SNOMED CT-AU 20261031 for coding conditions, SNOMED CT from Synthea in the cohort |
 | HL7 v2 | 2.4 ORU^R01 in the style of Australian pathology (AS 4700.2), mapped following the HL7 v2-to-FHIR guide. Hand-written parser |
-| CDS Hooks | `patient-view`, prefetch only. Sandbox check still to do |
+| CDS Hooks | `patient-view`, prefetch only; verified in the public sandbox |
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
 | Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
 
-Not measured yet: extraction precision and recall (the evaluation needs the owner's gold labels; `eval/REPORT.md` says N = 0). ICD-10-AM is not included: it is licensed by
+Limits: the extraction evaluation uses AI-written labels with no clinician review (`eval/REPORT.md`). ICD-10-AM is not included: it is licensed by
 IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
 ## Status
@@ -69,7 +69,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M2 Private FHIR server in Sydney | Built. Cold start measured (about 57 s); 48 h cost check and keep-alive pinger pending |
 | M3 Design system and chart | Built — worklist, patient chart, tokens, Playwright smoke + axe, [screenshots](docs/ui/screens/m3) |
 | M4 Pathology, vitals, FHIR JSON | Built — L1–L11 pass, [screenshots](docs/ui/screens/m4) |
-| M5 CDS Hooks service | Built — E1–E14, BMI and care-gap tests pass; sandbox check pending ([docs](docs/cds-hooks.md)) |
+| M5 CDS Hooks service | Built — E1–E14, BMI and care-gap tests pass; verified in the public CDS Hooks sandbox ([docs](docs/cds-hooks.md)) |
 | M6 | Done: one-click demo sign-in, audit log, daily quotas, security headers (`docs/SECURITY.md`) |
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
@@ -79,7 +79,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
 | M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). The evaluation is a first run (7/10 answerable); a re-run after fixes is pending |
 | M14 | Built: n8n pathology inbox (retry, done/failed) and weekly care-gap sweep (FHIR Tasks, idempotent); [workflows](n8n/README.md), [diagrams](docs/n8n/README.md). Screen recording is an owner step |
-| M15 | Mostly built: axe clean on every page (light/dark, desktop/tablet), [hazard log](docs/CLINICAL-SAFETY.md) (17 hazards, each checked against the repo), [ADRs](docs/adr/README.md), extraction evaluation harness (`npm run eval`). **Extraction numbers need the owner's gold labels** ([how](eval/gold/README.md)) |
+| M15 | Built: axe clean on every page (light/dark, desktop/tablet), [hazard log](docs/CLINICAL-SAFETY.md) (17 hazards, each checked against the repo), [ADRs](docs/adr/README.md), [extraction evaluation](eval/REPORT.md) on 12 notes (precision 93%, recall 58%, assertion accuracy 99%; labels are AI-written, not clinician-reviewed) |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).

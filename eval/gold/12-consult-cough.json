@@ -1,0 +1,154 @@
+{
+  "file": "12-consult-cough.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 97,
+      "end": 102,
+      "text": "Cough",
+      "assertion": "affirmed",
+      "snomed": "49727002"
+    },
+    {
+      "start": 125,
+      "end": 128,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 130,
+      "end": 141,
+      "text": "prediabetes",
+      "assertion": "affirmed",
+      "snomed": "714628002"
+    },
+    {
+      "start": 143,
+      "end": 150,
+      "text": "anaemia",
+      "assertion": "affirmed",
+      "snomed": "271737000"
+    },
+    {
+      "start": 250,
+      "end": 259,
+      "text": "Dry cough",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 267,
+      "end": 278,
+      "text": "sore throat",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 283,
+      "end": 293,
+      "text": "runny nose",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 298,
+      "end": 303,
+      "text": "fever",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 312,
+      "end": 331,
+      "text": "shortness of breath",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 335,
+      "end": 345,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 351,
+      "end": 362,
+      "text": "haemoptysis",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 367,
+      "end": 373,
+      "text": "wheeze",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 379,
+      "end": 384,
+      "text": "cough",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 433,
+      "end": 452,
+      "text": "ACE inhibitor cough",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 483,
+      "end": 495,
+      "text": "hypertension",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 500,
+      "end": 523,
+      "text": "ischaemic heart disease",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 594,
+      "end": 601,
+      "text": "exudate",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 619,
+      "end": 627,
+      "text": "crackles",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 642,
+      "end": 681,
+      "text": "Viral upper respiratory tract infection",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 683,
+      "end": 692,
+      "text": "Pneumonia",
+      "assertion": "uncertain",
+      "snomed": null
+    },
+    {
+      "start": 776,
+      "end": 781,
+      "text": "cough",
+      "assertion": "hypothetical",
+      "snomed": null
+    }
+  ]
+}

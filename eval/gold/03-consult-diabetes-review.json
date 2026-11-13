@@ -1,0 +1,154 @@
+{
+  "file": "03-consult-diabetes-review.txt",
+  "labelledBy": "Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.",
+  "labelledOn": "2026-11-14",
+  "entities": [
+    {
+      "start": 112,
+      "end": 116,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": "44054006"
+    },
+    {
+      "start": 118,
+      "end": 121,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 123,
+      "end": 144,
+      "text": "hypertriglyceridaemia",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 146,
+      "end": 153,
+      "text": "obesity",
+      "assertion": "affirmed",
+      "snomed": "414916001"
+    },
+    {
+      "start": 155,
+      "end": 172,
+      "text": "chronic sinusitis",
+      "assertion": "affirmed",
+      "snomed": "40055000"
+    },
+    {
+      "start": 348,
+      "end": 356,
+      "text": "polyuria",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 358,
+      "end": 368,
+      "text": "polydipsia",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 372,
+      "end": 386,
+      "text": "blurred vision",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 391,
+      "end": 413,
+      "text": "hypoglycaemic episodes",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 419,
+      "end": 429,
+      "text": "chest pain",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 445,
+      "end": 453,
+      "text": "low mood",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 455,
+      "end": 465,
+      "text": "poor sleep",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 470,
+      "end": 486,
+      "text": "loss of interest",
+      "assertion": "affirmed",
+      "snomed": null
+    },
+    {
+      "start": 538,
+      "end": 559,
+      "text": "thoughts of self-harm",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 631,
+      "end": 652,
+      "text": "peripheral neuropathy",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 657,
+      "end": 668,
+      "text": "foot ulcers",
+      "assertion": "negated",
+      "snomed": null
+    },
+    {
+      "start": 687,
+      "end": 702,
+      "text": "type 2 diabetes",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 722,
+      "end": 735,
+      "text": "breast cancer",
+      "assertion": "family",
+      "snomed": null
+    },
+    {
+      "start": 753,
+      "end": 757,
+      "text": "T2DM",
+      "assertion": "affirmed",
+      "snomed": "44054006"
+    },
+    {
+      "start": 771,
+      "end": 774,
+      "text": "HTN",
+      "assertion": "affirmed",
+      "snomed": "38341003"
+    },
+    {
+      "start": 791,
+      "end": 801,
+      "text": "Depression",
+      "assertion": "affirmed",
+      "snomed": "35489007"
+    }
+  ]
+}
