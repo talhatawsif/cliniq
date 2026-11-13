@@ -142,11 +142,19 @@ export function buildPatientSummary(src: Source, now = new Date()): Bundle {
         }),
   });
 
-  const author: Organization = {
-    resourceType: "Organization",
-    id: "cliniq",
-    name: "ClinIQ (synthetic demo, not a clinical system)",
+  // The document is made by this demo app, maintained by its owner: a Practitioner author and, because FHIR
+  // only allows an Organization as custodian, an Organization with the same name.
+  const author: Practitioner = {
+    resourceType: "Practitioner",
+    id: "cliniq-author",
     active: true,
+    name: [{ family: "Tawsif", given: ["Talha"] }],
+  };
+  const custodian: Organization = {
+    resourceType: "Organization",
+    id: "cliniq-custodian",
+    active: true,
+    name: "Talha Tawsif",
   };
   const sections: Composition["section"] = [
     section(
@@ -209,9 +217,9 @@ export function buildPatientSummary(src: Source, now = new Date()): Bundle {
     type: { coding: [{ system: "http://loinc.org", code: "60591-5", display: "Patient summary Document" }] },
     subject,
     date: now.toISOString(),
-    author: [{ reference: "Organization/cliniq" }],
+    author: [{ reference: "Practitioner/cliniq-author" }],
     title: "Patient Summary",
-    custodian: { reference: "Organization/cliniq" },
+    custodian: { reference: "Organization/cliniq-custodian" },
     section: sections,
   };
 

@@ -239,7 +239,7 @@ into tests; SPEC §0 makes this a rule.
 ## M8: AU Patient Summary export
 - "No information" for an empty required section is `section.emptyReason` (`unavailable`) with narrative, not an entry. The IPS version AU PS 1.0.0 builds on (2.0.1) has no absent/unknown code system, its rule ips-comp-1 accepts either entries or an empty reason, and a SNOMED "no known allergy" entry would claim more than "none recorded".
 - Included: confirmed and active conditions and allergies, active medication requests (with their Medication and requester Practitioner), completed immunisations, the latest final laboratory result per LOINC code. A document must be self-contained, so references to resources not in it (Encounter, performers, organisations) are dropped.
-- The author and custodian are a synthetic "ClinIQ" Organization; the document says it is a demo.
+- Author is a Practitioner and custodian an Organization (FHIR allows only an Organization there), both named for the app's owner, at their request. No qualifications or identifiers are claimed.
 - The cohort has no patient without allergy records, so `validate:ps` removes the third patient's allergies to test that path.
 - Skipped: the optional Inferno AU Core test kit run (not attempted on the 8 GB Mac).
 - Validation warnings are mostly terminology (US RxNorm/CVX codes, SNOMED editions the HL7 AU terminology server does not hold); counts are in `docs/validation/au-ps.md`.

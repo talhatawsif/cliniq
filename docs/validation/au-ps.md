@@ -7,7 +7,7 @@ Each document is built by `src/lib/ps/build.ts` from a patient on the local HAPI
 |---|---|
 | Abshire | 0 |
 | Beier | 0 |
-| Boyle (allergies removed to test the no-information entry) | 0 |
+| Boyle (allergies removed to test the empty-section rule) | 0 |
 
 **Total errors: 0**
 
