@@ -1,5 +1,11 @@
 # Changelog
 
+## M11 — Write-back and review queue (14 Nov 2026)
+
+- `src/lib/pipeline/`: builders for the finding transaction and review decisions (pure), the run orchestration with per-step
+  timings, the review store. `/pipeline`, `/review`, `review_items` table; chart badge "Auto-extracted — pending review".
+- Fixes found on the way: HAPI search caching made reads stale after writes (now `Cache-Control: no-cache`).
+
 ## M10 — Terminology coding (14 Nov 2026)
 
 - `src/lib/terminology/`: `$expand` client (NCTS, CSIRO test endpoint, offline), deterministic ranker, no-code threshold.

@@ -51,7 +51,12 @@ export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {
     try {
       res = await fetch(url, {
         cache: "no-store",
-        headers: { Accept: "application/fhir+json", ...(await fhirAuthHeader(new URL(url).origin)) },
+        // no-cache: HAPI otherwise reuses a search for 60 s, so a chart read right after a write would be stale.
+        headers: {
+          Accept: "application/fhir+json",
+          "Cache-Control": "no-cache",
+          ...(await fhirAuthHeader(new URL(url).origin)),
+        },
         signal: AbortSignal.timeout(timeoutMs),
       });
     } catch (e) {

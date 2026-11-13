@@ -1,14 +1,10 @@
 import "server-only";
-import type { Bundle, OperationOutcome } from "fhir/r4";
+import type { Bundle } from "fhir/r4";
 import { audit } from "@/lib/audit";
-import { fhirFetch, fhirPost } from "@/lib/fhir/client";
+import { fhirFetch } from "@/lib/fhir/client";
+import { validateBundle, writeBundle } from "@/lib/fhir/write";
 import { admin } from "@/lib/supabase";
 import { type Deps, type Result, processMessage } from "./process";
-
-const errorsOf = (json: unknown) =>
-  ((json as OperationOutcome | null)?.issue ?? [])
-    .filter((i) => i.severity === "error" || i.severity === "fatal")
-    .map((i) => `${i.expression?.[0] ?? ""} ${i.diagnostics ?? i.details?.text ?? i.code}`.trim());
 
 /** Real dependencies: HAPI for patients, validation and writes; Supabase for the message log. */
 export const liveDeps: Deps = {
@@ -16,14 +12,9 @@ export const liveDeps: Deps = {
     const bundle = await fhirFetch<Bundle>(`${query}&_elements=id`);
     return (bundle?.entry ?? []).flatMap((e) => (e.resource?.id ? [e.resource.id] : []));
   },
-  async validate(bundle) {
-    const { status, json } = await fhirPost("Bundle/$validate", bundle);
-    const errors = errorsOf(json);
-    return errors.length || status < 400 ? errors : [`validation request failed with status ${status}`];
-  },
+  validate: validateBundle,
   async write(bundle) {
-    const { status, json } = await fhirPost("", bundle);
-    if (status >= 400) throw new Error(`FHIR write failed: ${status} ${errorsOf(json)[0] ?? ""}`);
+    await writeBundle(bundle);
   },
   async alreadyAccepted(controlId) {
     const { count } = await admin()

@@ -113,7 +113,13 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
               header: "Verification",
               cell: (c) => {
                 const v = c.verificationStatus?.coding?.[0]?.code ?? "not recorded";
-                return v === "confirmed" ? v : <span className="machine px-1">Auto-extracted — {v}</span>;
+                return v === "confirmed" ? (
+                  v
+                ) : (
+                  <span className="machine px-1">
+                    Auto-extracted — {v === "unconfirmed" ? "pending review" : v}
+                  </span>
+                );
               },
             },
             { header: "Onset", cell: (c) => formatDate(c.onsetDateTime ?? c.recordedDate) },

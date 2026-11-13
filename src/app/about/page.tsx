@@ -37,6 +37,10 @@ export default function About() {
             International.
           </li>
           <li>HL7 v2.4 ORU^R01 in the style of Australian pathology (AS 4700.2)</li>
+          <li>
+            Auto-extracted findings are written as unconfirmed Conditions with Provenance and wait for
+            clinician review
+          </li>
           <li>AU Patient Summary 1.0.0 export as a FHIR document Bundle</li>
           <li>CDS Hooks patient-view; CKD-EPI 2021 eGFR and BMI calculators</li>
         </ul>
@@ -50,7 +54,7 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>Not built yet: terminology coding of notes, SMART launch, assistant.</li>
+          <li>Not built yet: SMART launch, assistant.</li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
         </ul>
       </Section>

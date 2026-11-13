@@ -268,3 +268,15 @@ into tests; SPEC §0 makes this a rule.
 - Attribution and the ICD-10-AM licence note are in the footer and on `/about`.
 - Scope correction: the first version recorded every term and synonym in `targets.json` (163 queries). That went beyond "recorded responses for the acceptance terms", so it was cut back to the acceptance terms, and the earlier commit is still in the git history.
 - Tests and the demo's fallback use the offline data. `TERMINOLOGY_BASE_URL` stays set in Vercel, so the deployed app tries the CSIRO test endpoint first and falls back to offline; NCTS credentials are not available yet.
+
+## M11: write-back and review queue
+- One transaction per finding: a conditional-create Condition (identifier = hash of note id + SNOMED code, so a rerun of the same note and code creates nothing), a Provenance, and the pipeline Device (conditional create, identified by its version string). R4 Provenance has no identifier field, so it is a PUT with an id derived from the same hash.
+- Before building anything the pipeline also skips a finding whose code is already on the patient's problem list (not refuted or entered-in-error), with the reason shown. The spec only asked for the same-note rerun case; this stops a second, unconfirmed copy of a condition the chart already has.
+- Only affirmed entities are coded. Negated, family, hypothetical, uncertain and historical mentions, entities with no code, and repeated codes appear in the entity table with the reason and are never written.
+- `$validate` runs on the whole transaction first (it caught a missing `fullUrl` during development); any error means nothing is written.
+- A pasted note is stored as a DocumentReference (`pasted-` + hash of patient and text) so every Condition has a real source to cite. A dry run does not store it.
+- Review decisions are one transaction: `PUT` the Condition with `If-Match` on its version (a second decision on the same item gets 412 and is refused), a Provenance (UPDATE, agent type `verifier`, who = the demo clinician Practitioner, conditional create), and for a changed code the reason text names both codes. A changed code can only be one of the stored alternatives, not arbitrary text.
+- The reviewer is the shared demo clinician Practitioner in FHIR; the real signed-in user id is in `review_items.decided_by` and the audit log.
+- HAPI reuses a search result for 60 seconds, which would have shown a stale chart right after a write; every app read now sends `Cache-Control: no-cache`.
+- Chart badge reads "Auto-extracted — pending review" for unconfirmed Conditions. Rejected ones (refuted, inactive) were already dropped from the problem list.
+- Dry run is on by default on `/pipeline`, as on `/hl7`, so a visitor has to choose to write. Pipeline runs share the daily quota of 50.

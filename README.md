@@ -23,6 +23,9 @@ request can take about a minute to wake it (57 s measured).
   `$validate`, writes it and replies with an ACK. Repeats are idempotent, corrections update the same
   Observation, unknown patients are rejected (never created), failures are kept in a message log.
   Try it on `/hl7` with a dry run.
+- **Notes to coded FHIR:** `/pipeline` extracts findings from a clinical note (medspaCy), codes them to SNOMED CT-AU, validates the
+  result and writes unconfirmed Conditions with Provenance. Negated, family, hypothetical, uncertain and historical mentions are
+  never written. Every finding waits in `/review` for a clinician to confirm, change the code, or reject it.
 - **Safety and operations:** sign-in, an audit log shaped like FHIR AuditEvent, daily quotas, security
   headers ([`docs/SECURITY.md`](docs/SECURITY.md)), and a budget-triggered spend cap on the cloud project (the billing-detach step itself is untested).
 
@@ -53,8 +56,7 @@ The browser never talks to the FHIR server; only the app's service account can i
 | Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
 | Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
 
-Not built yet: SNOMED CT-AU coding from notes (needs the terminology
-service), SMART on FHIR launch, the chart assistant. ICD-10-AM is not included: it is licensed by
+Not built yet: SMART on FHIR launch, the chart assistant, the evaluation report. ICD-10-AM is not included: it is licensed by
 IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
 ## Status
@@ -72,7 +74,8 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on 3 patients ([report](docs/validation/au-ps.md)) |
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback. Needs the invoker grant and `NLP_SERVICE_URL` |
 | M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
-| M11–M15 | Not started |
+| M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally |
+| M12–M15 | Not started |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
