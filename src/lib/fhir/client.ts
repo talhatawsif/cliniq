@@ -72,7 +72,7 @@ export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {
     if (res.ok) return (await res.json()) as T;
     if (res.status === 404 || res.status === 410) return null;
     if (!RETRYABLE.has(res.status)) {
-      throw new FhirError("http", `FHIR request failed with status ${res.status}`, res.status);
+      throw new FhirError("http", `FHIR request failed with status ${res.status} (${new URL(url).host}, ${smart ? "SMART" : "demo"})`, res.status);
     }
     last = new FhirError("unavailable", `FHIR server returned ${res.status}`, res.status);
   }
