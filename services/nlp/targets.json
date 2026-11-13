@@ -1,0 +1,506 @@
+{
+ "description": "Terms the NLP service looks for. Cohort condition names (SNOMED display, semantic tag removed) plus synonyms, abbreviations and Australian spellings.",
+ "targets": [
+  {
+   "term": "acute bacterial sinusitis",
+   "synonyms": []
+  },
+  {
+   "term": "acute bronchitis",
+   "synonyms": []
+  },
+  {
+   "term": "acute infective cystitis",
+   "synonyms": []
+  },
+  {
+   "term": "acute pulmonary embolism",
+   "synonyms": []
+  },
+  {
+   "term": "acute respiratory failure",
+   "synonyms": []
+  },
+  {
+   "term": "acute viral pharyngitis",
+   "synonyms": []
+  },
+  {
+   "term": "adolescent idiopathic scoliosis",
+   "synonyms": []
+  },
+  {
+   "term": "allergic rhinitis",
+   "synonyms": [
+    "hay fever",
+    "perennial allergic rhinitis"
+   ]
+  },
+  {
+   "term": "anaemia",
+   "synonyms": [
+    "anemia"
+   ]
+  },
+  {
+   "term": "anxiety",
+   "synonyms": []
+  },
+  {
+   "term": "asthma",
+   "synonyms": [
+    "childhood asthma"
+   ]
+  },
+  {
+   "term": "atopic dermatitis",
+   "synonyms": []
+  },
+  {
+   "term": "atrial fibrillation",
+   "synonyms": [
+    "AF",
+    "AFib"
+   ]
+  },
+  {
+   "term": "back pain",
+   "synonyms": [
+    "chronic low back pain",
+    "low back pain"
+   ]
+  },
+  {
+   "term": "breast cancer",
+   "synonyms": [
+    "malignant neoplasm of breast"
+   ]
+  },
+  {
+   "term": "chest pain",
+   "synonyms": []
+  },
+  {
+   "term": "chill",
+   "synonyms": []
+  },
+  {
+   "term": "chronic intractable migraine without aura",
+   "synonyms": []
+  },
+  {
+   "term": "chronic kidney disease",
+   "synonyms": [
+    "CKD"
+   ]
+  },
+  {
+   "term": "chronic kidney disease stage 1",
+   "synonyms": []
+  },
+  {
+   "term": "chronic kidney disease stage 2",
+   "synonyms": []
+  },
+  {
+   "term": "chronic neck pain",
+   "synonyms": []
+  },
+  {
+   "term": "chronic obstructive pulmonary disease",
+   "synonyms": [
+    "COPD"
+   ]
+  },
+  {
+   "term": "chronic pain",
+   "synonyms": []
+  },
+  {
+   "term": "chronic sinusitis",
+   "synonyms": []
+  },
+  {
+   "term": "colon cancer",
+   "synonyms": [
+    "bowel cancer"
+   ]
+  },
+  {
+   "term": "concussion injury of brain",
+   "synonyms": []
+  },
+  {
+   "term": "concussion with no loss of consciousness",
+   "synonyms": []
+  },
+  {
+   "term": "cough",
+   "synonyms": []
+  },
+  {
+   "term": "depression",
+   "synonyms": []
+  },
+  {
+   "term": "diabetic nephropathy",
+   "synonyms": [
+    "disorder of kidney due to diabetes mellitus"
+   ]
+  },
+  {
+   "term": "diabetic neuropathy",
+   "synonyms": [
+    "neuropathy due to type 2 diabetes mellitus"
+   ]
+  },
+  {
+   "term": "diarrhoea",
+   "synonyms": [
+    "diarrhea"
+   ]
+  },
+  {
+   "term": "disease caused by severe acute respiratory syndrome coronavirus 2",
+   "synonyms": []
+  },
+  {
+   "term": "epidermal burn of skin",
+   "synonyms": []
+  },
+  {
+   "term": "facial laceration",
+   "synonyms": []
+  },
+  {
+   "term": "fatigue",
+   "synonyms": [
+    "tiredness"
+   ]
+  },
+  {
+   "term": "fever",
+   "synonyms": [
+    "pyrexia"
+   ]
+  },
+  {
+   "term": "fracture of bone",
+   "synonyms": []
+  },
+  {
+   "term": "fracture of clavicle",
+   "synonyms": []
+  },
+  {
+   "term": "fracture of forearm",
+   "synonyms": []
+  },
+  {
+   "term": "fracture of rib",
+   "synonyms": []
+  },
+  {
+   "term": "fracture subluxation of wrist",
+   "synonyms": []
+  },
+  {
+   "term": "gastro-oesophageal reflux disease",
+   "synonyms": [
+    "GERD",
+    "GORD",
+    "reflux"
+   ]
+  },
+  {
+   "term": "gingival disease",
+   "synonyms": []
+  },
+  {
+   "term": "gingivitis",
+   "synonyms": []
+  },
+  {
+   "term": "haemoptysis",
+   "synonyms": [
+    "hemoptysis"
+   ]
+  },
+  {
+   "term": "headache",
+   "synonyms": []
+  },
+  {
+   "term": "heart failure",
+   "synonyms": [
+    "CHF",
+    "chronic congestive heart failure",
+    "congestive heart failure"
+   ]
+  },
+  {
+   "term": "hypercholesterolaemia",
+   "synonyms": [
+    "high cholesterol"
+   ]
+  },
+  {
+   "term": "hyperglycaemia",
+   "synonyms": [
+    "hyperglycemia"
+   ]
+  },
+  {
+   "term": "hyperlipidaemia",
+   "synonyms": [
+    "dyslipidaemia",
+    "hyperlipidemia"
+   ]
+  },
+  {
+   "term": "hypertension",
+   "synonyms": [
+    "HTN",
+    "essential hypertension",
+    "high blood pressure"
+   ]
+  },
+  {
+   "term": "hypertriglyceridaemia",
+   "synonyms": [
+    "hypertriglyceridemia"
+   ]
+  },
+  {
+   "term": "hypoxaemia",
+   "synonyms": [
+    "hypoxemia"
+   ]
+  },
+  {
+   "term": "infection of tooth",
+   "synonyms": []
+  },
+  {
+   "term": "injury of neck",
+   "synonyms": []
+  },
+  {
+   "term": "ischaemic heart disease",
+   "synonyms": [
+    "CAD",
+    "IHD",
+    "coronary artery disease",
+    "ischemic heart disease"
+   ]
+  },
+  {
+   "term": "laceration of hand",
+   "synonyms": []
+  },
+  {
+   "term": "loss of taste",
+   "synonyms": []
+  },
+  {
+   "term": "loss of teeth",
+   "synonyms": []
+  },
+  {
+   "term": "metabolic syndrome x",
+   "synonyms": []
+  },
+  {
+   "term": "microalbuminuria due to type 2 diabetes mellitus",
+   "synonyms": []
+  },
+  {
+   "term": "myocardial infarction",
+   "synonyms": [
+    "MI",
+    "heart attack"
+   ]
+  },
+  {
+   "term": "nausea",
+   "synonyms": []
+  },
+  {
+   "term": "night sweats",
+   "synonyms": []
+  },
+  {
+   "term": "obesity",
+   "synonyms": [
+    "obese"
+   ]
+  },
+  {
+   "term": "oesophagitis",
+   "synonyms": [
+    "esophagitis"
+   ]
+  },
+  {
+   "term": "orthopnoea",
+   "synonyms": []
+  },
+  {
+   "term": "osteoarthritis",
+   "synonyms": [
+    "OA"
+   ]
+  },
+  {
+   "term": "osteoarthritis of knee",
+   "synonyms": []
+  },
+  {
+   "term": "osteoporosis",
+   "synonyms": []
+  },
+  {
+   "term": "osteoporotic fracture of bone",
+   "synonyms": []
+  },
+  {
+   "term": "otitis media",
+   "synonyms": []
+  },
+  {
+   "term": "palpitations",
+   "synonyms": []
+  },
+  {
+   "term": "paroxysmal nocturnal dyspnoea",
+   "synonyms": [
+    "PND"
+   ]
+  },
+  {
+   "term": "partial thickness burn",
+   "synonyms": []
+  },
+  {
+   "term": "perennial allergic rhinitis with seasonal variation",
+   "synonyms": []
+  },
+  {
+   "term": "peripheral oedema",
+   "synonyms": [
+    "ankle swelling",
+    "leg swelling"
+   ]
+  },
+  {
+   "term": "pneumonia",
+   "synonyms": [
+    "CAP",
+    "community-acquired pneumonia"
+   ]
+  },
+  {
+   "term": "polyp of colon",
+   "synonyms": []
+  },
+  {
+   "term": "prediabetes",
+   "synonyms": []
+  },
+  {
+   "term": "primary dental caries",
+   "synonyms": []
+  },
+  {
+   "term": "productive cough",
+   "synonyms": []
+  },
+  {
+   "term": "shortness of breath",
+   "synonyms": [
+    "SOB",
+    "breathlessness",
+    "dyspnoea"
+   ]
+  },
+  {
+   "term": "sinusitis",
+   "synonyms": []
+  },
+  {
+   "term": "sore throat",
+   "synonyms": [
+    "pharyngitis"
+   ]
+  },
+  {
+   "term": "sprain of ankle",
+   "synonyms": []
+  },
+  {
+   "term": "sprain of wrist",
+   "synonyms": []
+  },
+  {
+   "term": "streptococcal sore throat",
+   "synonyms": []
+  },
+  {
+   "term": "stroke",
+   "synonyms": [
+    "CVA",
+    "cerebrovascular accident"
+   ]
+  },
+  {
+   "term": "syncope",
+   "synonyms": []
+  },
+  {
+   "term": "transient ischaemic attack",
+   "synonyms": [
+    "TIA"
+   ]
+  },
+  {
+   "term": "type 1 diabetes mellitus",
+   "synonyms": [
+    "T1DM",
+    "type 1 diabetes"
+   ]
+  },
+  {
+   "term": "type 2 diabetes mellitus",
+   "synonyms": [
+    "NIDDM",
+    "T2DM",
+    "diabetes mellitus type 2",
+    "type 2 diabetes"
+   ]
+  },
+  {
+   "term": "urinary tract infection",
+   "synonyms": [
+    "UTI"
+   ]
+  },
+  {
+   "term": "viral sinusitis",
+   "synonyms": []
+  },
+  {
+   "term": "vomiting",
+   "synonyms": []
+  },
+  {
+   "term": "wheeze",
+   "synonyms": [
+    "wheezing"
+   ]
+  },
+  {
+   "term": "whiplash injury to neck",
+   "synonyms": []
+  }
+ ]
+}

@@ -1,5 +1,10 @@
 # Changelog
 
+## M9 — NLP extraction service (14 Nov 2026)
+
+- `services/nlp/`: FastAPI + medspaCy (targets, ConText with Australian rules, sectioniser); C1–C16 pass.
+  Private Cloud Run service `cliniq-nlp`; `src/lib/nlp` client with a labelled `precomputed` fallback.
+
 ## M8 — AU Patient Summary export (14 Nov 2026)
 
 - `src/lib/ps/build.ts` builds an AU PS 1.0.0 document Bundle from confirmed data; `/patient/[id]/summary` (readable view from the

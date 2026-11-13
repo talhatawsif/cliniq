@@ -243,3 +243,12 @@ into tests; SPEC §0 makes this a rule.
 - The cohort has no patient without allergy records, so `validate:ps` removes the third patient's allergies to test that path.
 - Skipped: the optional Inferno AU Core test kit run (not attempted on the 8 GB Mac).
 - Validation warnings are mostly terminology (US RxNorm/CVX codes, SNOMED editions the HL7 AU terminology server does not hold); counts are in `docs/validation/au-ps.md`.
+
+## M9: NLP extraction service
+- Image is in Artifact Registry (Sydney), not Docker Hub: there is no Docker Hub account to push to, and the first 0.5 GB of storage is free. Cloud Run (1 vCPU, 1 GiB, max 1, min 0) stays inside the free tier, so the project's 1 AUD cap is not at risk.
+- No spaCy language model: the pipeline uses a blank English tokeniser, so there are no noun chunks. The spec suggested noun chunks as extra targets; they would send phrases like "the patient" forward to coding, so targets come only from `targets.json` (cohort condition names, synonyms, abbreviations, Australian spellings).
+- A heading governs its own paragraph only. medspaCy's default would let "Allergies:" label everything after it until the next heading, which mislabels sections and could mark later entities as family history.
+- `historical` comes only from ConText phrases ("history of"), not from the PMHx heading, so `PMHx: HTN` is affirmed (C10).
+- "is unlikely" maps to `uncertain`, so "Heart failure is unlikely" is held back from coding rather than affirmed.
+- The service's output for the 12 sample notes is committed (`data/nlp/precomputed.json`) and used, labelled, when `NLP_SERVICE_URL` is unset or the service does not answer.
+- The service-account invoker grant for `cliniq-nlp` is an owner step (the auto-mode classifier blocks IAM grants).
