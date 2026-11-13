@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Bundle, DocumentReference, FhirResource, HumanName } from "fhir/r4";
-import { isIhi, isMedicare } from "./ids.ts";
+import { TEST_IDENTIFIERS, isIhi } from "./ids.ts";
 import { collectRefs, noteText } from "./lib.ts";
 
 export const MAX_PATIENT_BYTES = 750_000;
@@ -20,8 +20,13 @@ function names(node: unknown, into: HumanName[] = []): HumanName[] {
   return into;
 }
 
-/** Every rule the committed cohort must satisfy. Returns the list of problems (empty = pass). */
-export function checkCohort(dir: string): string[] {
+const AU_CORE_PATIENT = "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient";
+
+/**
+ * Every rule the committed cohort must satisfy. Returns the list of problems (empty = pass).
+ * `requireClaims: false` is only for the moment between a rebuild and its validation.
+ */
+export function checkCohort(dir: string, { requireClaims = true } = {}): string[] {
   const problems: string[] = [];
   const files = readdirSync(dir).filter((f) => f.endsWith(".json") && f !== "manifest.json");
   const patientFiles = files.filter((f) => !f.startsWith("_"));
@@ -45,6 +50,13 @@ export function checkCohort(dir: string): string[] {
         if (!local.has(ref) && !shared.has(ref))
           problems.push(`${file}: dangling reference ${ref} in ${r.resourceType}/${r.id}`);
       }
+      if (r.resourceType === "Organization" || r.resourceType === "Practitioner") {
+        const pool = r.resourceType === "Organization" ? TEST_IDENTIFIERS.hpio : TEST_IDENTIFIERS.hpii;
+        for (const i of r.identifier ?? []) {
+          if (!pool.includes(i.value ?? ""))
+            problems.push(`${file}: ${i.value} is not a reserved test identifier`);
+        }
+      }
       for (const n of names(r)) {
         if (/\d/.test([n.family, ...(n.given ?? []), n.text].join(" ")))
           problems.push(`${file}: digit in name ${JSON.stringify(n)}`);
@@ -56,10 +68,15 @@ export function checkCohort(dir: string): string[] {
         problems.push(`${file}: note ${r.id} still mentions race or a US insurer`);
       }
       if (r.resourceType === "Patient") {
-        const value = (code: string) =>
-          r.identifier?.find((i) => i.type?.coding?.[0]?.code === code)?.value ?? "";
-        if (!isIhi(value("NI"))) problems.push(`${file}: invalid IHI`);
-        if (!isMedicare(value("MC"))) problems.push(`${file}: invalid Medicare number`);
+        const ihi = r.identifier?.find((i) => i.type?.coding?.[0]?.code === "NI")?.value ?? "";
+        if (!isIhi(ihi) || !TEST_IDENTIFIERS.ihi.includes(ihi))
+          problems.push(`${file}: IHI is not a reserved test IHI`);
+        if (r.identifier?.some((i) => i.system?.includes("medicare")))
+          problems.push(`${file}: Medicare numbers have no test range`);
+        // A rebuild removes the AU Core claims; cohort:validate must restore them before a commit.
+        if (requireClaims && !r.meta?.profile?.includes(AU_CORE_PATIENT)) {
+          problems.push(`${file}: Patient does not claim AU Core Patient — run npm run cohort:validate`);
+        }
         if (r.address?.[0]?.country !== "AU") problems.push(`${file}: address is not Australian`);
       }
     }

@@ -3,6 +3,25 @@
 One entry per decision: what changed and why. Newest section first. Implementers add one line per
 decision made during a milestone.
 
+## 13 Nov 2026 — Audit fixes after M1
+
+- **Identifiers are no longer generated.** Random IHI and Medicare numbers with valid check digits
+  sit in the real number ranges and could equal a real person's. Patients, practitioners and
+  organisations now use IHI, HPI-I and HPI-O values that Services Australia reserves for testing,
+  copied from HL7 Australia's test data (CC0, commit `71ee5b9`) into
+  `scripts/cohort/test-identifiers.json`. **Medicare numbers were removed**: HL7 Australia states
+  there is no reserved test range for them. The cohort check fails on any identifier outside the
+  test pools.
+- **CI was red on GitHub** (`LayoutProps` not found): Next.js generates that type, so `typecheck`
+  now runs `next typegen` first. Local runs had hidden this because the generated types already
+  existed. Lesson: verify CI on GitHub, not only locally.
+- The cohort check now requires every Patient to claim AU Core Patient, so a rebuild committed
+  without `cohort:validate` fails CI.
+- `cohort:validate` refuses to rewrite the cohort when the trial run shows Patient failures or
+  terminology-server errors (an outage would otherwise strip every claim).
+- A malformed environment value no longer crashes every route: it is ignored, named in
+  `/api/health` (`status: "degraded"`), and `FHIR_BASE_URL` must be an http(s) address.
+
 ## 13 Nov 2026 — M1 (Australian cohort)
 
 - **Cohort is a curated list, checked by code.** `scripts/cohort/selection.ts` names the 20
@@ -27,8 +46,8 @@ decision made during a milestone.
   re-filed; resources coded only in the US SNOMED extension (not in SNOMED CT-AU) were dropped.
 - **ClinIQ's own URLs use `https://github.com/talhatawsif/cliniq/fhir`**: the validator rejects
   `example.org` inside data.
-- **Organisations, practitioners and locations are Australianised too** (names, addresses, HPI-O
-  and HPI-I with valid check digits) and stored once in `data/cohort/_shared.json`. Synthea's
+- **Organisations, practitioners and locations are Australianised too** (names, addresses, test HPI-O
+  and HPI-I values) and stored once in `data/cohort/_shared.json`. Synthea's
   search-style references to them are rewritten to plain `Type/id` references.
 - **Bundles are stored as transactions of `PUT` by id, one entry per line**: loading twice changes
   nothing (verified: same counts, no new versions), and diffs stay readable.

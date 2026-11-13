@@ -10,7 +10,7 @@
         "hypertension"
       ],
       "historyYears": 2,
-      "bytes": 484756,
+      "bytes": 484577,
       "resources": 405,
       "notes": 9,
       "observations": 214
@@ -24,7 +24,7 @@
         "lipids"
       ],
       "historyYears": 4,
-      "bytes": 659521,
+      "bytes": 659346,
       "resources": 559,
       "notes": 11,
       "observations": 316
@@ -38,7 +38,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 413775,
+      "bytes": 413594,
       "resources": 353,
       "notes": 11,
       "observations": 141
@@ -52,7 +52,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 365124,
+      "bytes": 364941,
       "resources": 319,
       "notes": 10,
       "observations": 113
@@ -66,7 +66,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 459253,
+      "bytes": 459078,
       "resources": 395,
       "notes": 10,
       "observations": 160
@@ -79,7 +79,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 669223,
+      "bytes": 669047,
       "resources": 577,
       "notes": 11,
       "observations": 303
@@ -92,7 +92,7 @@
         "lipids"
       ],
       "historyYears": 4,
-      "bytes": 649677,
+      "bytes": 649500,
       "resources": 574,
       "notes": 10,
       "observations": 225
@@ -104,7 +104,7 @@
         "polypharmacy"
       ],
       "historyYears": 5,
-      "bytes": 320814,
+      "bytes": 320627,
       "resources": 258,
       "notes": 11,
       "observations": 45
@@ -118,7 +118,7 @@
         "hypertension"
       ],
       "historyYears": 5,
-      "bytes": 366517,
+      "bytes": 366340,
       "resources": 301,
       "notes": 11,
       "observations": 104
@@ -131,7 +131,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 454719,
+      "bytes": 454540,
       "resources": 383,
       "notes": 11,
       "observations": 182
@@ -144,7 +144,7 @@
         "hypertension"
       ],
       "historyYears": 5,
-      "bytes": 325027,
+      "bytes": 324851,
       "resources": 268,
       "notes": 11,
       "observations": 100
@@ -156,7 +156,7 @@
         "allergies"
       ],
       "historyYears": 5,
-      "bytes": 302806,
+      "bytes": 302629,
       "resources": 252,
       "notes": 10,
       "observations": 100
@@ -168,7 +168,7 @@
         "allergies"
       ],
       "historyYears": 5,
-      "bytes": 414788,
+      "bytes": 414603,
       "resources": 368,
       "notes": 10,
       "observations": 84
@@ -182,7 +182,7 @@
         "allergies"
       ],
       "historyYears": 5,
-      "bytes": 308660,
+      "bytes": 308481,
       "resources": 260,
       "notes": 10,
       "observations": 75
@@ -195,7 +195,7 @@
         "child"
       ],
       "historyYears": 5,
-      "bytes": 365271,
+      "bytes": 365090,
       "resources": 310,
       "notes": 11,
       "observations": 71
@@ -208,7 +208,7 @@
         "child"
       ],
       "historyYears": 5,
-      "bytes": 238562,
+      "bytes": 238380,
       "resources": 201,
       "notes": 10,
       "observations": 66
@@ -221,7 +221,7 @@
         "allergies"
       ],
       "historyYears": 5,
-      "bytes": 186231,
+      "bytes": 186055,
       "resources": 158,
       "notes": 8,
       "observations": 42
@@ -235,7 +235,7 @@
         "polypharmacy"
       ],
       "historyYears": 3,
-      "bytes": 685162,
+      "bytes": 684984,
       "resources": 601,
       "notes": 11,
       "observations": 240
@@ -249,7 +249,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 310286,
+      "bytes": 310107,
       "resources": 253,
       "notes": 11,
       "observations": 87
@@ -263,7 +263,7 @@
         "lipids"
       ],
       "historyYears": 5,
-      "bytes": 239117,
+      "bytes": 238946,
       "resources": 206,
       "notes": 9,
       "observations": 84

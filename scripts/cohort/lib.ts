@@ -8,7 +8,7 @@ import type {
   Patient,
   Practitioner,
 } from "fhir/r4";
-import { makeHpii, makeHpio, makeIhi, makeMedicare } from "./ids.ts";
+import { testHpii, testHpio, testIhi } from "./ids.ts";
 import { convertToSi } from "./units.ts";
 
 export const REFERENCE_DATE = "2026-11-13";
@@ -136,7 +136,8 @@ const identifier = (code: string, system: string, value: string, typeSystem = V2
 
 // ---------- Australianise ----------
 
-export function australianisePatient(source: Patient, phoneIndex: number): Patient {
+/** `index` is the patient's position in the cohort: it picks the test IHI and the phone number. */
+export function australianisePatient(source: Patient, index: number): Patient {
   const rand = rng(source.id!);
   const p = stripMeta(source);
   p.extension = [
@@ -150,12 +151,9 @@ export function australianisePatient(source: Patient, phoneIndex: number): Patie
       },
     },
   ];
-  p.identifier = [
-    identifier("NI", "http://ns.electronichealth.net.au/id/hi/ihi/1.0", makeIhi(rand)),
-    identifier("MC", "http://ns.electronichealth.net.au/id/medicare-number", makeMedicare(rand)),
-  ];
+  p.identifier = [identifier("NI", "http://ns.electronichealth.net.au/id/hi/ihi/1.0", testIhi(index))];
   p.name = p.name?.map(cleanName);
-  p.telecom = [{ system: "phone", value: PHONES[phoneIndex % PHONES.length], use: "mobile" }];
+  p.telecom = [{ system: "phone", value: PHONES[index % PHONES.length], use: "mobile" }];
   p.address = [auAddress(rand)];
   p.communication = p.communication?.map((c) =>
     c.language.coding?.[0]?.code === "en-US"
@@ -254,7 +252,7 @@ export function australianiseShared(resources: Shared[]): Shared[] {
   const out: Shared[] = [];
   const sorted = [...resources].sort((a, b) => a.id!.localeCompare(b.id!));
 
-  for (const source of sorted.filter((r) => r.resourceType === "Organization")) {
+  for (const [index, source] of sorted.filter((r) => r.resourceType === "Organization").entries()) {
     const rand = rng(source.id!);
     const o = stripMeta(source);
     delete o.extension;
@@ -273,7 +271,7 @@ export function australianiseShared(resources: Shared[]): Shared[] {
       identifier(
         "NOI",
         "http://ns.electronichealth.net.au/id/hi/hpio/1.0",
-        makeHpio(rand),
+        testHpio(index),
         "http://terminology.hl7.org.au/CodeSystem/v2-0203",
       ),
     ];
@@ -285,13 +283,16 @@ export function australianiseShared(resources: Shared[]): Shared[] {
     out.push(o);
   }
 
+  let practitionerIndex = 0;
   for (const source of sorted.filter((r) => r.resourceType !== "Organization")) {
     const rand = rng(source.id!);
     const r = stripMeta(source);
     delete r.extension;
     if (r.resourceType === "Practitioner") {
       r.name = r.name?.map(cleanName);
-      r.identifier = [identifier("NPI", "http://ns.electronichealth.net.au/id/hi/hpii/1.0", makeHpii(rand))];
+      r.identifier = [
+        identifier("NPI", "http://ns.electronichealth.net.au/id/hi/hpii/1.0", testHpii(practitionerIndex++)),
+      ];
       r.address = [auAddress(rand)];
       const n = r.name?.[0];
       r.telecom = [

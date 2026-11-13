@@ -1,4 +1,10 @@
-// Australian healthcare identifiers (synthetic) and their check digits.
+// Australian healthcare identifiers for the synthetic cohort.
+//
+// Identifiers are NOT generated: a random number with a valid check digit can equal a real
+// person's identifier. They are taken from the values Services Australia reserves for testing,
+// as published in HL7 Australia's test data (see test-identifiers.json).
+// There is no reserved test range for Medicare card numbers, so the cohort carries none.
+import pool from "./test-identifiers.json" with { type: "json" };
 
 /** Luhn check over a string of digits. */
 export function luhnValid(digits: string): boolean {
@@ -15,35 +21,18 @@ export function luhnValid(digits: string): boolean {
   return sum % 10 === 0;
 }
 
-function luhnCheckDigit(body: string): string {
-  for (let d = 0; d <= 9; d++) if (luhnValid(body + d)) return String(d);
-  throw new Error("unreachable");
-}
-
-/** 9 digits taken from a seeded random source. */
-type Rand = () => number;
-const digits = (rand: Rand, n: number) => Array.from({ length: n }, () => Math.floor(rand() * 10)).join("");
-
-// 16-digit national identifiers: 800360 = individual (IHI), 800361 = provider (HPI-I), 800362 = organisation (HPI-O).
-const hi = (prefix: string) => (rand: Rand) => {
-  const body = prefix + digits(rand, 9);
-  return body + luhnCheckDigit(body);
-};
-export const makeIhi = hi("800360");
-export const makeHpii = hi("800361");
-export const makeHpio = hi("800362");
-
+// 16 digits: 800360 = individual (IHI), 800361 = provider (HPI-I), 800362 = organisation (HPI-O).
 export const isIhi = (v: string) => /^800360\d{10}$/.test(v) && luhnValid(v);
 
-const MEDICARE_WEIGHTS = [1, 3, 7, 9, 1, 3, 7, 9];
-const medicareCheck = (first8: string) =>
-  String([...first8].reduce((sum, d, i) => sum + Number(d) * MEDICARE_WEIGHTS[i], 0) % 10);
-
-/** 10-digit Medicare card number: 8 digits (first is 2–6), check digit, issue number. */
-export function makeMedicare(rand: Rand): string {
-  const first8 = String(2 + Math.floor(rand() * 5)) + digits(rand, 7);
-  return first8 + medicareCheck(first8) + String(1 + Math.floor(rand() * 9));
+function take(list: string[], kind: string) {
+  return (index: number) => {
+    if (index >= list.length) throw new Error(`Only ${list.length} test ${kind} values are available`);
+    return list[index];
+  };
 }
 
-export const isMedicare = (v: string) =>
-  /^[2-6]\d{9}$/.test(v) && medicareCheck(v.slice(0, 8)) === v[8] && v[9] !== "0";
+/** The nth reserved test identifier of each kind. */
+export const testIhi = take(pool.ihi, "IHI");
+export const testHpii = take(pool.hpii, "HPI-I");
+export const testHpio = take(pool.hpio, "HPI-O");
+export const TEST_IDENTIFIERS = pool;

@@ -125,11 +125,13 @@ scan of that folder that shape this plan:
    Organization still referenced. No dangling references.
 3. `australianise` —
    - Names without digits; Australian addresses (state, 4-digit postcode); `+61` phones.
-   - Remove US Core extensions. Add AU Core identifiers: synthetic **IHI** (16 digits, prefix
-     `800360`, valid Luhn check digit, system
-     `http://ns.electronichealth.net.au/id/hi/ihi/1.0`) and synthetic Medicare number (valid check
-     digit). Add the AU indigenous-status extension with the "not stated" code for every patient
-     (never invent a status).
+   - Remove US Core extensions. Identifiers are **never generated** (a random number with a valid
+     check digit can equal a real person's): each patient gets an **IHI reserved for testing** by
+     Services Australia, taken from HL7 Australia's published test data (system
+     `http://ns.electronichealth.net.au/id/hi/ihi/1.0`); practitioners and organisations get test
+     HPI-I and HPI-O values from the same source. No Medicare numbers: there is no reserved test
+     range for them. Add the AU indigenous-status extension with the "not stated" code for every
+     patient (never invent a status).
    - Convert pathology to SI and re-code to the molar LOINC code (LOINC codes are specific to the
      measured property, so the unit cannot change without the code changing):
 
@@ -190,7 +192,8 @@ idempotent `PUT` by id, concurrency-limited, report with pass/fail and database 
 **Done when**
 - `data/cohort/` holds 20 patient bundles, each ≤ 750 kB, total ≤ 15 MB, and the reference check
   reports 0 dangling references.
-- Unit tests pass for: IHI Luhn (`8003608833357361` valid, `8003608833357362` invalid); unit
+- Unit tests pass for: IHI Luhn (`8003608833357361` valid, `8003608833357362` invalid) and every
+  identifier in the cohort being a reserved test value; unit
   conversion (creatinine 1.00 mg/dL → 88.4 µmol/L coded `14682-9`; glucose 100 mg/dL →
   5.55 mmol/L; cholesterol 200 mg/dL → 5.17 mmol/L; HbA1c 7.0 % → 53 mmol/mol).
 - `grep -r` over `data/cohort` finds no `us-core`, no `Claim`, no name containing a digit, and no

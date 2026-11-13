@@ -273,7 +273,7 @@ writeFileSync(
   ) + "\n",
 );
 
-const problems = checkCohort(OUT);
+const problems = checkCohort(OUT, { requireClaims: false }); // claims are added by cohort:validate
 problems.slice(0, 40).forEach((p) => console.error(p));
 const total = manifest.reduce((sum, m) => sum + m.bytes, 0);
 console.log(
@@ -292,4 +292,4 @@ if (problems.length) {
   console.error(`${problems.length} problem(s)`);
   process.exit(1);
 }
-console.log("cohort checks pass");
+console.log("cohort checks pass. Next: npm run cohort:validate (restores the AU Core claims).");

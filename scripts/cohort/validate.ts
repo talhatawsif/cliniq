@@ -100,6 +100,7 @@ function validate(dir: string): {
     },
   );
   const version = /FHIR Validation tool Version (\S+)/.exec(run.stdout)?.[1] ?? "unknown";
+  if (run.error) throw new Error(`Could not start Java (17+ is required): ${run.error.message}`);
   if (!existsSync(out)) throw new Error(`Validator produced no output:\n${run.stdout.slice(-2000)}`);
   // One OperationOutcome per source file, named by the operationoutcome-file extension.
   const bundle = JSON.parse(readFileSync(out, "utf8")) as Bundle;
@@ -146,6 +147,22 @@ if (!verifyOnly) {
   // Trial: every resource claims its candidate profile; whatever fails loses the claim.
   for (const file of files()) writeWithClaims(file, WORK, (r) => candidate(r));
   const trial = validate(WORK);
+  // Guard: a terminology-server outage makes almost everything "fail". Never rewrite the cohort
+  // from such a run — every Patient passed before, so a failing Patient means the run is suspect.
+  const suspect = files().flatMap((file) => {
+    const list = resources(file);
+    return trial.errors
+      .get(file)!
+      .filter((f) => list[f.index]?.resourceType === "Patient" || /^Error from https?:/.test(f.message))
+      .map((f) => `${file}: ${f.message.slice(0, 160)}`);
+  });
+  if (suspect.length) {
+    suspect.slice(0, 10).forEach((m) => console.error(m));
+    console.error(
+      `Trial run is not trustworthy (${suspect.length} Patient or terminology-server errors). Nothing was changed.`,
+    );
+    process.exit(1);
+  }
   for (const file of files()) {
     const found = trial.errors.get(file)!;
     const failed = new Set(found.map((f) => f.index));

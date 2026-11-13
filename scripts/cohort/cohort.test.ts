@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Condition, DocumentReference, Encounter, FhirResource, Observation } from "fhir/r4";
 import { checkCohort } from "./checks.ts";
-import { isIhi, isMedicare, luhnValid, makeHpii, makeHpio, makeIhi, makeMedicare } from "./ids.ts";
-import { collectRefs, rewriteRefs, rng, scrubNote, trim } from "./lib.ts";
+import { TEST_IDENTIFIERS, isIhi, luhnValid, testIhi } from "./ids.ts";
+import { collectRefs, rewriteRefs, scrubNote, trim } from "./lib.ts";
 import { convertToSi, hba1cToIfcc } from "./units.ts";
 
 describe("Australian identifiers", () => {
@@ -12,21 +12,12 @@ describe("Australian identifiers", () => {
     expect(isIhi("8003618833357361")).toBe(false); // provider prefix, not an individual
   });
 
-  it("generates valid, repeatable identifiers", () => {
-    expect(isIhi(makeIhi(rng("p1")))).toBe(true);
-    expect(makeIhi(rng("p1"))).toBe(makeIhi(rng("p1")));
-    expect(makeIhi(rng("p1"))).not.toBe(makeIhi(rng("p2")));
-    expect(makeHpii(rng("d1"))).toMatch(/^800361\d{10}$/);
-    expect(luhnValid(makeHpii(rng("d1")))).toBe(true);
-    expect(makeHpio(rng("o1"))).toMatch(/^800362\d{10}$/);
-    expect(luhnValid(makeHpio(rng("o1")))).toBe(true);
-  });
-
-  it("checks the Medicare check digit", () => {
-    expect(isMedicare("2123456701")).toBe(true);
-    expect(isMedicare("2123456711")).toBe(false);
-    expect(isMedicare("1123456701")).toBe(false); // first digit must be 2–6
-    for (const seed of ["a", "b", "c"]) expect(isMedicare(makeMedicare(rng(seed)))).toBe(true);
+  it("uses only identifiers reserved for testing, all with valid check digits", () => {
+    expect(TEST_IDENTIFIERS.ihi.every(isIhi)).toBe(true);
+    expect(TEST_IDENTIFIERS.hpii.every((v) => /^800361\d{10}$/.test(v) && luhnValid(v))).toBe(true);
+    expect(TEST_IDENTIFIERS.hpio.every((v) => /^800362\d{10}$/.test(v) && luhnValid(v))).toBe(true);
+    expect(testIhi(0)).toBe(TEST_IDENTIFIERS.ihi[0]);
+    expect(() => testIhi(10_000)).toThrow(/test IHI/);
   });
 });
 

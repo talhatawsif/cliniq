@@ -6,7 +6,7 @@ const optional = z.string().trim().min(1).optional();
 const schema = z.preprocess(
   (raw) => Object.fromEntries(Object.entries(raw as object).filter(([, v]) => v !== "")),
   z.object({
-    FHIR_BASE_URL: z.url().optional(),
+    FHIR_BASE_URL: z.url({ protocol: /^https?$/ }).optional(), // "localhost:8080/fhir" is not a web address
     FHIR_AUTH: z.enum(["none", "gcp-iam"]).default("none"),
     NEXT_PUBLIC_SUPABASE_URL: optional,
     SUPABASE_SECRET_KEY: optional,
@@ -18,10 +18,24 @@ const schema = z.preprocess(
   }),
 );
 
+/**
+ * Reads the environment. A malformed value never crashes the app: that setting is treated as not
+ * set and its name is listed in `invalid`, so the health check can say what is wrong.
+ */
 export function parseEnv(raw: Record<string, string | undefined>) {
-  const env = schema.parse(raw);
+  let input = { ...raw };
+  let result = schema.safeParse(input);
+  const invalid: string[] = [];
+  if (!result.success) {
+    for (const issue of result.error.issues) invalid.push(String(issue.path[0]));
+    input = Object.fromEntries(Object.entries(input).filter(([key]) => !invalid.includes(key)));
+    result = schema.safeParse(input);
+  }
+  if (!result.success) throw result.error; // unreachable: every field is optional or has a default
+  const env = result.data;
   return {
     env,
+    invalid,
     flags: {
       fhir: Boolean(env.FHIR_BASE_URL),
       supabase: Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SECRET_KEY),
@@ -34,4 +48,4 @@ export function parseEnv(raw: Record<string, string | undefined>) {
   };
 }
 
-export const { env, flags } = parseEnv(process.env);
+export const { env, flags, invalid: invalidSettings } = parseEnv(process.env);
