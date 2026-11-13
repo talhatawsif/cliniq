@@ -78,3 +78,21 @@ test("live: the assistant answers a suggested question from the record and refus
   await expect(page.getByTestId("assistant-answer")).toHaveAttribute("data-kind", "refused");
   await page.screenshot({ path: "docs/ui/screens/m13/live-assistant.png", fullPage: true });
 });
+
+test("live: a pasted one-line note keeps its cues apart, and the form keeps the user's choices", async ({
+  page,
+}) => {
+  await page.goto("/sign-in");
+  await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
+  await page.waitForURL("**/patients", { timeout: 180_000 });
+  await page.goto("/pipeline");
+  await page.getByRole("combobox", { name: /Note/ }).selectOption({ label: "Paste a note…" });
+  await page.getByLabel("Note text").fill("PMHx: HTN. Denies chest pain. FHx: Father had IHD.");
+  await page.getByRole("button", { name: "Run" }).click();
+  const result = page.getByTestId("pipeline-result");
+  await expect(result).toBeVisible({ timeout: 120_000 });
+  await expect(result).toContainText("Engine: medspaCy");
+  await expect(result.getByRole("row", { name: /IHD/ })).toContainText("family history");
+  await expect(result.getByRole("row", { name: /chest pain/ })).toContainText("negated");
+  await expect(page.getByRole("combobox", { name: /Note/ })).toHaveValue("");
+});
