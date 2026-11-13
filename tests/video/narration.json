@@ -1,0 +1,88 @@
+[
+  {
+    "id": "intro",
+    "text": "ClinIQ takes clinical notes and H L 7 pathology results, and turns them into coded, validated FHIR, with a clinician always in the loop. Everything you are about to see is synthetic data."
+  },
+  {
+    "id": "signin",
+    "text": "A one-click sign-in as the shared demo clinician. Every view is written to an audit log."
+  },
+  {
+    "id": "worklist",
+    "text": "This is the worklist: twenty Australian synthetic patients, held on a private FHIR R4 server in Sydney."
+  },
+  { "id": "search", "text": "You can search by name, or by I H I." },
+  {
+    "id": "chart",
+    "text": "On the chart, the banner repeats the patient's name, date of birth, sex and I H I, and allergies are always visible."
+  },
+  {
+    "id": "decision",
+    "text": "Decision support comes from a CDS Hooks service: e G F R by C K D E P I 2021, B M I, and care gaps."
+  },
+  {
+    "id": "assistant",
+    "text": "The assistant answers common questions straight from the record, with no model involved, and every sentence is cited."
+  },
+  { "id": "chip", "text": "A citation opens the exact FHIR resource." },
+  {
+    "id": "drawer",
+    "text": "The drawer repeats the patient banner, so nothing is ever read against the wrong patient."
+  },
+  {
+    "id": "refused",
+    "text": "Requests for clinical advice are refused by a deterministic filter, before any model is called."
+  },
+  {
+    "id": "path",
+    "text": "Pathology trends are grouped by analyte, with out-of-range results flagged, and units converted rather than merged by text."
+  },
+  {
+    "id": "vitals",
+    "text": "Vitals follow, with blood pressure on one chart, and every chart has a table view."
+  },
+  {
+    "id": "summary",
+    "text": "The A U Patient Summary export is a FHIR document bundle, validated against A U P S 1.0, and it contains only confirmed data."
+  },
+  {
+    "id": "pipeline",
+    "text": "Now, notes to coded FHIR. Pick a note, then extract, code, validate and write."
+  },
+  {
+    "id": "dry",
+    "text": "A dry run first. Negated, family history and hypothetical mentions are never written, and each one shows why."
+  },
+  {
+    "id": "write",
+    "text": "Now for real. With dry run switched off, the findings are written as unconfirmed Conditions, with Provenance."
+  },
+  {
+    "id": "review",
+    "text": "The review queue highlights the excerpt in the note, repeats the patient banner, and shows the code with its confidence and rationale."
+  },
+  {
+    "id": "confirm",
+    "text": "A clinician can confirm, change the code, or reject. Confirming records who verified it."
+  },
+  {
+    "id": "confirmed",
+    "text": "Back on the chart, the finding is now confirmed. Unconfirmed findings carry a badge, and are kept out of decision support."
+  },
+  {
+    "id": "hl7",
+    "text": "H L 7 version 2 pathology comes in as an O R U message, is mapped to FHIR, validated, and answered with an acknowledgement."
+  },
+  {
+    "id": "ack",
+    "text": "On a dry run the acknowledgement says A A, and nothing is written. An unknown patient gets A E, and is never created."
+  },
+  {
+    "id": "about",
+    "text": "The limits are stated plainly: synthetic data, an A I labelled evaluation, a free model behind the assistant, and the path to production."
+  },
+  {
+    "id": "outro",
+    "text": "ClinIQ. FHIR R4, A U Core, A U Patient Summary, H L 7 version 2, CDS Hooks, SMART on FHIR, and SNOMED CT A U. Built with Claude Code."
+  }
+]
