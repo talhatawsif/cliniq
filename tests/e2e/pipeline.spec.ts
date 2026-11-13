@@ -18,12 +18,6 @@ const conditions = async () =>
   ((await get<Bundle>(`Condition?_tag=${encodeURIComponent(TAG)}&_count=100`)).entry ?? []).map(
     (e) => e.resource as Condition,
   );
-  "01-referral-nephrology",
-  "02-discharge-pneumonia",
-  "03-consult-diabetes-review",
-  "05-consult-cardiology",
-  "10-discharge-heart-failure",
-];
 
 test.beforeAll(async () => {
   // A clean slate on the local server: earlier auto-extracted findings, their Provenance and queue rows.
