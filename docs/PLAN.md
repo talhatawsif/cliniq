@@ -56,8 +56,8 @@ End with: what was built, decisions, what I must do by hand.
 ## Owner to-do list (only things Claude cannot do)
 
 Before M0
-- [ ] **Revoke the OpenRouter key that was pasted into a chat** and create a new one. Keep the
-      account at $0 credit with auto top-up off. Put the key in `.env.local` only.
+- [ ] OpenRouter: keep using the existing key (owner's decision, see `DECISIONS.md`). Keep the
+      account at $0 credit with auto top-up off, and keep the key in `.env.local` only.
 - [ ] Authorise Vercel for the GitHub repository.
 
 Before M2

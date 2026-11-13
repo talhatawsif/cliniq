@@ -3,6 +3,12 @@
 One entry per decision: what changed and why. Newest section first. Implementers add one line per
 decision made during a milestone.
 
+## 13 Nov 2026 — OpenRouter key
+
+The owner keeps the OpenRouter key that was once pasted into a chat instead of rotating it. Accepted
+because the account holds $0 credit with auto top-up off, so the key can only reach `:free` models
+and the worst case is someone using up the 50 requests/day. Rotate it if credit is ever added.
+
 ## 13 Nov 2026 — Spec review (v2 → v3), before any feature code
 
 Limits were checked against vendor documentation on this date. Items marked *(unverified)* could
