@@ -48,3 +48,6 @@ next-env.d.ts
 test-results/
 playwright-report/
 tests/e2e/.auth.json
+
+# recorded demo videos (large; hosted elsewhere, see docs/video/README.md)
+docs/video/*.webm
