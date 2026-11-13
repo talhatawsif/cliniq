@@ -1,7 +1,7 @@
 // Runs the 20 questions in questions.json against the real model chain and writes docs/assistant-eval.md.
 // Usage: npm run assistant:eval   (uses at most ~15 of the key's 50 daily requests; run by hand, not in CI)
 import { loadEnvFile } from "node:process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { it } from "vitest";
 
 loadEnvFile(".env.local");
@@ -35,6 +35,7 @@ it("assistant evaluation", async () => {
     ids[k] = (await getPatientsPage(family, 1)).patients.find((p) => p.name?.[0]?.family === family)!.id!;
   }
 
+  const raw: { messages: unknown; result: unknown }[] = [];
   const rows: {
     q: Q;
     kind: string;
@@ -47,6 +48,37 @@ it("assistant evaluation", async () => {
     uncited: number;
   }[] = [];
   const records: { latencyMs: number }[] = [];
+  const today = new Date().toISOString().slice(0, 10);
+  // Raw data for later analysis or fine-tuning experiments: eval/results/README.md describes the format.
+  mkdirSync("eval/results", { recursive: true });
+  const appendRaw = (r: {
+    q: Q;
+    family: string;
+    a: unknown;
+    facts: { id: string; text: string }[];
+    modelCall?: { messages: unknown; result: unknown };
+    ok: boolean;
+    why: string;
+    ms: number;
+  }) =>
+    appendFileSync(
+      `eval/results/assistant-${today}.jsonl`,
+      JSON.stringify({
+        kind: "assistant-eval",
+        date: today,
+        id: r.q.id,
+        type: r.q.type,
+        patient_family: r.family,
+        question: r.q.q,
+        injected_note: r.q.note ?? null,
+        facts: r.facts.map((f) => ({ id: f.id, text: f.text })),
+        model_call: r.modelCall ?? null,
+        final: r.a,
+        pass: r.ok,
+        why: r.why || null,
+        latency_ms: r.ms,
+      }) + "\n",
+    );
   for (const q of spec.questions) {
     const note = q.note
       ? ({
@@ -61,7 +93,11 @@ it("assistant evaluation", async () => {
     const loaded = (await loadFacts(ids[q.patient], q.q, note ? [note] : []))!;
     const t0 = Date.now();
     const a = await answer(q.q, ids[q.patient], loaded.version, loaded.facts, {
-      llm: (messages) => callChain({ key, models, messages }),
+      llm: async (messages) => {
+        const result = await callChain({ key, models, messages });
+        raw.push({ messages, result });
+        return result;
+      },
       takeQuota: async () => true,
       breakerOpen: () => false,
       openBreaker: () => {},
@@ -94,6 +130,8 @@ it("assistant evaluation", async () => {
       ok = !leaked;
       why = leaked ? "leaked the canary or the system prompt" : "";
     }
+    const modelCall = raw.pop(); // set only when this question reached a model
+    appendRaw({ q, family: spec.patients[q.patient], a, facts: loaded.facts, modelCall, ok, why, ms });
     rows.push({ q, kind: a.kind, text, ok, why, ms, model: a.model, removed: a.removed, uncited });
     console.log(`${ok ? "ok  " : "FAIL"} ${q.id} ${a.kind} ${ms} ms ${why}`);
   }
@@ -106,7 +144,6 @@ it("assistant evaluation", async () => {
   const lat = records.map((r) => r.latencyMs).sort((a, b) => a - b);
   const median = lat.length ? lat[Math.floor(lat.length / 2)] : 0;
   const usedModels = [...new Set(rows.map((r) => r.model).filter(Boolean))];
-  const today = new Date().toISOString().slice(0, 10);
   writeFileSync(
     "docs/assistant-eval.md",
     `# Assistant evaluation (${today})
