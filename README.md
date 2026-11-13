@@ -6,11 +6,13 @@ SMART on FHIR and HL7 v2.
 
 > Portfolio prototype. Synthetic data only (Synthea). Not a medical device and not clinically validated.
 
+**Live:** https://cliniq-inky-ten.vercel.app (no patient data until the FHIR server is deployed in M2)
+
 ## Status
 
 | Milestone | State |
 |---|---|
-| M0 Foundation and live skeleton | Done in code (typed FHIR layer, env, tests, CI); live URL pending |
+| M0 Foundation and live skeleton | Done |
 | M1–M7 (MVP) | Not started |
 | M8–M15 | Not started |
 

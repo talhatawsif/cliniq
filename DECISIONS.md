@@ -16,6 +16,8 @@ decision made during a milestone.
 - Empty values in `.env` files are treated as unset, so the template can be copied as is.
 - Prettier ignores Markdown and fixtures so `npm run format` does not rewrap the documents.
 - `/api/health` is liveness only for now; the deep check belongs to M2.
+- Verified live on 13 Nov 2026 at https://cliniq-inky-ten.vercel.app: `/api/health` 200 at commit
+  `d312f95`, served from `syd1`, home page shows "FHIR server not configured".
 
 ## 13 Nov 2026 — UI and AI plans (`docs/UI.md`, `docs/AI.md`)
 
