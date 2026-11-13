@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Public_Sans } from "next/font/google";
 import Link from "next/link";
 import { signOut } from "@/app/actions";
+import { smartSession } from "@/lib/smart/session";
 import { currentUserId } from "@/lib/supabase";
 import "./globals.css";
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const smart = await smartSession();
   const signedIn = Boolean(await currentUserId());
   return (
     <html lang="en-AU" className={`${sans.variable} ${mono.variable} h-full`}>
@@ -57,6 +59,23 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </>
           )}
         </header>
+        {smart && (
+          <div
+            role="status"
+            className="flex flex-wrap items-center gap-x-4 border-b border-line bg-sunken px-4 py-1 text-[13px] xl:px-6"
+            data-testid="smart-banner"
+          >
+            <span>
+              <strong>SMART mode, read-only.</strong> Showing data from {new URL(smart.iss).host}. Writing,
+              review, HL7 and the pipeline are disabled.
+            </span>
+            <form action="/smart/exit" method="post">
+              <button type="submit" className="underline">
+                Exit SMART mode
+              </button>
+            </form>
+          </div>
+        )}
         {children}
         <footer className="border-t border-line px-4 py-3 text-xs text-muted xl:px-6">
           Synthetic data only; not a medical device. SNOMED CT® is a registered trademark of SNOMED

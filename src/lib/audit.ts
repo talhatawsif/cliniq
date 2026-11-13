@@ -1,6 +1,7 @@
 import "server-only";
 import { after } from "next/server";
 import { getPatient } from "@/lib/fhir";
+import { smartSession } from "@/lib/smart/session";
 import { currentUserId } from "@/lib/supabase";
 import { admin } from "@/lib/supabase";
 
@@ -14,7 +15,8 @@ export async function audit(
   outcome = "success",
   agentOverride?: string,
 ) {
-  const agent = agentOverride ?? (await currentUserId()) ?? "anonymous";
+  const agent =
+    agentOverride ?? (await currentUserId()) ?? ((await smartSession()) ? "smart-launch" : "anonymous");
   after(async () => {
     const { error } = await admin().from("audit_events").insert({ agent, action, entity, outcome, detail });
     if (error) console.error("audit write failed:", error.code);

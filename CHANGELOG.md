@@ -1,5 +1,10 @@
 # Changelog
 
+## M12 — SMART on FHIR (14 Nov 2026)
+
+- `/smart/launch`, `/smart/callback`, `/smart/exit`; PKCE and `state`; sealed httpOnly session cookie; SMART mode reads from the
+  launching server and refuses every write with 403 `smart-read-only`. Tested against the SMART sandbox (`npm run e2e:smart`).
+
 ## M11 — Write-back and review queue (14 Nov 2026)
 
 - `src/lib/pipeline/`: builders for the finding transaction and review decisions (pure), the run orchestration with per-step

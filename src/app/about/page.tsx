@@ -41,6 +41,7 @@ export default function About() {
             Auto-extracted findings are written as unconfirmed Conditions with Provenance and wait for
             clinician review
           </li>
+          <li>SMART on FHIR launch (standalone and EHR, PKCE), read-only, from the SMART sandbox</li>
           <li>AU Patient Summary 1.0.0 export as a FHIR document Bundle</li>
           <li>CDS Hooks patient-view; CKD-EPI 2021 eGFR and BMI calculators</li>
         </ul>
@@ -54,7 +55,7 @@ export default function About() {
             The FHIR server sleeps when idle; the first request outside Australian daytime can take up to two
             minutes.
           </li>
-          <li>Not built yet: SMART launch, assistant.</li>
+          <li>Not built yet: the chart assistant.</li>
           <li>ICD-10-AM mapping needs an IHACPA licence, so it is not included.</li>
         </ul>
       </Section>

@@ -19,7 +19,8 @@
     "test:terminology": "node scripts/terminology/live.ts",
     "terminology:record": "node scripts/terminology/record.ts",
     "reset-demo": "node scripts/reset-demo.ts",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "e2e:smart": "playwright test -c playwright.smart.config.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

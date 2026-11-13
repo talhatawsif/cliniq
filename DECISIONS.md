@@ -280,3 +280,11 @@ into tests; SPEC §0 makes this a rule.
 - HAPI reuses a search result for 60 seconds, which would have shown a stale chart right after a write; every app read now sends `Cache-Control: no-cache`.
 - Chart badge reads "Auto-extracted — pending review" for unconfirmed Conditions. Rejected ones (refuted, inactive) were already dropped from the problem list.
 - Dry run is on by default on `/pipeline`, as on `/hl7`, so a visitor has to choose to write. Pipeline runs share the daily quota of 50.
+
+## M12: SMART on FHIR
+- Read-only is enforced in three places: the proxy (every non-GET request while the SMART cookie is valid gets 403 `smart-read-only`, except `/smart/*` and the CDS Hooks service), `fhirPost` (throws in SMART mode), and the UI (banner, no demo navigation). The proxy is the one that covers server actions and API routes alike.
+- The sandbox accepts any `client_id` and redirect URI, so `SMART_CLIENT_ID` is just `cliniq`. Only `launch.smarthealthit.org` is an allowed issuer, and its discovery endpoints must be on the same host, so the launch route cannot be pointed at another server.
+- Standalone launch uses the sandbox's "provider standalone" base URL (the launch type is encoded in the URL); a bare `/v/r4/fhir` base fails with "Invalid launch options".
+- The session cookie's `Secure` flag follows the request scheme, so it is always set on Vercel and the local http test still works.
+- Tokens live only in the sealed cookie, so there is no refresh token and the session ends with the access token (about an hour).
+- The SMART end-to-end tests need the public sandbox, so they run on demand (`npm run e2e:smart`), not in `npm run e2e`.

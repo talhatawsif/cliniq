@@ -1,6 +1,7 @@
 import type { Bundle, FhirResource } from "fhir/r4";
 import { env } from "@/lib/env";
 import { fhirAuthHeader } from "@/lib/fhir/auth";
+import { smartSession } from "@/lib/smart/session";
 
 export type FhirErrorKind = "not-configured" | "unavailable" | "timeout" | "http" | "bad-link";
 
@@ -42,7 +43,9 @@ function resolveUrl(pathOrUrl: string, baseUrl: string | undefined) {
 /** GET a FHIR resource or Bundle. Returns null for 404/410. Retries while the server wakes. */
 export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {}): Promise<T | null> {
   const { timeoutMs = 15_000, retries = 2, retryDelayMs = 1_000 } = opts;
-  const url = resolveUrl(pathOrUrl, opts.baseUrl ?? env.FHIR_BASE_URL);
+  // SMART mode: read from the launching server with the user's token instead of ClinIQ's own FHIR server.
+  const smart = await smartSession();
+  const url = resolveUrl(pathOrUrl, smart ? smart.iss : (opts.baseUrl ?? env.FHIR_BASE_URL));
 
   let last: FhirError | undefined;
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -102,6 +105,8 @@ export async function fhirSearch<T extends FhirResource>(
  */
 export async function fhirPost(path: string, body: unknown, opts: FhirFetchOptions = {}) {
   const { timeoutMs = 30_000, retries = 2, retryDelayMs = 1_000 } = opts;
+  // Defence in depth: the proxy already refuses writes in SMART mode, and nothing here may reach the launching server.
+  if (await smartSession()) throw new FhirError("http", "smart-read-only", 403);
   const url = resolveUrl(path, opts.baseUrl ?? env.FHIR_BASE_URL);
   let last = new FhirError("unavailable", "FHIR server is unreachable");
   for (let attempt = 0; attempt <= retries; attempt++) {

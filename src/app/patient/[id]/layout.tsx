@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import FhirNotice from "@/components/FhirNotice";
 import { JsonDrawerProvider } from "@/components/JsonDrawer";
+import { smartSession } from "@/lib/smart/session";
 import {
   FhirError,
   allergyStatus,
@@ -17,6 +18,8 @@ import {
 export default async function PatientLayout({ children, params }: LayoutProps<"/patient/[id]">) {
   await connection();
   const { id } = await params;
+  const smart = await smartSession();
+  if (smart && smart.patient !== id) notFound(); // the launch selected one patient
   let data;
   try {
     const patient = await getPatient(id);
