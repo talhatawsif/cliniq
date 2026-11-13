@@ -62,7 +62,15 @@ export const unitText = (q: Quantity | undefined, ucum = q?.code) =>
   (ucum && UNIT_TEXT[ucum]) || q?.unit || ucum || "";
 
 export type Flag = "High" | "Low" | "Abnormal";
-export type Point = { t: number; date: string; value: number; flag?: Flag; obs: Observation };
+export type Point = {
+  t: number;
+  date: string;
+  value: number;
+  flag?: Flag;
+  obs: Observation;
+  /** What the source unit was multiplied by to reach the series unit (1 when none). */
+  factor?: number;
+};
 export type Series = {
   key: string;
   label: string;
@@ -150,7 +158,10 @@ export function buildTrends(all: Observation[]): Trends {
     const ucum = (q.code ?? q.unit ?? "").replace(/^µ/, "u");
     const factor = analyte?.conv?.[ucum];
     const unit = factor !== undefined || ucum === analyte?.unit ? analyte!.unit : ucum;
-    if (factor !== undefined) p.value = q.value * factor;
+    if (factor !== undefined) {
+      p.value = q.value * factor;
+      p.factor = factor;
+    }
 
     const group = groups.get(key) ?? {
       label: analyte?.label ?? codeableText(o.code),
@@ -168,8 +179,10 @@ export function buildTrends(all: Observation[]): Trends {
     for (const [unit, b] of g.byUnit) {
       b.points.sort((x, y) => x.t - y.t);
       const range = b.points.at(-1)?.obs.referenceRange?.[0];
-      const low = range?.low?.value;
-      const high = range?.high?.value;
+      // The range is in the unit of the result it came with, so it is converted like the values are.
+      const scale = b.points.at(-1)?.factor ?? 1;
+      const low = range?.low?.value === undefined ? undefined : range.low.value * scale;
+      const high = range?.high?.value === undefined ? undefined : range.high.value * scale;
       series.push({
         key: g.byUnit.size > 1 ? `${key}|${unit}` : key,
         label: g.label,

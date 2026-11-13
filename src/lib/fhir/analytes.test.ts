@@ -94,3 +94,33 @@ describe("trends", () => {
     expect(buildTrends([obs("14682-9", 90, "umol/L")]).series[0].ref).toBeUndefined();
   });
 });
+
+describe("reference band after unit conversion", () => {
+  it("is converted with the values (mg/dL creatinine shown in µmol/L)", () => {
+    const o = {
+      resourceType: "Observation",
+      id: "1",
+      status: "final",
+      code: { coding: [{ system: "http://loinc.org", code: "2160-0" }] },
+      effectiveDateTime: "2026-01-01",
+      valueQuantity: { value: 1.0, unit: "mg/dL", code: "mg/dL" },
+      referenceRange: [{ low: { value: 0.6, unit: "mg/dL" }, high: { value: 1.2, unit: "mg/dL" } }],
+    } as Observation;
+    const [series] = buildTrends([o]).series;
+    expect(series.points[0].value).toBeCloseTo(88.4, 1);
+    expect(series.ref?.low).toBeCloseTo(53, 0);
+    expect(series.ref?.high).toBeCloseTo(106.1, 0);
+  });
+  it("is left alone when no conversion happened", () => {
+    const o = {
+      resourceType: "Observation",
+      id: "1",
+      status: "final",
+      code: { coding: [{ system: "http://loinc.org", code: "2160-0" }] },
+      effectiveDateTime: "2026-01-01",
+      valueQuantity: { value: 90, unit: "umol/L", code: "umol/L" },
+      referenceRange: [{ low: { value: 45 }, high: { value: 90 } }],
+    } as Observation;
+    expect(buildTrends([o]).series[0].ref).toEqual({ low: 45, high: 90 });
+  });
+});

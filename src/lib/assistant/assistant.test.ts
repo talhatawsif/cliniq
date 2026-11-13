@@ -238,6 +238,34 @@ describe("filter and scripted details found by the evaluation", () => {
   });
 });
 
+describe("named tests: the record's long names and the names clinicians use", () => {
+  it("HbA1c, HDL and ALT find their results", () => {
+    const res = (name: string, long: string, code: string, value: number) =>
+      ({
+        resourceType: "Observation",
+        id: name,
+        status: "final",
+        subject,
+        code: { coding: [{ system: "http://loinc.org", code }], text: long },
+        effectiveDateTime: "2026-01-01",
+        valueQuantity: { value, unit: "x" },
+      }) as Observation;
+    const f = buildFacts(
+      P,
+      data({
+        observations: [
+          res("a", "Hemoglobin A1c/Hemoglobin.total in Blood", "4548-4", 6.2),
+          res("b", "Cholesterol in HDL [Moles/volume] in Serum or Plasma", "2085-9", 1.4),
+          res("c", "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma", "1742-6", 27),
+        ],
+      }),
+    );
+    expect(scripted("What was the last HbA1c?", f)?.sentences[0].text).toContain("6.2");
+    expect(scripted("latest HDL", f)?.sentences[0].text).toContain("1.4");
+    expect(scripted("What is the ALT?", f)?.sentences[0].text).toContain("27");
+  });
+});
+
 describe("A6 one patient only", () => {
   it("a resource of another patient is never in the facts, and a patientId in the question text changes nothing", () => {
     const other = { ...cond("c9", "Leukaemia"), subject: { reference: "Patient/other" } } as Condition;
@@ -298,6 +326,9 @@ describe("A8 refusals", () => {
   });
   it("ordinary record questions are not refused", () => {
     for (const q of [
+      "What was prescribed at the last visit?",
+      "What dose of lisinopril is she on?",
+      "Who prescribed the metformin?",
       "What are the active problems?",
       "What was the last creatinine?",
       "Is the patient allergic to penicillin?",

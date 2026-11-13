@@ -18,7 +18,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 ## Deploy (Cloud Run, Sydney, private)
 
 ```bash
-IMG=australia-southeast1-docker.pkg.dev/cliniq-507000/cliniq/nlp:3
+IMG=australia-southeast1-docker.pkg.dev/cliniq-507000/cliniq/nlp:4
 docker build --platform linux/amd64 -t $IMG . && docker push $IMG
 gcloud run deploy cliniq-nlp --image $IMG --region australia-southeast1 --project cliniq-507000 \
   --cpu 1 --memory 1Gi --min-instances 0 --max-instances 1 --cpu-boost --no-allow-unauthenticated --concurrency 4

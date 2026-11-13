@@ -1,10 +1,11 @@
 "use client";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { type State, sendHl7 } from "./actions";
 
 const show = (m: string) => m.replace(/\r\n|\r/g, "\n");
 
 export default function Hl7Form({ samples }: { samples: { name: string; text: string }[] }) {
+  const [, startTransition] = useTransition();
   const [state, action, pending] = useActionState<State, FormData>(sendHl7, null);
   const [text, setText] = useState(show(samples[0]?.text ?? ""));
   // A fresh control id each time a sample is picked, so repeat sends are not treated as duplicates.
@@ -18,7 +19,15 @@ export default function Hl7Form({ samples }: { samples: { name: string; text: st
   const r = state?.result;
   return (
     <div className="space-y-4">
-      <form action={action} className="space-y-2">
+      {/* Not action={...}: React 19 resets a form after its action, which put the note picker and the dry-run box back to their first values. */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const data = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+          startTransition(() => action(data));
+        }}
+        className="space-y-2"
+      >
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-[13px]">
             Sample{" "}

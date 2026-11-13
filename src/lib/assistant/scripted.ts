@@ -10,6 +10,15 @@ const ALIASES: Record<string, string[]> = {
   "body weight": ["weight"],
   "body height": ["height"],
   hemoglobin: ["haemoglobin", "hb"],
+  "hemoglobin a1c/hemoglobin.total": ["hba1c", "a1c", "glycated haemoglobin", "glycated hemoglobin"],
+  "cholesterol in hdl": ["hdl"],
+  "cholesterol in ldl": ["ldl"],
+  "urea nitrogen": ["urea"],
+  "alanine aminotransferase": ["alt"],
+  "aspartate aminotransferase": ["ast"],
+  "bilirubin.total": ["bilirubin"],
+  leukocytes: ["wcc", "white cell count", "white blood cell count"],
+  hematocrit: ["haematocrit"],
 };
 
 export type Scripted = { intent: string; sentences: Sentence[] };

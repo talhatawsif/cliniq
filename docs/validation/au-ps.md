@@ -8,20 +8,40 @@ Each document is built by `src/lib/ps/build.ts` from a patient on the local HAPI
 | Abshire | 0 |
 | Beier | 0 |
 | Boyle (allergies removed to test the empty-section rule) | 0 |
+| Cronin | 0 |
+| Flatley | 0 |
+| Gleichner | 0 |
+| Hackett | 0 |
+| Hills | 0 |
+| Hoppe | 0 |
+| Spinka | 0 |
+| Ruecker | 0 |
+| McGlynn | 0 |
+| Lowe | 0 |
+| Mayer | 0 |
+| Mitchell | 0 |
+| Murray | 0 |
+| Parisian | 0 |
+| Ritchie | 0 |
+| Smith | 0 |
+| Villaseñor | 0 |
 
 **Total errors: 0**
 
 ## Warnings by count (messages generalised)
 
-- 198 × Constraint failed: dom-N: '…' (defined in http://hlN.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)
-- 90 × Best Practice Recommendation: In general, all observations should have a performer
-- 52 × A definition for CodeSystem '…' version '…' could not be found, so the code cannot be validated. Valid versions: http://snomed.info/sct/N/version/N, http://snom
-- 49 × A definition for CodeSystem '…' could not be found, so the code cannot be validated
-- 35 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/clinical-condition-N|N.N.N), and a coding SHALL come fro
-- 21 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/spia-pathology-reporting-N|N.N.N), and a coding SHALL co
-- 15 × None of the codings provided are in the value set '…' (http://hlN.org/fhir/ValueSet/identifier-type|N.N.N), and a coding SHALL come from this value set unless i
-- 8 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-address, http://hlN.org/fhir/StructureDefinition/Address
-- 5 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/indicator-hypersensitivity-intolerance-to-substance-N|N.
-- 5 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-hpii, http://hlN.org/fhir/StructureDefinition/Identifier
-- 3 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-ihi, http://hlN.org/fhir/StructureDefinition/Identifier
-- 2 × The concept '…' has a status of DISCOURAGED and its use should be reviewed
+- 1295 × Constraint failed: dom-N: '…' (defined in http://hlN.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation)
+- 529 × Best Practice Recommendation: In general, all observations should have a performer
+- 369 × A definition for CodeSystem '…' could not be found, so the code cannot be validated
+- 328 × A definition for CodeSystem '…' version '…' could not be found, so the code cannot be validated. Valid versions: http://snomed.info/sct/N/version/N, http://snom
+- 233 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/clinical-condition-N|N.N.N), and a coding SHALL come fro
+- 152 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/spia-pathology-reporting-N|N.N.N), and a coding SHALL co
+- 87 × None of the codings provided are in the value set '…' (http://hlN.org/fhir/ValueSet/identifier-type|N.N.N), and a coding SHALL come from this value set unless i
+- 49 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-address, http://hlN.org/fhir/StructureDefinition/Address
+- 43 × None of the codings provided are in the value set '…' (https://healthterminologies.gov.au/fhir/ValueSet/indicator-hypersensitivity-intolerance-to-substance-N|N.
+- 29 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-hpii, http://hlN.org/fhir/StructureDefinition/Identifier
+- 20 × Found multiple matching profiles among N choices: http://hlN.org.au/fhir/StructureDefinition/au-ihi, http://hlN.org/fhir/StructureDefinition/Identifier
+- 10 × The concept '…' has a status of DISCOURAGED and its use should be reviewed
+- 7 × UCUM Codes that contain human readable annotations like {N.N_mN} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend 
+- 2 × The concept '…' has a status of inactive and its use should be reviewed
+- 2 × UCUM Codes that contain human readable annotations like {nominal} can be misleading (e.g. they are ignored when comparing units). Best Practice is not to depend

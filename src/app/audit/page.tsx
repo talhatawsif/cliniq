@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Audit log" };
 const filters = z.object({
   action: z.enum(["view", "export", "write", "review", "sign-in"]).optional().catch(undefined),
   outcome: z.enum(["success", "failure"]).optional().catch(undefined),
-  entity: z.string().trim().max(80).optional(),
+  entity: z.string().trim().max(80).optional().catch(undefined),
 });
 
 export default async function Audit({ searchParams }: PageProps<"/audit">) {

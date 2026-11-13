@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { type State, runNote } from "./actions";
 
 type Sample = { id: string; title: string; patientId: string; text: string };
@@ -12,6 +12,7 @@ export default function PipelineForm({
   samples: Sample[];
   patients: { id: string; name: string }[];
 }) {
+  const [, startTransition] = useTransition();
   const [state, action, pending] = useActionState<State, FormData>(runNote, null);
   const [docId, setDocId] = useState(samples[0]?.id ?? "");
   const [text, setText] = useState(samples[0]?.text ?? "");
@@ -26,7 +27,15 @@ export default function PipelineForm({
   const field = "h-8 rounded border border-line-strong bg-surface px-2";
   return (
     <div className="space-y-4">
-      <form action={action} className="space-y-2">
+      {/* Not action={...}: React 19 resets a form after its action, which put the note picker and the dry-run box back to their first values. */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const data = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+          startTransition(() => action(data));
+        }}
+        className="space-y-2"
+      >
         <input type="hidden" name="docId" value={docId} />
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-[13px]">

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 
 import spacy
+from spacy.language import Language
 from loguru import logger
 from medspacy.context import ConTextRule
 from medspacy.section_detection import SectionRule
@@ -63,11 +64,23 @@ CONTEXT = [
 ]
 
 
+@Language.component("cliniq_sentence_breaks")
+def sentence_breaks(doc):
+    """PyRuSH does not split after a full stop that follows an abbreviation ("T2DM. Denies chest pain."), so a negation
+    or family cue ran on into the next sentence. A full stop followed by a capital letter starts a sentence."""
+    for i, tok in enumerate(doc[:-1]):
+        nxt = doc[i + 1]
+        if tok.text == "." and nxt.text[:1].isupper():
+            nxt.is_sent_start = True
+    return doc
+
+
 def build() -> "spacy.Language":
     from medspacy.context import ConText  # noqa: F401  (registers the component)
 
     nlp = spacy.blank("en")
     nlp.add_pipe("medspacy_pyrush")
+    nlp.add_pipe("cliniq_sentence_breaks")
     matcher = nlp.add_pipe("medspacy_target_matcher")
     rules = []
     for t in json.loads(TARGETS.read_text())["targets"]:

@@ -62,7 +62,7 @@ async function source(id: string) {
   };
 }
 
-const patients = (await all<Patient>("Patient?_count=50&_sort=family")).slice(0, 3);
+const patients = (await all<Patient>("Patient?_count=50&_sort=family")).slice(0, 50); // every patient: two cohort patients failed when only three were checked
 mkdirSync(WORK, { recursive: true });
 const files: { file: string; label: string }[] = [];
 for (const [i, p] of patients.entries()) {

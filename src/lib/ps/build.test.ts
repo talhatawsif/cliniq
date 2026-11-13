@@ -37,6 +37,19 @@ const sections = (b: Bundle) => (b.entry![0].resource as Composition).section!;
 const ids = (b: Bundle) => b.entry!.map((e) => `${e.resource!.resourceType}/${e.resource!.id}`);
 
 describe("AU Patient Summary builder", () => {
+  it("an element that only held a reference outside the document is removed, not left empty (invalid FHIR)", () => {
+    const c: Condition = {
+      ...cond("c1", "confirmed"),
+      evidence: [{ detail: [{ reference: "DocumentReference/not-in-the-document" }] }],
+      encounter: { reference: "Encounter/e1" },
+    };
+    const doc = buildPatientSummary({ ...base, conditions: [c] });
+    const out = doc.entry!.map((e) => e.resource!).find((r) => r.resourceType === "Condition") as Condition;
+    expect(out.evidence).toBeUndefined();
+    expect(out.encounter).toBeUndefined();
+    expect(JSON.stringify(doc)).not.toMatch(/\{\}/);
+  });
+
   it("author and custodian are in the document and named for the owner", () => {
     const b = buildPatientSummary(base);
     const c = b.entry![0].resource as Composition;

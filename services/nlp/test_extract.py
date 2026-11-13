@@ -95,3 +95,21 @@ def test_history_heading_does_not_make_findings_historical():
 def test_unlikely_means_uncertain_not_negated():
     assert state(extract("Pneumonia unlikely.")[0]) == "uncertain"
     assert state(extract("Heart failure is unlikely given a normal examination.")[0]) == "uncertain"
+
+
+def test_cues_do_not_run_across_a_full_stop_on_one_line():
+    # Found by pasting a one-line note: "Denies chest pain." negated IHD, and "Father had IHD." made a later fever "family".
+    e = {x["text"]: x for x in extract("PMHx: HTN, T2DM. Denies chest pain. FHx: Father had IHD. If she develops a fever, return.")}
+    assert state(e["chest pain"]) == "negated"
+    assert state(e["IHD"]) == "family"
+    # On one line the "FHx:" section runs to the end of the paragraph, so the fever is withheld as family history: the safe
+    # direction (a withheld finding is shown with its reason; a wrongly affirmed one would be written).
+    assert state(e["fever"]) != "affirmed"
+    assert state(e["HTN"]) == "affirmed"
+    t = {x["text"]: x for x in extract("No fever. The patient has pneumonia. Mother had breast cancer. She has asthma.")}
+    assert [state(t[k]) for k in ("fever", "pneumonia", "breast cancer", "asthma")] == ["negated", "affirmed", "family", "affirmed"]
+
+
+def test_abbreviations_and_decimals_do_not_split_sentences():
+    e = {x["text"]: x for x in extract("Dr. Smith saw her. Denies chest pain, no fever.")}
+    assert state(e["chest pain"]) == "negated" and state(e["fever"]) == "negated"

@@ -4,8 +4,8 @@ export const REFUSAL =
 
 const PATTERNS: [RegExp, string][] = [
   [/\bshould\s+(i|we|she|he|they|the patient)\b/i, "advice"],
-  [/\b(prescrib|dosage|dosing|titrat|up-?titrat|wean|taper)/i, "prescribing"],
-  [/\bwhat\s+(dose|dosage|amount)\b/i, "prescribing"],
+  // Forward-looking only: "what was prescribed" and "what dose is she on" are record questions and must be answered.
+  [/\b(prescribe|prescribing|titrate|up-?titrate|wean|taper)\b/i, "prescribing"],
   [
     /\b(stop|start|increase|reduce|change|switch|cease|continue)\s+(the\s+|her\s+|his\s+|their\s+)?\w*\s*(medic|drug|tablet|dose|inhibitor|blocker|statin|metformin|insulin)/i,
     "treatment",

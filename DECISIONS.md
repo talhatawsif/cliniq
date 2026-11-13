@@ -326,3 +326,14 @@ Known and left (documented in SECURITY.md, CLINICAL-SAFETY.md or here): care-gap
 
 ## Model chain re-ordered from published benchmarks (14 Nov 2026)
 The chain is now `nvidia/nemotron-3-ultra` → `baidu/ernie-5.5-flash-preview` → `cohere/north-mini-code` (it was cohere first). `cohere/north-mini-code` is a coding model that happened to pass the probe; Nemotron 3 Ultra has the strongest published instruction-following and long-context scores and also passed. Evidence and caveats are in `docs/llm-model-choice.md`. The 20-question evaluation is not repeated (it would use most of the key's 50 free requests); it will be run once when the limit has reset.
+
+## Bug hunt (14 Nov 2026)
+Found by crawling every page for every patient, odd inputs, validating all 20 patient summaries, scanning every patient's assistant facts, and pasting a real one-line note. Each fixed with a test:
+- `/audit?entity=` longer than 80 characters returned a 500 (an unhandled validation error).
+- The patient summary was invalid FHIR for 2 of 20 patients: pruning a reference outside the document left an empty `evidence` element. `npm run validate:ps` now checks every patient (it checked three, which is why this was missed).
+- The trend chart's reference band was not converted with the values (a mg/dL creatinine plotted as 88 µmol/L with a 0.6 to 1.2 band).
+- The pipeline and HL7 forms reset after every run (React 19 resets a form after its action): the note picker went back to the first sample and the dry-run box was ticked again, so a second "write" run silently became a dry run. Forms now submit through `onSubmit`.
+- A one-line note let a cue run across a full stop ("Denies chest pain. FHx: Father had IHD." marked IHD negated): PyRuSH does not split after an abbreviation. A sentence-break step now splits at a full stop followed by a capital.
+- The pre-filter refused record questions such as "What was prescribed?" and "What dose of lisinopril is she on?". It now refuses only forward-looking prescribing language.
+- Scripted answers did not find HbA1c, HDL, LDL, ALT, AST and other tests by the names clinicians use (the record's names are long LOINC names). Aliases added.
+Known and left: on a one-line note everything after "FHx:" counts as family history until a blank line, so a later finding on that line is withheld (the safe direction; the table shows why).

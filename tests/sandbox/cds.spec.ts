@@ -12,6 +12,8 @@ test("the CDS Hooks sandbox discovers ClinIQ's service and shows its cards", asy
   await page.locator("input").last().fill(SERVICE);
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("cliniq-patient-view").first()).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByText("Source: ClinIQ decision support (demo)").first()).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByText("Source: ClinIQ decision support (demo)").first()).toBeVisible({
+    timeout: 60_000,
+  });
   await page.screenshot({ path: "docs/ui/screens/m5/sandbox.png" });
 });

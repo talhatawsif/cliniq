@@ -62,7 +62,15 @@ const resultText = (o: Observation) => {
 /** Drops every Reference that does not point at a resource in the document (a document must be self-contained). */
 function prune<T>(value: T, present: Set<string>): T {
   if (Array.isArray(value)) {
-    return value.filter((v) => !(isRef(v) && !present.has(v.reference))).map((v) => prune(v, present)) as T;
+    // An element that held only a dropped reference (evidence: [{ detail: [ref] }]) is empty now and must go too: an
+    // empty element is invalid FHIR (ele-1). Elements that were empty to begin with are left alone.
+    return value
+      .filter((v) => !(isRef(v) && !present.has(v.reference)))
+      .flatMap((v) => {
+        const p = prune(v, present);
+        const emptied = isPlain(v) && Object.keys(v).length > 0 && isPlain(p) && Object.keys(p).length === 0;
+        return emptied ? [] : [p];
+      }) as T;
   }
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
@@ -70,12 +78,15 @@ function prune<T>(value: T, present: Set<string>): T {
       if (isRef(v) && !present.has(v.reference)) continue;
       const p = prune(v, present);
       if (Array.isArray(p) && p.length === 0) continue;
+      if (isPlain(v) && Object.keys(v).length > 0 && isPlain(p) && Object.keys(p).length === 0) continue; // emptied by pruning
       out[k] = p;
     }
     return out as T;
   }
   return value;
 }
+const isPlain = (v: unknown): v is Record<string, unknown> =>
+  Boolean(v) && typeof v === "object" && !Array.isArray(v);
 const isRef = (v: unknown): v is { reference: string } =>
   Boolean(v) && typeof v === "object" && typeof (v as { reference?: unknown }).reference === "string";
 
