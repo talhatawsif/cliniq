@@ -59,9 +59,13 @@ The build run should spend its effort on code, not on accounts, keys or infrastr
 - [ ] **Reload data in the right order** (hospitals, practitioners, then patients) — about 25–40
       patients to stay under 500 MB. Confirm the count survives a scale-to-zero.
 - [ ] **Keys and accounts** (only the owner can do these):
-  - Anthropic API key (extraction, AI summary).
+  - **No paid API needed.** Extraction runs on a free rules engine plus results precomputed by
+    Claude Code during the build; the summary is template-built. (Optional later: bring your own
+    LLM key.)
   - Terminology: NCTS account (free for Australian users) → Ontoserver client credentials. UMLS as
     the fallback (approval takes 1–3 business days).
+- [ ] **Cost guard:** add a Google Cloud budget alert (for example $1) on project `cliniq-507000`,
+      because a billing account is linked. Keep `min-instances=0`; do not use Cloud SQL.
 - [ ] **Vercel:** approve Claude's access to the team, create the project linked to the GitHub repo.
 - [ ] **Env:** fill `.env.local` and Vercel env vars per `SPEC.md` §5.
 - [ ] **Check reachability** of the SMART sandbox, CDS Hooks sandbox and terminology server.
@@ -69,7 +73,7 @@ The build run should spend its effort on code, not on accounts, keys or infrastr
 
 ## Step 2 — The one build run (Claude Fable, Claude Code on this Mac)
 
-Run it in Claude Code from `~/cliniq` so it can use the local browser and `.env.local`:
+Run it in Claude Code from `~/cliniq` (switch model with `/model` right before) so it can use the local browser and `.env.local`:
 
 ```
 Read AGENTS.md, then SPEC.md, then docs/PLAN.md. Implement SPEC.md completely, tier by tier, in

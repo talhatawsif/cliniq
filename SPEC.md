@@ -15,6 +15,11 @@
 - Never invent clinical values. Everything shown comes from FHIR data or from a documented,
   tested calculation. Anything AI-generated or auto-coded is visibly labelled and reviewable.
 - Secrets live only in env vars and server-side code. Never in client bundles, never committed.
+- **Zero-cost constraint.** The owner will not pay for anything. Everything must run on free tiers
+  (Vercel Hobby, Supabase Free, Cloud Run free tier, free public sandboxes and terminology
+  services). No paid API may be required for any feature to work. Keyed LLM providers may exist
+  only as optional, off-by-default adapters. Do not add Cloud SQL, paid databases, or anything else
+  that needs a paid plan.
 - If a required env var / external service is missing, degrade gracefully (feature hidden behind a
   clear "not configured" state) instead of crashing — and say so in the final summary.
 - Definition of done for the whole run: `npm run lint`, `npm run typecheck`, `npm test`,
@@ -58,6 +63,8 @@ output is flagged for clinician review. Decision-support cards are informational
     (`https://launch.smarthealthit.org`), OAuth2 + PKCE, scopes `openid fhirUser launch
     launch/patient patient/*.read` (adjust for SMART v2 `patient/*.rs`). Read-only. Note-to-FHIR
     write-back is disabled in SMART mode with an explanatory message.
+- In the diagram, the "Anthropic API" box is an **optional** LLM adapter, not a requirement. The
+  default extraction path is free (see 2.2).
 - HAPI on Cloud Run scales to zero; first request can take 30–120 s. Handle it: server-side
   caching of read requests (Next.js caching primitives — check the bundled docs), a "waking the FHIR
   server" state with retry instead of an error page, and a `/api/health` route.
@@ -117,8 +124,16 @@ output is flagged for clinician review. Decision-support cards are informational
 2.1 **Notes source.** Read clinical notes from `DocumentReference` (Synthea exports notes there,
     base64 in `content.attachment.data`) for the patient, plus a "paste a note" box. Ship 10–20
     sample notes in `data/sample-notes/` (Synthea-generated; synthetic only).
-2.2 **Extraction service** (`src/lib/pipeline/extract.ts`, server only). Anthropic API, structured
-    JSON output validated with zod. Per finding: text span (start/end offsets into the note), type
+2.2 **Extraction service** (`src/lib/pipeline/extract.ts`, server only). One `Extractor` interface with a
+    zod-validated output schema and three engines chosen by `EXTRACTION_ENGINE`:
+    (a) `rules` (default, free, deterministic): gazetteer matching built from the terminology source
+    or a built-in list, plus NegEx/ConText-style rules for negation, hedging, historical and
+    family-history assertions, aware of note sections (e.g. a "Family History:" heading);
+    (b) `precomputed`: cached results keyed by the SHA-256 of the note text in `data/precomputed/`,
+    which **you generate during this run by reading each sample note yourself and writing the
+    extraction JSON** (no external API; label them "model-assisted, produced during development");
+    (c) `llm` (optional, off by default): any OpenAI-compatible endpoint or Anthropic, via env, for
+    people who bring their own key. The UI always shows which engine produced a result. Per finding: text span (start/end offsets into the note), type
     (diagnosis / symptom / procedure / medication / allergy), assertion (present / negated /
     possible / historical / family-history), and a short quote. Negation and family history must not
     become positive findings. Model name and prompt version are recorded.
@@ -144,7 +159,7 @@ output is flagged for clinician review. Decision-support cards are informational
 2.6 **Pipeline view.** `/pipeline`: pick a patient + note (or paste) → watch the stages (extract →
     code → validate → write) with timings and intermediate JSON, then a link to the result on the
     chart. This is the demo flow.
-2.7 **Evaluation harness.** `npm run eval`: runs extraction + coding over `eval/gold/*.json` (note
+2.7 **Evaluation harness.** `npm run eval -- --engine rules|precomputed|llm`: runs extraction + coding over `eval/gold/*.json` (note
     text + expected findings and codes) and reports precision / recall / F1 per stage and per
     assertion type into `eval/REPORT.md`. Commit the harness, the schema and **three** example gold
     files clearly marked `"labelledBy": "example — replace with human labels"`. Do not fabricate a
@@ -179,7 +194,9 @@ output is flagged for clinician review. Decision-support cards are informational
 
 ### Tier 4 — AI summary, polish, proof
 
-4.1 **AI patient summary** behind `features.ai`. Every sentence cites the FHIR resources it came from
+4.1 **Grounded patient summary.** Default is deterministic and template-built (no LLM, free). An
+    LLM-written narrative is optional behind `features.ai` (bring-your-own key, off by default). In
+    both modes every sentence cites the FHIR resources it came from
     (clickable chips opening the FHIR JSON drawer). If a sentence cannot be grounded, it is dropped.
     Banner: "AI-generated, may be wrong, verify against the record."
 4.2 **Design system.** Calm clinical UI: consistent spacing/typography, light + dark mode, dense but
@@ -208,7 +225,8 @@ validity. Don't replace HAPI FHIR or move clinical data into Supabase.
 | `SMART_REDIRECT_URI` | SMART redirect | for SMART |
 | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase auth client | for auth/audit |
 | `SUPABASE_SECRET_KEY` | server-side writes (audit) | for auth/audit |
-| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | extraction, tie-break, summary | for pipeline/AI |
+| `EXTRACTION_ENGINE` | `rules` (default), `precomputed` or `llm` | no |
+| `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` | optional bring-your-own-key LLM adapter | no (off by default) |
 | `TERMINOLOGY_BASE_URL` / `TERMINOLOGY_CLIENT_ID` / `TERMINOLOGY_CLIENT_SECRET` | NCTS Ontoserver (OAuth client credentials) | for coding |
 | `UMLS_API_KEY` | alternative terminology source | optional |
 
@@ -218,3 +236,10 @@ BP panel `85354-9` · systolic `8480-6` · diastolic `8462-4` · heart rate `886
 `9279-1` · temp `8310-5` · SpO2 `59408-5` · height `8302-2` · weight `29463-7` · BMI `39156-5` ·
 creatinine `2160-0` · HbA1c `4548-4` · glucose `2339-0` · total cholesterol `2093-3` · LDL `18262-6`
 · HDL `2085-9` · diabetes SNOMED `44054006` · hypertension SNOMED `38341003`.
+
+## 7. Cost
+
+Target: $0 per month. Vercel Hobby, Supabase Free (500 MB; keep HAPI data to roughly 25-40
+patients), Cloud Run free tier with `min-instances=0`, free NCTS/UMLS terminology access, free
+public SMART and CDS Hooks sandboxes. Never add Cloud SQL. Document in the README that the live
+demo may take up to two minutes to wake.
