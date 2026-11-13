@@ -72,7 +72,13 @@ export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {
     if (res.ok) return (await res.json()) as T;
     if (res.status === 404 || res.status === 410) return null;
     if (!RETRYABLE.has(res.status)) {
-      throw new FhirError("http", `FHIR request failed with status ${res.status} (${new URL(url).host}, ${smart ? "SMART" : "demo"}, ${/\/fhir\/([A-Za-z]+)/.exec(url)?.[1] ?? "?"})`, res.status);
+      // From the launching server only: its reason for refusing is what a SMART user needs, and it holds no patient data.
+      const reason = smart ? (await res.text().catch(() => "")).slice(0, 200) : "";
+      throw new FhirError(
+        "http",
+        `${reason && `${reason} `}FHIR request failed with status ${res.status} (${new URL(url).host}, ${smart ? "SMART" : "demo"}, ${/\/fhir\/([A-Za-z]+)/.exec(url)?.[1] ?? "?"})`,
+        res.status,
+      );
     }
     last = new FhirError("unavailable", `FHIR server returned ${res.status}`, res.status);
   }
