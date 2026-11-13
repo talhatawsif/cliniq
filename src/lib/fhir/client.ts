@@ -58,7 +58,8 @@ export async function fhirFetch<T>(pathOrUrl: string, opts: FhirFetchOptions = {
         headers: {
           Accept: "application/fhir+json",
           "Cache-Control": "no-cache",
-          ...(await fhirAuthHeader(new URL(url).origin)),
+          // Never send ClinIQ's own service-account token to the launching server.
+          ...(smart ? { Authorization: `Bearer ${smart.token}` } : await fhirAuthHeader(new URL(url).origin)),
         },
         signal: AbortSignal.timeout(timeoutMs),
       });
