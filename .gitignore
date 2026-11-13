@@ -45,3 +45,5 @@ next-env.d.ts
 
 # downloaded tools and packages (validator, IG packages)
 /.cache
+test-results/
+playwright-report/

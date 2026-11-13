@@ -192,3 +192,13 @@ into tests; SPEC §0 makes this a rule.
 - App auth to Cloud Run uses a service-account key (`GCP_SA_KEY`, Sensitive in Vercel) and a hand-signed ID token (no new dependency). Shortcut: long-lived key; move to workload identity federation if the project outlives the demo.
 - The database password is a plain env var on the Cloud Run service. Shortcut: move to Secret Manager.
 - Open: real cold start (deploys leave the revision warm, so early timings were not cold); pinger; 48 h cost check. The Supabase secret key and the service-account key were shared in chat — rotate both.
+
+## 14 Nov 2026 — M3
+
+- `/` redirects to `/patients` until sign-in exists (M6); the signed-out landing page is not built.
+- Patient list shows name, DOB (age), sex and IHI. Active-problems and last-encounter columns (UI.md §7) are skipped: they cost two extra FHIR queries per row. Revisit if the worklist needs them.
+- Chart sections are anchors on one page, not separate routes; the right rail (decision support) and the 768–1279 px drawer arrive with M5.
+- The old Recharts `VitalsChart` was deleted (smoothed lines and raw hex breach UI.md §2); charts are rebuilt in M4.
+- Unconfirmed conditions use the machine treatment, but no fixture patient has one, so it is not yet seen in screenshots.
+- E2E runs against local Docker HAPI (`docker compose up -d && npm run load && npm run e2e`); paging past one page is untested because 20 patients fit on one page.
+- Not done: shadcn/Radix primitives (no drawer or dialog needed yet) and the frontend-design / Playwright MCP tools (not installed; Playwright runs as a test dependency instead).

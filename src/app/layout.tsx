@@ -1,26 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Public_Sans } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const sans = Public_Sans({ variable: "--font-public-sans", subsets: ["latin"] });
+const mono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500"] });
 
 export const metadata: Metadata = {
-  title: "ClinIQ",
+  title: { default: "ClinIQ", template: "%s · ClinIQ" },
   description: "Clinical coding and interoperability prototype. Synthetic data only.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-AU" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en-AU" className={`${sans.variable} ${mono.variable} h-full`}>
+      <body className="min-h-full flex flex-col">
+        <header className="sticky top-0 z-20 flex h-12 items-center gap-4 border-b border-line bg-surface px-4 xl:px-6">
+          <Link href="/patients" className="font-semibold text-fg no-underline">
+            ClinIQ
+          </Link>
+          <form action="/patients" role="search" className="flex-1">
+            <label htmlFor="q" className="sr-only">
+              Search patients by name or IHI
+            </label>
+            <input
+              id="q"
+              name="q"
+              type="search"
+              placeholder="Search patients: name or IHI"
+              className="h-8 w-full max-w-md rounded border border-line-strong bg-surface px-2 text-fg placeholder:text-muted"
+            />
+          </form>
+          <span className="text-xs text-muted">Demo · synthetic data</span>
+        </header>
+        {children}
+      </body>
     </html>
   );
 }

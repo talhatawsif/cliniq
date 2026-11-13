@@ -24,7 +24,10 @@ export async function fhirAuthHeader(audience: string): Promise<Record<string, s
     const res = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion: jwt }),
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion: jwt,
+      }),
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) throw new Error(`Google token exchange failed (${res.status})`);

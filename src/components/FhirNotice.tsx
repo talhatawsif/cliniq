@@ -4,13 +4,12 @@ import { FhirError } from "@/lib/fhir";
 export default function FhirNotice({ error }: { error: FhirError }) {
   const notConfigured = error.kind === "not-configured";
   return (
-    <main className="p-8 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">ClinIQ</h1>
-      <div role="status" className="border rounded p-4 text-sm">
+    <main className="p-4 xl:p-6">
+      <div role="status" className="max-w-2xl rounded border border-line-strong bg-surface p-4">
         <p className="font-medium">
           {notConfigured ? "FHIR server not configured" : "The FHIR server is not responding"}
         </p>
-        <p className="text-gray-600 mt-1">
+        <p className="mt-1 text-muted">
           {notConfigured
             ? "Set FHIR_BASE_URL to the address of a FHIR R4 server to see patient records."
             : "It may be waking up, which can take up to two minutes. Reload the page to try again."}
