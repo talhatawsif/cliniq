@@ -1,245 +1,305 @@
-# ClinIQ — Build Spec
+# ClinIQ — Build Spec (v2, milestone cards)
 
-> This file is the single source of truth for building ClinIQ. It is written so that one autonomous
-> agent run can implement it end to end. Read `AGENTS.md` first (this Next.js version has breaking
-> changes — read `node_modules/next/dist/docs/` for any API you touch), then this file, then
-> `docs/PLAN.md` for context and `docs/history/` for the original plan and past debugging notes.
+> Single source of truth for building ClinIQ. Read `AGENTS.md` first (this Next.js version has
+> breaking changes — read `node_modules/next/dist/docs/` for any API you touch), then this file,
+> then `docs/PLAN.md` (context, decisions, owner to-dos) and `docs/history/` (old notes).
+>
+> **How this is meant to be built:** Opus plans (done: this file). Sonnet builds **one milestone per
+> session** (§4). Each card has a "Done when" check; do not start the next card until it passes.
+> Claude Fable is reserved for at most two jobs (§9). Every milestone leaves the app building,
+> deployable and honest, so stopping at any point still gives a coherent product.
 
 ## 0. Rules for the implementer
 
-- Work autonomously. Do not ask questions. When something is ambiguous, pick the option that a
-  senior health-IT engineer would pick, and record it in `DECISIONS.md` (one line: decision + why).
-- Implement in the tier order below. Every tier must leave the app working, building and deployable,
-  so a partial run is still a coherent product. Commit at the end of each numbered item
-  (conventional commits, e.g. `feat(chart): problem list split by clinicalStatus`).
-- Never invent clinical values. Everything shown comes from FHIR data or from a documented,
-  tested calculation. Anything AI-generated or auto-coded is visibly labelled and reviewable.
-- Secrets live only in env vars and server-side code. Never in client bundles, never committed.
-- **Zero-cost constraint.** The owner will not pay for anything. Everything must run on free tiers
-  (Vercel Hobby, Supabase Free, Cloud Run free tier, free public sandboxes and terminology
-  services). No paid API may be required for any feature to work. Keyed LLM providers may exist
-  only as optional, off-by-default adapters. Do not add Cloud SQL, paid databases, or anything else
-  that needs a paid plan.
-- If a required env var / external service is missing, degrade gracefully (feature hidden behind a
-  clear "not configured" state) instead of crashing — and say so in the final summary.
-- Definition of done for the whole run: `npm run lint`, `npm run typecheck`, `npm test`,
-  `npm run build` and `npm run test:e2e` all pass, and you have clicked through every main flow in a
-  real browser. Finish with a summary: what was built, decisions, what is left, anything the owner
-  must do by hand.
+- Work milestone by milestone. Pick the option a senior health-IT engineer would pick and record it
+  in `DECISIONS.md` (one line: decision + why). Ask the owner only for things only he can do
+  (accounts, keys, approvals) — list them at the end of the session.
+- Conventional commits, one per numbered item. Do not push; the owner pushes.
+- Never invent clinical values. Everything shown comes from FHIR data or from a documented, tested
+  calculation. Anything auto-extracted, auto-coded or AI-written is labelled and reviewable.
+- Secrets only in env vars and server-side code. Never in client bundles, never committed. Never
+  print a key in logs, chat or docs.
+- **Zero-cost constraint.** The owner will not pay for anything (one exception: up to ~$1 may be
+  spent on the Python NLP service if free tier proves insufficient). No paid API may be required for
+  any feature to work. See §8 for the allowed services.
+- **LLM rule (hard):** the only hosted LLM models allowed are OpenRouter models whose id ends in
+  `:free`, plus Cloudflare Workers AI free-tier models as fallback. The LLM client must refuse to
+  call any OpenRouter model id that does not match `/:free$/` (unit-tested), and must never send a
+  request that could spend credits. Never use paid or Anthropic API keys in the app.
+- Missing env var / service → degrade gracefully ("not configured" state) rather than crash, and say
+  so in the session summary.
+- Synthetic data only. No real patient data, ever.
+- Definition of done per milestone: `npm run lint`, `typecheck`, `test`, `build` pass (plus
+  `test:e2e` once it exists) and the card's "Done when" is verified in a real browser.
 
 ## 1. Product
 
-**One-liner:** Unstructured clinical notes → extracted findings → coded to SNOMED CT / ICD-10 →
-written back as FHIR resources with provenance → shown on an EHR-style patient chart alongside
-vitals, labs, medications and allergy alerts.
+**Problem it solves.** In Australian health services a lot of clinical meaning sits in free-text
+notes, while analytics, registers, referrals and decision support need coded, structured data
+(SNOMED CT-AU, ICD-10-AM, FHIR). Coding by hand is slow and inconsistent; labs and legacy systems
+still speak HL7 v2. ClinIQ shows an end-to-end, standards-based way to bridge that gap safely: notes
+and HL7 v2 messages in → coded, validated FHIR out → clinician review → EHR-style chart with
+decision support. It is a **coding-assistance and interoperability prototype**, not a diagnostic
+tool.
 
-**Audience:** healthcare IT engineers, clinical informaticians and hiring managers. They judge on
-standards fluency (FHIR R4, SMART on FHIR, CDS Hooks, LOINC, SNOMED CT), safety and honesty, and
-engineering quality — not on visual flash alone.
+**Pitch (to clinicians / coders / health-IT):** "Faster, more consistent coding from notes with a
+human always in the loop; every auto-coded item carries provenance and a confidence, and nothing is
+final until a clinician confirms it."
 
-**Honest framing (must appear in README, footer and About page):** ClinIQ is a portfolio prototype
-and coding-assistance demo. It uses synthetic data only (Synthea). It is not a medical device, not
-clinically validated, and makes no claim of regulatory compliance. All auto-extracted and auto-coded
-output is flagged for clinician review. Decision-support cards are informational demos.
+**Audience:** healthcare IT engineers, clinical informaticians, hiring managers (Australia first).
+They judge on standards fluency (FHIR R4, AU Core, SMART, CDS Hooks, LOINC, SNOMED CT-AU, HL7 v2),
+safety, honesty and engineering quality.
+
+**Honest framing (README, footer, About page):** portfolio prototype; synthetic data only; not a
+medical device; not clinically validated; no regulatory claim. Includes a "Path to production"
+section (TGA software-as-medical-device considerations, HIMAA guidance on AI-assisted clinical
+coding, privacy under the Privacy Act / My Health Records, terminology licensing, clinical safety
+review). Decision-support cards are informational demos.
 
 ## 2. Architecture
 
 ```
-            ┌──────────────────────── Vercel (Next.js 16, App Router, TS strict) ─────────────────────────┐
- Browser ──▶│ UI (chart, review queue, pipeline)   Route handlers / server actions   /cds-services (CDS Hooks) │
-            └──────┬──────────────────────────────┬───────────────────────┬─────────────────────┬─────────┘
-                   │ FHIR R4 REST                  │ Anthropic API          │ FHIR terminology     │ Supabase
-                   ▼                               ▼ (extraction, summary)  ▼ ($lookup/$expand)    ▼ (auth, audit,
-        HAPI FHIR on Cloud Run  ◀─ or ─▶  SMART Health IT sandbox     NCTS Ontoserver / UMLS     pipeline runs, review)
-        (ClinIQ's own data, writable)      (SMART launch, read-only)
+ Browser ──▶ Vercel (Next.js 16, TS strict): UI · route handlers · /cds-services · chart assistant
+                │             │                   │                    │
+                │ FHIR R4     │ HTTPS             │ FHIR terminology   │ Postgres (RLS)
+                ▼             ▼                   ▼                    ▼
+        HAPI FHIR on     NLP service          NCTS Ontoserver     Supabase (project "cliniq",
+        Cloud Run  ◀──── (Python, Cloud Run)  (SNOMED CT-AU)      Sydney): app data + HAPI's DB
+           ▲  ▲                                                     in a separate schema
+           │  └── n8n on the owner's Mac (demo-time): HL7 v2 → FHIR, note pipeline trigger,
+           │      care-gap sweep, error alerts   (exported workflow JSON committed in repo)
+           └── GitHub Actions: keep-alive pings (Supabase + Cloud Run warm-up), CI
+ LLM chain (assistant/summary only): OpenRouter ":free" → Cloudflare Workers AI → scripted fallback
 ```
 
-- **FHIR is the system of record for clinical data.** Supabase holds only app data: users, audit
-  log, pipeline runs, review decisions. Do not copy patient records into Supabase.
-- The FHIR layer must work against **any** FHIR R4 server via `FHIR_BASE_URL`. Two data modes:
-  - **Demo mode** (default): server-side reads/writes against ClinIQ's HAPI server. Login with
-    Supabase Auth (seeded demo clinician account, credentials shown on the login page).
-  - **SMART mode**: standalone launch and EHR launch from the public SMART Health IT sandbox
-    (`https://launch.smarthealthit.org`), OAuth2 + PKCE, scopes `openid fhirUser launch
-    launch/patient patient/*.read` (adjust for SMART v2 `patient/*.rs`). Read-only. Note-to-FHIR
-    write-back is disabled in SMART mode with an explanatory message.
-- In the diagram, the "Anthropic API" box is an **optional** LLM adapter, not a requirement. The
-  default extraction path is free (see 2.2).
-- HAPI on Cloud Run scales to zero; first request can take 30–120 s. Handle it: server-side
-  caching of read requests (Next.js caching primitives — check the bundled docs), a "waking the FHIR
-  server" state with retry instead of an error page, and a `/api/health` route.
+- **FHIR is the system of record for clinical data.** Supabase holds app data (users, audit, pipeline
+  runs, review decisions) and, in a separate schema, HAPI's own tables. Do not copy patient records
+  into app tables.
+- The FHIR layer works against any FHIR R4 server via `FHIR_BASE_URL`. Modes: **Demo** (default;
+  ClinIQ's HAPI, writable, Supabase Auth with seeded demo clinician) and **SMART** (launch from
+  `launch.smarthealthit.org`, read-only, PKCE).
+- Cloud Run scales to zero (`min-instances=0`, `max-instances=1`). Cold start can take 30–120 s:
+  cache reads, show a "waking the FHIR server" state with retry, expose `/api/health`.
+- n8n runs on the owner's Mac for demos only; the app must work fully without n8n (n8n features are
+  additive and the UI shows "n8n offline" when unreachable).
 
-## 3. Tiers and acceptance criteria
+## 3. Data plan
 
-### Tier 0 — Foundation
+- **Cohort: ~20 curated Synthea patients** (not the full 109), all with notes, chosen for variety:
+  CKD + hypertension (Sherwood, Patricio), diabetes/hypertension/lipids (Celesta, Ghislaine, Daina,
+  Micaela, Sung), polypharmacy (Ezra), elderly women (Cameron, Tandra), many allergies (Twila, Luke,
+  Whitley), young adults / paediatric (Claudio, Suzan, Brittny, Clemente), a deceased patient
+  (Duncan), plus Lita and Carlo. Exact IDs come from `scripts/select-cohort.ts`.
+- **Trim before load** (`scripts/trim-synthea.ts`): drop `Claim` and `ExplanationOfBenefit` (US
+  billing, ~46 % of volume), drop unused types, cap history (`exporter.years_of_history`/filter to
+  the last 3–5 years), cap very heavy patients' Observations. Target ≤ ~1.3 MB per patient → ~200 MB
+  in Postgres (HAPI expands input ~7×). Hospital/practitioner files load first.
+- **Budget:** keep the whole DB ≤ ~350 MB of the 500 MB Supabase free limit; log DB size in the load
+  report.
+- **Australianisation layer** (`scripts/australianise.ts`): add AU Core-shaped identifiers where
+  cheap (IHI-like synthetic identifier, Medicare-number-shaped synthetic identifier, AU address
+  states) and map terminology to SNOMED CT-AU/AMT where available. All clearly synthetic.
+- **CSIRO "Australian synthetic healthcare data" (Synthea, Queensland):** evaluate as the preferred
+  source only if (a) its licence permits redistribution/demo use (listing is ambiguous: CC BY 4.0 vs
+  "All Rights CSIRO"), and (b) it is FHIR with usable profiles. Do not commit CSIRO data to the
+  public repo; load locally only. Default path stays Synthea + australianise script.
+- **Notes:** Synthea notes live in `DocumentReference`. Also ship 10–20 hand-checked sample notes in
+  `data/sample-notes/` and 5 sample HL7 v2 ORU^R01 messages in `data/hl7v2/` (synthetic).
 
-0.1 **Typed FHIR data layer.** `src/lib/fhir/` with `@types/fhir` (R4). No `any` anywhere in `src`
-    (enable `@typescript-eslint/no-explicit-any` as error). A small client (`fhirFetch`) with base
-    URL from env, timeouts, retries for cold starts, typed errors, bundle paging (`link[next]`).
-    Helpers for display of `HumanName`, `CodeableConcept`, `Quantity`, dates, age.
-    *Done when:* existing pages use it, `npm run typecheck` passes with strict mode.
-0.2 **Config.** `.env.example` documents every variable (see §5). A typed `env.ts` validates env at
-    startup (zod) and exposes feature flags (`features.smart`, `features.ai`, `features.terminology`,
-    `features.supabase`).
-0.3 **Tooling.** Scripts: `typecheck`, `test` (Vitest), `test:e2e` (Playwright, with axe
-    accessibility checks), `format`. GitHub Actions CI on push/PR: install, lint, typecheck, unit
-    tests, build. (E2E in CI only against a mocked FHIR server/fixtures — no live services in CI.)
-0.4 **Synthea loader.** `scripts/load-synthea.ts`: loads `hospitalInformation*` and
-    `practitionerInformation*` bundles first, then patient bundles; idempotent; concurrency-limited;
-    `--limit N` option; prints a pass/fail report. (Fixes `docs/history/ClinIQ_debug_history.md` #9.)
-0.5 **Fixtures.** A small set of real Synthea resources committed under `tests/fixtures/` for unit
-    and E2E tests, so tests never need the live server.
+## 4. Milestone cards
 
-### Tier 1 — EHR-style chart (standards done properly)
+Each card = one focused Sonnet session. "Needs" lists owner actions or earlier cards.
 
-1.1 **Patient list.** Server-side search by name and identifier (FHIR search params, not client
-    filtering), sort, pagination via bundle links, columns: name, sex, age, DOB, MRN identifier,
-    number of active problems. Loading, empty and error states.
-1.2 **Patient banner** (sticky on the chart): name, age/sex, DOB, MRN, allergy alert chip (red,
-    shows count + highest criticality; "No known allergies" only when an explicit NKA exists, else
-    "Allergies not recorded"), active problem count.
-1.3 **Problem list** split by `clinicalStatus` (active / resolved / other) with onset dates,
-    `verificationStatus` shown, and SNOMED codes visible on hover/expand.
-1.4 **Medications:** active `MedicationRequest`s (resolve `medicationReference` or use
-    `medicationCodeableConcept`), dosage text, authored date. **Allergies** with criticality,
-    reaction, category. **Immunisations.** **Encounters timeline** (newest first, type, class, date,
-    reason).
-1.5 **Vitals & labs.** Fetch observations by category (`vital-signs`, `laboratory`) with enough
-    history for trends (page through results; do not stop at 20). Group by **LOINC code**, not by
-    display text. Blood pressure: handle the panel `85354-9` with components `8480-6` (systolic)
-    and `8462-4` (diastolic) as one combined chart. Show reference ranges from
-    `Observation.referenceRange`; when absent, fall back to a small documented table of common LOINC
-    reference ranges in `src/lib/clinical/reference-ranges.ts` labelled "illustrative adult range".
-    Flag high/low (`interpretation` if present, else computed) with colour + text (not colour only).
-1.6 **View FHIR JSON** on every record (drawer with pretty-printed JSON, copy button, link to the
-    resource URL on the server).
-1.7 **Export** the patient as a FHIR document: try `Patient/$summary` (International Patient
-    Summary) if the server's CapabilityStatement supports it, otherwise assemble an IPS-shaped
-    `Bundle` (type `document`, Composition with Problems / Medications / Allergies / Results /
-    Immunisations sections) and download as JSON. Validate it with the server's `$validate` when
-    available and show the OperationOutcome.
+### M0 — Foundation
+- Typed FHIR layer in `src/lib/fhir/` with `@types/fhir`; no `any` (ESLint error); `fhirFetch` with
+  timeouts, cold-start retries, typed errors, bundle paging; display helpers (names, codings,
+  quantities, dates, age).
+- `env.ts` (zod) + feature flags (`smart`, `ai`, `terminology`, `supabase`, `nlp`, `n8n`).
+- Scripts: `typecheck`, `test` (Vitest), `test:e2e` (Playwright + axe), `format`. GitHub Actions CI
+  (lint, typecheck, unit, build; e2e against fixtures only). `DECISIONS.md` created.
+- `tests/fixtures/`: small real Synthea resources for tests.
+- **Done when:** existing pages use the typed layer; all scripts pass; CI file is valid.
 
-### Tier 2 — The pipeline: notes → codes → FHIR (headline feature)
+### M1 — Data & persistent FHIR server  *(Needs: Supabase project `cliniq`, DB password from owner)*
+- `scripts/select-cohort.ts`, `trim-synthea.ts`, `australianise.ts`, `load-synthea.ts` (order:
+  hospitals → practitioners → patients; idempotent; concurrency-limited; `--limit`; pass/fail report
+  incl. DB size).
+- Cloud Run HAPI config pointing at Supabase Postgres via the **session pooler** (separate `hapi`
+  schema; Postgres dialect). Document the exact `gcloud run deploy` command in
+  `docs/DEPLOY.md`; `min-instances=0`, `max-instances=1`; budget alert $1.
+- **Done when:** ~20 patients survive a Cloud Run scale-to-zero; the app lists them from the cloud
+  URL; DB size < 350 MB.
 
-2.1 **Notes source.** Read clinical notes from `DocumentReference` (Synthea exports notes there,
-    base64 in `content.attachment.data`) for the patient, plus a "paste a note" box. Ship 10–20
-    sample notes in `data/sample-notes/` (Synthea-generated; synthetic only).
-2.2 **Extraction service** (`src/lib/pipeline/extract.ts`, server only). One `Extractor` interface with a
-    zod-validated output schema and three engines chosen by `EXTRACTION_ENGINE`:
-    (a) `rules` (default, free, deterministic): gazetteer matching built from the terminology source
-    or a built-in list, plus NegEx/ConText-style rules for negation, hedging, historical and
-    family-history assertions, aware of note sections (e.g. a "Family History:" heading);
-    (b) `precomputed`: cached results keyed by the SHA-256 of the note text in `data/precomputed/`,
-    which **you generate during this run by reading each sample note yourself and writing the
-    extraction JSON** (no external API; label them "model-assisted, produced during development");
-    (c) `llm` (optional, off by default): any OpenAI-compatible endpoint or Anthropic, via env, for
-    people who bring their own key. The UI always shows which engine produced a result. Per finding: text span (start/end offsets into the note), type
-    (diagnosis / symptom / procedure / medication / allergy), assertion (present / negated /
-    possible / historical / family-history), and a short quote. Negation and family history must not
-    become positive findings. Model name and prompt version are recorded.
-2.3 **Coding service** (`src/lib/pipeline/code.ts`). For each finding, get candidate codes from a FHIR
-    terminology server (`TERMINOLOGY_BASE_URL`; NCTS Ontoserver for SNOMED CT-AU, or UMLS if that is
-    what is configured — implement behind one interface). Disambiguate using note context (rule
-    scoring against candidate descriptions, then an optional LLM tie-break). Output: chosen code,
-    display, system, alternatives, confidence 0–1 and a one-line rationale. Map SNOMED → ICD-10
-    (ICD-10-AM if available, else ICD-10 via the terminology server's ConceptMap `$translate` when
-    supported) and say when no map exists. If no terminology server is configured, fall back to a
-    clearly labelled offline mode with a small built-in code list so the demo still runs.
-2.4 **Write-back as proper FHIR** (demo mode only). For accepted-for-review findings create
-    `Condition` resources with `verificationStatus = unconfirmed`, `category =
-    encounter-diagnosis`, `evidence.detail` → the source `DocumentReference`, plus a `Provenance`
-    resource (agent = ClinIQ extraction pipeline as a `Device`, entity = the note, recorded time,
-    model + prompt version in an extension or `Provenance.reason`). Run `$validate` before writing;
-    refuse to write on validation errors and show the OperationOutcome. Use a `transaction` Bundle.
-2.5 **Review queue.** `/review`: each auto-coded finding with note excerpt highlighted, chosen code,
-    alternatives, confidence, rationale. Actions: confirm (→ `verificationStatus = confirmed`),
-    change code, reject (→ `refuted` or `entered-in-error`). Every action recorded in Supabase and
-    reflected in FHIR. On the chart, unconfirmed AI-derived conditions show an "Auto-extracted —
-    pending review" badge.
-2.6 **Pipeline view.** `/pipeline`: pick a patient + note (or paste) → watch the stages (extract →
-    code → validate → write) with timings and intermediate JSON, then a link to the result on the
-    chart. This is the demo flow.
-2.7 **Evaluation harness.** `npm run eval -- --engine rules|precomputed|llm`: runs extraction + coding over `eval/gold/*.json` (note
-    text + expected findings and codes) and reports precision / recall / F1 per stage and per
-    assertion type into `eval/REPORT.md`. Commit the harness, the schema and **three** example gold
-    files clearly marked `"labelledBy": "example — replace with human labels"`. Do not fabricate a
-    full gold set; the owner will hand-label it.
+### M2 — EHR-style chart
+Server-side patient search (name, identifier) with paging; sticky banner (allergy chip with
+criticality, "Allergies not recorded" vs explicit NKA, active problem count); problem list split by
+`clinicalStatus` with `verificationStatus`; active medications (resolve `medicationReference`);
+allergies; immunisations; encounter timeline; loading/empty/error states.
+**Done when:** every section renders for 3 different cohort patients; e2e smoke passes.
 
-### Tier 3 — Standards that health IT people look for
+### M3 — Labs, vitals, FHIR JSON
+Observations by category with full paging; group by **LOINC code**; BP panel `85354-9` with
+components as one chart; reference ranges from the resource, else a documented illustrative table;
+high/low flags with text + colour; "View FHIR JSON" drawer on every record; Patient export (IPS-shaped
+document Bundle, `$validate` result shown).
+**Done when:** BP and a lab trend render correctly for a known patient; JSON drawer works everywhere.
 
-3.1 **SMART on FHIR** (see §2). `/launch` (EHR launch) and `/smart` (standalone launch picker) using
-    the `fhirclient` library or a hand-rolled PKCE flow. After launch, the same chart UI renders the
-    sandbox patient. README explains how to launch from `https://launch.smarthealthit.org`.
-3.2 **CDS Hooks service, for real.** Implement the spec's endpoints in this app:
-    `GET /cds-services` (discovery) and `POST /cds-services/cliniq-patient-view` (`patient-view`
-    hook, with `prefetch` templates for Patient, Conditions, recent Observations). It returns cards:
-    - BMI with category (from latest height `8302-2` and weight `29463-7`, or BMI `39156-5`).
-    - eGFR using **CKD-EPI 2021 (race-free)** from latest serum creatinine (`2160-0`), age and sex,
-      with CKD stage.
-    - Care gaps, e.g. diabetes (SNOMED `44054006` and descendants where checkable) with no HbA1c
-      (`4548-4`) in 12 months; hypertension with no BP in 12 months.
-    Cards follow the CDS Hooks card schema (summary, indicator, detail, source). The chart calls the
-    service and renders the cards. Must be usable from the public CDS Hooks sandbox
-    (`https://sandbox.cds-hooks.org`) — document how; add permissive CORS on `/cds-services` only.
-    **Unit tests for every calculator with published reference values**, including edge cases
-    (missing data, units in mg/dL vs µmol/L, paediatric age → not calculated).
-3.3 **Supabase:** auth (email + password; seeded demo account), and tables with RLS on every table:
-    `audit_events` (shaped like FHIR AuditEvent: who, what resource, action, when, outcome, source
-    IP hash), `pipeline_runs`, `review_decisions`. Every chart view, export, write-back and review
-    action writes an audit event. `/audit` page lists them (filter by user/patient/action).
-    Migrations in `supabase/migrations/`.
-3.4 **Security basics:** security headers (CSP, frame-ancestors, referrer-policy), server-only
-    modules for secrets (`import "server-only"`), input validation on every route handler, rate limit
-    on pipeline + AI routes, no PHI-like data in logs. `docs/SECURITY.md` with a short threat model.
+### M4 — CDS Hooks service
+`GET /cds-services`, `POST /cds-services/cliniq-patient-view` with prefetch; cards for BMI category,
+eGFR (CKD-EPI 2021 race-free, with CKD stage), and care gaps (diabetes without HbA1c in 12 months,
+hypertension without BP in 12 months). Permissive CORS on `/cds-services` only; works from
+`sandbox.cds-hooks.org`. **Unit tests with published reference values for every calculator**
+(mg/dL vs µmol/L, missing data, paediatric → not calculated).
+**Done when:** unit tests pass; the chart shows cards; documented sandbox test succeeds.
 
-### Tier 4 — AI summary, polish, proof
+### M5 — Auth, audit, security  *(Needs: Supabase keys)*
+Supabase Auth (seeded demo clinician shown on the login page); RLS on every table: `audit_events`
+(AuditEvent-shaped), `pipeline_runs`, `review_decisions`; migrations in `supabase/migrations/`;
+audit on view/export/write/review; `/audit` page with filters; security headers (CSP,
+frame-ancestors, referrer-policy), `server-only` for secrets, zod on every route handler, rate
+limits, no PHI-like data in logs; `docs/SECURITY.md` (short threat model).
+**Done when:** logging in is required for demo mode; an audit row appears for each action; RLS
+verified with the Supabase advisor (no warnings).
 
-4.1 **Grounded patient summary.** Default is deterministic and template-built (no LLM, free). An
-    LLM-written narrative is optional behind `features.ai` (bring-your-own key, off by default). In
-    both modes every sentence cites the FHIR resources it came from
-    (clickable chips opening the FHIR JSON drawer). If a sentence cannot be grounded, it is dropped.
-    Banner: "AI-generated, may be wrong, verify against the record."
-4.2 **Design system.** Calm clinical UI: consistent spacing/typography, light + dark mode, dense but
-    readable tables, keyboard navigable, WCAG 2.2 AA (axe in Playwright passes on main pages),
-    responsive down to tablet. Skeleton loading states.
-4.3 **About / case-study page** (`/about`): problem, architecture diagram, standards used, the
-    pipeline, evaluation results (read from `eval/REPORT.md`), limitations, honest framing.
-4.4 **Docs.** README: one-paragraph pitch, live demo link placeholder, screenshots placeholders
-    (`docs/screenshots/`), Mermaid architecture diagram, standards list, setup (local + deploy), env
-    vars, how to launch via SMART sandbox and CDS Hooks sandbox, testing, limitations and the honest
-    framing. ADRs in `docs/adr/` (FHIR as system of record; HAPI on Cloud Run; Supabase for app
-    data only; terminology source; LLM extraction with human review; CDS Hooks as a real service).
-    `CHANGELOG.md`.
+### M6 — NLP service (Python, Cloud Run, free tier)
+`services/nlp/` — FastAPI container: **medspaCy** (sectionizer + ConText for negation / hypothetical
+/ family history / historical), **scispaCy** entity recognition (small model; must fit the free-tier
+memory limit), **SapBERT** embeddings for candidate reranking (small, CPU, loaded lazily).
+`POST /extract` (zod-mirrored JSON schema: spans, type, assertion) and `POST /rerank`. Container
+size and cold-start measured and recorded; `max-instances=1`. If it does not fit the free tier, fall
+back to rules engine in TS (`EXTRACTION_ENGINE=rules`) and record in DECISIONS.md. Engines:
+`rules` (TS, default fallback) · `medspacy` (this service) · `precomputed` (cached JSON) · `llm`
+(`:free` only).
+**Done when:** negation/family-history test notes produce correct assertions; the service answers
+from Cloud Run after scale-to-zero.
 
-## 4. Non-goals
+### M7 — Coding with the Australian terminology service  *(Needs: NCTS access, or UMLS; else offline list)*
+Terminology client behind one interface (`NCTS Ontoserver` OAuth2 client-credentials; `UMLS`
+alternative; **offline fallback** with a small built-in SNOMED/ICD-10 subset clearly labelled).
+Candidate generation by `$expand` filter / `$lookup`, rerank with SapBERT (M6) plus context rules,
+output: code, display, system, alternatives, confidence 0–1, rationale. SNOMED → ICD-10-AM via
+ConceptMap `$translate` where supported, else say "no map". Attribution text for SNOMED CT-AU shown
+in UI/About.
+**Done when:** 10 sample notes are coded; offline mode works with no credentials.
 
-No real patient data, ever. No HL7 v2 / CDA. No mobile app. No billing. No claims of clinical
-validity. Don't replace HAPI FHIR or move clinical data into Supabase.
+### M8 — Write-back and review queue
+Create `Condition` (`verificationStatus=unconfirmed`, `category=encounter-diagnosis`,
+`evidence.detail` → source `DocumentReference`) + `Provenance` (agent = pipeline `Device`, entity =
+note, engine + model + prompt version) via a `transaction` Bundle; `$validate` first (refuse on
+errors, show OperationOutcome). `/review`: highlighted excerpt, chosen code, alternatives,
+confidence, rationale; confirm / change code / reject (→ `refuted` / `entered-in-error`), recorded in
+Supabase and FHIR. Chart shows "Auto-extracted — pending review". `/pipeline`: pick patient+note or
+paste → watch extract → code → validate → write with timings and JSON.
+**Done when:** paste note → unconfirmed Condition in FHIR → confirmed in review → shown on chart.
 
-## 5. Environment variables
+### M9 — n8n workflows  *(Needs: n8n running on the Mac; n8n MCP connected to Claude Code)*
+Build and export (JSON under `n8n/workflows/`, screenshots/diagrams under `docs/n8n/`):
+1. **HL7 v2 → FHIR:** webhook/file input of ORU^R01 → parse → map OBX to `Observation` (LOINC) and
+   group into `DiagnosticReport` → `$validate` → POST to HAPI → error branch (dead-letter to
+   Supabase table + alert).
+2. **Note pipeline trigger:** new `DocumentReference` (poll or FHIR Subscription) → call the ClinIQ
+   pipeline API → writes unconfirmed findings.
+3. **Weekly care-gap sweep:** search patients with diabetes/hypertension lacking recent HbA1c/BP →
+   create FHIR `Task` ("review care gap") per patient.
+4. **Error-alert workflow** (global error trigger) → email/log.
+Use n8n AI-Agent nodes only for tasks that benefit (e.g. summarising a sweep), `:free` models only.
+Secure webhooks with a shared secret; no secrets in exported JSON (use credential references).
+**Done when:** a sample HL7 v2 file turns into Observations visible on the chart; the sweep creates
+Tasks; exports are committed with README.
+
+### M10 — SMART on FHIR
+Standalone + EHR launch against `launch.smarthealthit.org`, PKCE, scopes `openid fhirUser launch
+launch/patient patient/*.rs` (v2; fall back to `.read`); same chart UI; write-back disabled in
+SMART mode with an explanation; README launch instructions.
+**Done when:** launching from the sandbox opens the sandbox patient in the chart.
+
+### M11 — AU Core & AU Patient Summary
+Validate the cohort and exported documents against **AU Core 2.0.0** (via `$validate` with the IG
+loaded in HAPI, or the HL7 validator CLI in CI where feasible); report conformance honestly (what
+passes, what is synthetic-only). Export an **AU Patient Summary**-style Bundle (and IPS via
+`$summary` if supported). Use HL7 AU test data (`hl7au/au-fhir-test-data`) as reference examples.
+**Done when:** a validation report is committed (`docs/validation/`) and the export downloads.
+
+### M12 — Chart assistant (AI agent with guardrails)
+In-app assistant answering questions about the open patient **only from FHIR data**, with the LLM
+chain (OpenRouter `:free` → Cloudflare Workers AI → scripted fallback). Architecture: the model
+gets read-only tools (`getConditions`, `getObservations`, `getMedications`, …) backed by the typed
+FHIR layer, scoped to the current patient; every answer sentence cites resource chips (open the JSON
+drawer); ungrounded sentences are dropped; refuses diagnosis/treatment advice and out-of-scope
+questions; banner "AI-generated — verify against the record". Guardrails and tests: prompt-injection
+text inside notes must not change behaviour; patient scope cannot be widened by the user; rate
+limits; no PHI-like data in logs; model id allow-list enforced (`/:free$/`). Optional: expose the
+same tools as an MCP server in `services/mcp/` for demo.
+**Done when:** injection test notes fail to hijack the agent; answers show citations; with all LLMs
+unreachable the scripted fallback still answers basic questions.
+
+### M13 — Evaluation & model comparison
+`npm run eval -- --engine rules|medspacy|precomputed|llm`: precision/recall/F1 per stage and per
+assertion type over `eval/gold/*.json`; commit harness, schema and three example gold files marked
+`"labelledBy": "example — replace with human labels"`; side-by-side comparison table in
+`eval/REPORT.md` (rules vs medspaCy vs `:free` LLM; MedGemma 1.5 4B only as an optional offline
+benchmark if the owner runs it — never in the live app). Do not fabricate a gold set.
+**Done when:** `eval/REPORT.md` is generated from real runs.
+
+### M14 — Polish, docs, proof
+Design system (calm clinical, light/dark, keyboard navigable, WCAG 2.2 AA with axe passing on main
+pages, tablet responsive, skeletons); grounded template-built patient summary (default) with
+optional LLM narrative; `/about` case study (problem, architecture, standards, pipeline, eval,
+limitations, Path to production); README (pitch, architecture Mermaid, standards list, setup,
+sandbox instructions, honest framing, screenshots placeholders); ADRs in `docs/adr/` (FHIR as system
+of record; HAPI on Cloud Run + Supabase Postgres; separate NLP service; NCTS terminology; n8n
+integration layer; `:free`-only LLM policy; CDS Hooks as a real service); `CHANGELOG.md`.
+**Done when:** axe passes; README renders; ADRs exist.
+
+### M15 — Keep-alive & deploy
+`.github/workflows/keepalive.yml` (scheduled; pings Supabase REST + Cloud Run `/fhir/metadata` and
+NLP `/health` — **keep Supabase active, runs well within free Actions minutes**); Vercel deploy with
+env vars; live smoke test including cold start; README live link.
+**Done when:** the Action runs green; live demo works end to end.
+
+## 5. Non-goals
+
+No real patient data. No CDA. No mobile app. No billing/claims. No claims of clinical validity or
+TGA/regulatory approval. Do not replace HAPI or move clinical data into app tables. No paid services.
+
+## 6. Environment variables
 
 | Variable | Used for | Required |
 |---|---|---|
-| `FHIR_BASE_URL` | ClinIQ HAPI FHIR R4 base (demo mode) | yes |
-| `SMART_CLIENT_ID` | SMART launch client id (sandbox accepts any) | for SMART |
-| `SMART_REDIRECT_URI` | SMART redirect | for SMART |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase auth client | for auth/audit |
-| `SUPABASE_SECRET_KEY` | server-side writes (audit) | for auth/audit |
-| `EXTRACTION_ENGINE` | `rules` (default), `precomputed` or `llm` | no |
-| `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` | optional bring-your-own-key LLM adapter | no (off by default) |
-| `TERMINOLOGY_BASE_URL` / `TERMINOLOGY_CLIENT_ID` / `TERMINOLOGY_CLIENT_SECRET` | NCTS Ontoserver (OAuth client credentials) | for coding |
+| `FHIR_BASE_URL` | HAPI FHIR R4 base (demo mode) | yes |
+| `SMART_CLIENT_ID`, `SMART_REDIRECT_URI` | SMART launch | for SMART |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase auth client | auth/audit |
+| `SUPABASE_SECRET_KEY` | server-side writes | auth/audit |
+| `NLP_SERVICE_URL` | Python NLP service | for medspaCy engine |
+| `EXTRACTION_ENGINE` | `rules` / `medspacy` / `precomputed` / `llm` | no (default `rules`) |
+| `OPENROUTER_API_KEY` | free-model LLM access (assistant) | no |
+| `OPENROUTER_MODELS` | comma list of allowed model ids; **each must end in `:free`** | no |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | Workers AI fallback | no |
+| `TERMINOLOGY_BASE_URL`, `TERMINOLOGY_CLIENT_ID`, `TERMINOLOGY_CLIENT_SECRET` | NCTS Ontoserver | for coding |
 | `UMLS_API_KEY` | alternative terminology source | optional |
+| `N8N_BASE_URL`, `N8N_WEBHOOK_SECRET` | n8n integration | optional |
 
-## 6. Reference codes (LOINC unless stated)
+## 7. Reference codes (LOINC unless stated)
 
 BP panel `85354-9` · systolic `8480-6` · diastolic `8462-4` · heart rate `8867-4` · resp rate
 `9279-1` · temp `8310-5` · SpO2 `59408-5` · height `8302-2` · weight `29463-7` · BMI `39156-5` ·
 creatinine `2160-0` · HbA1c `4548-4` · glucose `2339-0` · total cholesterol `2093-3` · LDL `18262-6`
 · HDL `2085-9` · diabetes SNOMED `44054006` · hypertension SNOMED `38341003`.
 
-## 7. Cost
+## 8. Cost — target $0/month
 
-Target: $0 per month. Vercel Hobby, Supabase Free (500 MB; keep HAPI data to roughly 25-40
-patients), Cloud Run free tier with `min-instances=0`, free NCTS/UMLS terminology access, free
-public SMART and CDS Hooks sandboxes. Never add Cloud SQL. Document in the README that the live
-demo may take up to two minutes to wake.
+Allowed: Vercel Hobby (non-commercial), Supabase Free (500 MB DB, pauses after 7 days idle → keep-
+alive Action), Cloud Run free tier (`min-instances=0`, `max-instances=1`, $1 budget alert; never
+Cloud SQL), GitHub Actions (free scheduled workflows), n8n Community self-hosted on the Mac,
+Cloudflare Workers AI free allowance (10,000 neurons/day), OpenRouter `:free` models (20 req/min,
+50 req/day on accounts with < $10 lifetime purchases), free public SMART / CDS Hooks sandboxes,
+NCTS/UMLS free access. Not allowed: any paid API, Hugging Face paid inference, Cloud SQL.
+README must say the live demo may take up to two minutes to wake.
+
+## 9. Model usage plan
+
+- **Opus:** planning and this spec.
+- **Sonnet:** every milestone above, one session each.
+- **Claude Fable (max 2 uses):** (1) M7/M13 coding-and-evaluation engine **only if** Sonnet's
+  disambiguation quality is clearly insufficient on the eval set; (2) a final end-to-end
+  debugging/hardening pass. Anything else stays with Sonnet.
