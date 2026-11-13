@@ -17,5 +17,5 @@ for M in $CANDIDATES; do
   echo "== trying $M =="
   R=$(curl -s -m 60 https://openrouter.ai/api/v1/chat/completions -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
     -d "{\"model\":\"$M\",\"max_tokens\":20,\"messages\":[{\"role\":\"user\",\"content\":\"Reply with the single word: ok\"}]}")
-  echo "$R" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("OK:", d["choices"][0]["message"]["content"].strip()) if "choices" in d else print("FAIL:", d.get("error",{}).get("code"), str(d.get("error",{}).get("message"))[:120])'
+  echo "$R" | python3 -c 'import sys,json; d=json.load(sys.stdin); print("OK:", (d["choices"][0]["message"].get("content") or "(empty: reasoning model needs more max_tokens)").strip()) if "choices" in d else print("FAIL:", d.get("error",{}).get("code"), str(d.get("error",{}).get("message"))[:120])'
 done
