@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { FhirError, fhirFetch, fhirSearch } from "./client";
-import { getPatientDetail } from "./index";
+import { getPatient } from "./index";
 
 const BASE = "http://fhir.test/fhir";
 const opts = { baseUrl: BASE, retryDelayMs: 0 };
@@ -91,11 +91,11 @@ describe("fhirSearch", () => {
   });
 });
 
-describe("getPatientDetail", () => {
+describe("getPatient", () => {
   it("rejects ids that could change the query, without calling the network", async () => {
     const calls = stubFetch(() => json(200, {}));
-    expect(await getPatientDetail("1&_revinclude=*")).toBeNull();
-    expect(await getPatientDetail("../x")).toBeNull();
+    expect(await getPatient("1&_revinclude=*")).toBeNull();
+    expect(await getPatient("../x")).toBeNull();
     expect(calls).toHaveLength(0);
   });
 });

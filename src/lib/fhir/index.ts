@@ -6,12 +6,15 @@ import type {
   Immunization,
   Medication,
   MedicationRequest,
+  Observation,
   Patient,
 } from "fhir/r4";
+import { cache } from "react";
 import { fhirFetch, fhirSearch, isFhirId } from "./client";
 import { IHI_SYSTEM } from "./clinical";
 
 export { FhirError } from "./client";
+export * from "./analytes";
 export * from "./clinical";
 export * from "./display";
 
@@ -35,26 +38,25 @@ export async function getPatientsPage(q: string, page: number) {
   return { patients, total: bundle?.total ?? patients.length };
 }
 
-export type PatientDetail = {
-  patient: Patient;
-  conditions: Condition[];
-  allergies: AllergyIntolerance[];
-  medications: MedicationRequest[];
-  medicationById: Map<string, Medication>;
-  immunizations: Immunization[];
-  encounters: Encounter[];
-};
-
-/** Returns null when the id is malformed or the patient does not exist. */
-export async function getPatientDetail(id: string): Promise<PatientDetail | null> {
+// Cached per request so the layout and the page share one read.
+export const getPatient = cache(async (id: string): Promise<Patient | null> => {
   // Also stops the id from adding query parameters or path segments.
-  if (!isFhirId(id)) return null;
-  const patient = await fhirFetch<Patient>(`Patient/${id}`);
-  if (!patient) return null;
+  return isFhirId(id) ? fhirFetch<Patient>(`Patient/${id}`) : null;
+});
+export const getConditions = cache((id: string) =>
+  fhirSearch<Condition>(`Condition?patient=${id}&_count=100`),
+);
+export const getAllergies = cache((id: string) =>
+  fhirSearch<AllergyIntolerance>(`AllergyIntolerance?patient=${id}`),
+);
 
-  const [conditions, allergies, medicationBundle, immunizations, encounters] = await Promise.all([
-    fhirSearch<Condition>(`Condition?patient=${id}&_count=100`),
-    fhirSearch<AllergyIntolerance>(`AllergyIntolerance?patient=${id}`),
+/** Every observation in a category, all pages. */
+export const getObservations = cache((id: string, category: "laboratory" | "vital-signs") =>
+  fhirSearch<Observation>(`Observation?patient=${id}&category=${category}&_sort=-date&_count=200`),
+);
+
+export async function getChartData(id: string) {
+  const [medicationBundle, immunizations, encounters] = await Promise.all([
     fhirSearch<MedicationRequest | Medication>(
       `MedicationRequest?patient=${id}&status=active&_include=MedicationRequest:medication&_count=100`,
     ),
@@ -67,5 +69,5 @@ export async function getPatientDetail(id: string): Promise<PatientDetail | null
   const medicationById = new Map(
     medicationBundle.flatMap((r) => (r.resourceType === "Medication" && r.id ? [[r.id, r] as const] : [])),
   );
-  return { patient, conditions, allergies, medications, medicationById, immunizations, encounters };
+  return { medications, medicationById, immunizations, encounters };
 }

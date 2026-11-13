@@ -203,3 +203,11 @@ into tests; SPEC §0 makes this a rule.
 - E2E runs against local Docker HAPI (`docker compose up -d && npm run load && npm run e2e`); paging past one page is untested because 20 patients fit on one page.
 - Not done: shadcn/Radix primitives (no drawer or dialog needed yet) and the frontend-design / Playwright MCP tools (not installed; Playwright runs as a test dependency instead).
 - 14 Nov 2026: after an idle period the Sydney HAPI hung with all 5 Hikari connections stuck (dead sockets; Cloud Run freezes CPU between requests and the pooler drops idle connections). Fixed on the service with `socketTimeout=15&connectTimeout=10&tcpKeepAlive=true` on the JDBC URL plus Hikari `maxLifetime=120000` and `keepaliveTime=30000`. Verified fresh, **not yet verified after a long idle** — check after the next idle gap.
+
+## 14 Nov 2026 — M4
+
+- Patient banner, section nav and the FHIR JSON drawer moved into `patient/[id]/layout.tsx`; Patient, Condition and AllergyIntolerance reads are `cache()`d so the layout and pages share them. Chart sections are now three routes: Summary, Pathology, Vitals.
+- The JSON drawer is a native `<dialog>` (focus trap and Esc for free), one per chart, with a small regex highlighter (tokens only). Resources are embedded in the page rather than fetched on demand, so no new read endpoint exists before sign-in (M6).
+- Results table merges value and unit (`14 /min`, `7.0 % (53 mmol/mol)`) instead of a separate unit column; a BP panel shows `130/80 mmHg`.
+- The cohort has no reference ranges or interpretations, so no band or flag is drawn in the screenshots; unit tests cover both. Series with a single point are listed in the table but not charted.
+- Mixed units: only analytes in the SPEC conversion table are merged; other analytes are never converted. `valueQuantity.code` (UCUM) drives conversion.

@@ -51,6 +51,41 @@ test("worklist, search and empty result", async ({ page }) => {
   await expect(page.getByText("No patients match that search.")).toBeVisible();
 });
 
+test("FHIR JSON drawer opens from every list", async ({ page }) => {
+  const id = await patientIdWith(true);
+  const lists = [
+    [`/patient/${id}`, ["Problems", "Medicines", "Allergies", "Immunisations", "Encounters"]],
+    [`/patient/${id}/pathology`, ["All results"]],
+    [`/patient/${id}/vitals`, ["All results"]],
+  ] as const;
+  for (const [url, headings] of lists) {
+    await page.goto(url);
+    const banner = await bannerText(page);
+    for (const h of headings) {
+      const region =
+        h === "All results" ? page.locator("main") : page.locator(`section:has(> h2:text-is("${h}"))`);
+      await region
+        .getByRole("button", { name: /View FHIR JSON/ })
+        .first()
+        .click();
+      const dialog = page.getByRole("dialog");
+      await expect(dialog.getByRole("heading")).toHaveText(/^[A-Za-z]+\/[\w.-]+$/);
+      await expect(dialog).toContainText(banner.split(" · ")[0]); // wrong-patient guard: banner repeated
+      await expect(dialog.locator("pre")).toContainText('"resourceType"');
+      await page.keyboard.press("Escape");
+      await expect(dialog).toBeHidden();
+    }
+  }
+});
+
+test("charts: a blood pressure chart and a table toggle", async ({ page }) => {
+  const id = await patientIdWith(true);
+  await page.goto(`/patient/${id}/vitals`);
+  await expect(page.getByRole("img", { name: /Blood pressure trend/ })).toBeVisible();
+  await page.getByRole("button", { name: "Show table" }).first().click();
+  await expect(page.getByRole("columnheader", { name: /Value/ }).first()).toBeVisible();
+});
+
 for (const scheme of ["light", "dark"] as const) {
   test.describe(scheme, () => {
     test.use({ colorScheme: scheme });
@@ -65,9 +100,11 @@ for (const scheme of ["light", "dark"] as const) {
         for (const [slug, url] of [
           ["patients", "/patients"],
           ["chart", `/patient/${id}`],
+          ["pathology", `/patient/${id}/pathology`],
+          ["vitals", `/patient/${id}/vitals`],
         ] as const) {
           await page.goto(url);
-          await page.screenshot({ path: `docs/ui/screens/m3/${slug}-${scheme}-${name}.png`, fullPage: true });
+          await page.screenshot({ path: `docs/ui/screens/m4/${slug}-${scheme}-${name}.png`, fullPage: true });
           const { violations } = await new AxeBuilder({ page }).analyze();
           const bad = violations.filter((v) => v.impact === "serious" || v.impact === "critical");
           expect(bad.map((v) => `${v.id}: ${v.nodes[0]?.html}`)).toEqual([]);

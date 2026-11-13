@@ -16,7 +16,8 @@ SMART on FHIR and HL7 v2.
 | M1 Australian cohort | Done — 20 patients, [AU Core validation report](docs/validation/au-core-cohort.md) |
 | M2 Private FHIR server in Sydney | Built — final checks pending (cold start, 48 h cost) |
 | M3 Design system and chart | Built — worklist, patient chart, tokens, Playwright smoke + axe, [screenshots](docs/ui/screens/m3) |
-| M4–M7 (MVP) | Not started |
+| M4 Pathology, vitals, FHIR JSON | Built — L1–L11 pass, [screenshots](docs/ui/screens/m4) |
+| M5–M7 (MVP) | Not started |
 | M8–M15 | Not started |
 
 The build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
