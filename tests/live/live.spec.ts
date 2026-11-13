@@ -60,3 +60,21 @@ test("live: run a sample note, confirm a finding in /review", async ({ page }) =
     (await card.getAttribute("data-item-id")) ?? "",
   );
 });
+
+test("live: the assistant answers a suggested question from the record and refuses advice", async ({
+  page,
+}) => {
+  await page.goto("/sign-in");
+  await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
+  await page.waitForURL("**/patients", { timeout: 180_000 });
+  await page.getByRole("link", { name: /BEIER/ }).first().click();
+  const panel = page.getByTestId("assistant");
+  await panel.getByRole("button", { name: "Current medicines" }).click();
+  await expect(page.getByTestId("assistant-answer")).toHaveAttribute("data-kind", "scripted", {
+    timeout: 60_000,
+  });
+  await panel.getByLabel("Ask a question about this record").fill("Should I stop the simvastatin?");
+  await panel.getByRole("button", { name: "Ask", exact: true }).click();
+  await expect(page.getByTestId("assistant-answer")).toHaveAttribute("data-kind", "refused");
+  await page.screenshot({ path: "docs/ui/screens/m13/live-assistant.png", fullPage: true });
+});
