@@ -38,7 +38,12 @@ export async function proxy(request: NextRequest) {
   }
 
   // The HL7 endpoint also accepts an integration key; the route checks it.
-  if (pathname === "/api/hl7v2" && request.headers.has("x-api-key")) return NextResponse.next();
+  if (
+    (pathname === "/api/hl7v2" || pathname === "/api/care-gaps/sweep") &&
+    request.headers.has("x-api-key")
+  ) {
+    return NextResponse.next();
+  }
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(

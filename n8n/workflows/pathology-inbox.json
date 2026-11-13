@@ -1,0 +1,548 @@
+{
+  "id": "cliniq-hl7-inbox",
+  "name": "ClinIQ pathology inbox",
+  "nodes": [
+    {
+      "id": "a1",
+      "name": "HL7 in",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cliniq-hl7",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "webhookId": "cliniq-hl7"
+    },
+    {
+      "id": "a2",
+      "name": "Prepare",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [330, 300],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p1",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $json.data || '' }}"
+            },
+            {
+              "id": "p2",
+              "name": "name",
+              "type": "string",
+              "value": "={{ ($('HL7 in').first().json.query && $('HL7 in').first().json.query.name) || ('hl7-' + $now.toFormat('yyyyLLdd-HHmmss') + '.hl7') }}"
+            },
+            {
+              "id": "p3",
+              "name": "appUrl",
+              "type": "string",
+              "value": "https://cliniq-inky-ten.vercel.app"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a3",
+      "name": "Send to ClinIQ",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [440, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Prepare').first().json.appUrl }}/api/hl7v2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "text/plain",
+        "body": "={{ $('Prepare').first().json.message }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cliniq-integration-key",
+          "name": "ClinIQ integration key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "a4",
+      "name": "ACK is AA?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [660, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.data || '' }}",
+              "rightValue": "MSA|AA|",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a5",
+      "name": "Done file",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [990, 180],
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "message",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "={{ $('Prepare').first().json.name }}"
+        }
+      }
+    },
+    {
+      "id": "a6",
+      "name": "Write to done",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1100, 180],
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/hl7/done/{{ $('Prepare').first().json.name }}",
+        "dataPropertyName": "data",
+        "options": {}
+      }
+    },
+    {
+      "id": "a7",
+      "name": "Reply AA",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1320, 180],
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Send to ClinIQ').last().json.data }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/hl7-v2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "a8",
+      "name": "Retries left?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [880, 440],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $runIndex }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a9",
+      "name": "Back off",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1100, 360],
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ 2 ** $runIndex }}",
+        "unit": "seconds"
+      },
+      "webhookId": "cliniq-hl7-backoff"
+    },
+    {
+      "id": "a10",
+      "name": "Failed file",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1210, 560],
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "message",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "={{ $('Prepare').first().json.name }}"
+        }
+      }
+    },
+    {
+      "id": "a11",
+      "name": "Write to failed",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1320, 560],
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/hl7/failed/{{ $('Prepare').first().json.name }}",
+        "dataPropertyName": "data",
+        "options": {}
+      }
+    },
+    {
+      "id": "a12",
+      "name": "Write notice",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1540, 560],
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/hl7/failed/{{ $('Prepare').first().json.name }}.notice.txt",
+        "dataPropertyName": "notice",
+        "options": {}
+      }
+    },
+    {
+      "id": "a13",
+      "name": "Reply failed",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1760, 560],
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Send to ClinIQ').last().json.data || 'ClinIQ did not answer' }}",
+        "options": {
+          "responseCode": 502
+        }
+      }
+    },
+    {
+      "id": "a14",
+      "name": "Notice text",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [1540, 440],
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "notice",
+        "binaryPropertyName": "notice",
+        "options": {
+          "fileName": "notice.txt"
+        }
+      }
+    },
+    {
+      "id": "a15",
+      "name": "Compose notice",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 440],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "n1",
+              "name": "notice",
+              "type": "string",
+              "value": "={{ 'HL7 message ' + $('Prepare').first().json.name + ' failed after ' + $('Send to ClinIQ').all().length + ' attempt(s) at ' + $now.toISO() + '. Last reply: ' + (($('Send to ClinIQ').last().json.data || 'none').split('\\r')[1] || 'none') }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a0",
+      "name": "Read body",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [110, 300],
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "data",
+        "options": {}
+      }
+    },
+    {
+      "id": "a16",
+      "name": "Carry message (done)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [770, 180],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m1",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $('Prepare').first().json.message }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a17",
+      "name": "Carry message (failed)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [990, 560],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m1",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $('Prepare').first().json.message }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "HL7 in": {
+      "main": [
+        [
+          {
+            "node": "Read body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare": {
+      "main": [
+        [
+          {
+            "node": "Send to ClinIQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to ClinIQ": {
+      "main": [
+        [
+          {
+            "node": "ACK is AA?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ACK is AA?": {
+      "main": [
+        [
+          {
+            "node": "Carry message (done)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retries left?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Done file": {
+      "main": [
+        [
+          {
+            "node": "Write to done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write to done": {
+      "main": [
+        [
+          {
+            "node": "Reply AA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retries left?": {
+      "main": [
+        [
+          {
+            "node": "Back off",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Carry message (failed)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Back off": {
+      "main": [
+        [
+          {
+            "node": "Send to ClinIQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Failed file": {
+      "main": [
+        [
+          {
+            "node": "Write to failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write to failed": {
+      "main": [
+        [
+          {
+            "node": "Compose notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose notice": {
+      "main": [
+        [
+          {
+            "node": "Notice text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notice text": {
+      "main": [
+        [
+          {
+            "node": "Write notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write notice": {
+      "main": [
+        [
+          {
+            "node": "Reply failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read body": {
+      "main": [
+        [
+          {
+            "node": "Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry message (done)": {
+      "main": [
+        [
+          {
+            "node": "Done file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry message (failed)": {
+      "main": [
+        [
+          {
+            "node": "Failed file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "cliniq-error-notice"
+  },
+  "active": false,
+  "pinData": {}
+}

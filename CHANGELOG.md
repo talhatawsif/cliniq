@@ -1,5 +1,10 @@
 # Changelog
 
+## M14 — n8n workflows (14 Nov 2026)
+
+- `POST /api/care-gaps/sweep` (one idempotent FHIR Task per open care gap; `careGaps()` shared with the CDS card), integration-key auth,
+  `n8n/workflows/` (pathology inbox, weekly sweep, error notice), `n8n/drop.sh`, diagrams, and a CI check for secrets in the exports.
+
 ## M13 — Chart assistant (14 Nov 2026)
 
 - `src/lib/assistant/`: pre-filter, facts, scripted answerer, prompt, OpenRouter free-model chain, output filter, orchestrator;

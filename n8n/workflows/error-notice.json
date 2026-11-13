@@ -1,0 +1,102 @@
+{
+  "id": "cliniq-error-notice",
+  "name": "ClinIQ error notice",
+  "nodes": [
+    {
+      "id": "c1",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [0, 200],
+      "parameters": {}
+    },
+    {
+      "id": "c2",
+      "name": "Compose",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 200],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "notice",
+              "type": "string",
+              "value": "={{ 'Workflow \"' + $json.workflow.name + '\" failed at ' + $now.toISO() + ' in node \"' + ($json.execution.lastNodeExecuted || '?') + '\": ' + (($json.execution.error && $json.execution.error.message) || 'unknown error') }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c3",
+      "name": "Notice file",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [440, 200],
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "notice",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "notice.txt"
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "name": "Write notice",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [660, 200],
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/home/node/.n8n-files/notices/error-{{ $now.toFormat('yyyyLLdd-HHmmss') }}.txt",
+        "dataPropertyName": "data",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Compose",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose": {
+      "main": [
+        [
+          {
+            "node": "Notice file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notice file": {
+      "main": [
+        [
+          {
+            "node": "Write notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {}
+}

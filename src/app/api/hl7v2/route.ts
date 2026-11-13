@@ -1,6 +1,5 @@
-import { timingSafeEqual } from "node:crypto";
 import { z } from "zod";
-import { env } from "@/lib/env";
+import { hasIntegrationKey } from "@/lib/integration";
 import { FhirError } from "@/lib/fhir";
 import { guardRequest } from "@/lib/quota";
 import { runHl7 } from "@/lib/hl7v2/server";
@@ -8,16 +7,9 @@ import { currentUserId } from "@/lib/supabase";
 
 const query = z.object({ dryRun: z.enum(["0", "1"]).default("0") });
 
-function keyMatches(given: string | null) {
-  const want = env.INTEGRATION_API_KEY;
-  if (!want || !given) return false;
-  const [a, b] = [Buffer.from(given), Buffer.from(want)];
-  return a.length === b.length && timingSafeEqual(a, b);
-}
-
 /** Text body in, HL7 ACK out. Needs a session, or the integration key in `x-api-key`. */
 export async function POST(request: Request) {
-  const keyed = keyMatches(request.headers.get("x-api-key"));
+  const keyed = hasIntegrationKey(request);
   const user = keyed ? null : await currentUserId();
   if (!keyed && !user) return Response.json({ error: "Sign in required" }, { status: 401 });
 

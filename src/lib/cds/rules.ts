@@ -142,6 +142,32 @@ const meters = (o: Observation) => {
   return (q.code ?? q.unit) === "m" ? q.value : q.value / 100; // cm otherwise
 };
 
+export type CareGap = { type: "diabetes-hba1c" | "hypertension-bp"; summary: string; detail: string };
+
+/** Open care gaps: confirmed, active diabetes with no HbA1c, or hypertension with no blood pressure, in 12 months. */
+export function careGaps(i: Inputs, now: Date): CareGap[] {
+  const within = (obs: Observation[]) => {
+    const o = latest(obs);
+    return o !== undefined && (now.getTime() - ms(o)) / DAY <= 365;
+  };
+  const gaps: CareGap[] = [];
+  if (usable(i.conditions, DIABETES) && !within(i.hba1c)) {
+    gaps.push({
+      type: "diabetes-hba1c",
+      summary: "Diabetes: no HbA1c recorded in the last 12 months",
+      detail: "Care gap based on confirmed, active diabetes.",
+    });
+  }
+  if (usable(i.conditions, HYPERTENSION) && !within(i.bp)) {
+    gaps.push({
+      type: "hypertension-bp",
+      summary: "Hypertension: no blood pressure recorded in the last 12 months",
+      detail: "Care gap based on confirmed, active hypertension.",
+    });
+  }
+  return gaps;
+}
+
 /** `now` is injected so every rule is testable. */
 export function evaluate(i: Inputs, now: Date = new Date()): Card[] {
   if (i.patient.deceasedDateTime || i.patient.deceasedBoolean) return [];
@@ -177,27 +203,6 @@ export function evaluate(i: Inputs, now: Date = new Date()): Card[] {
     );
   }
 
-  const within = (obs: Observation[]) => {
-    const o = latest(obs);
-    return o !== undefined && (now.getTime() - ms(o)) / DAY <= 365;
-  };
-  if (usable(i.conditions, DIABETES) && !within(i.hba1c)) {
-    cards.push(
-      card(
-        "Diabetes: no HbA1c recorded in the last 12 months",
-        "warning",
-        "Care gap based on confirmed, active diabetes.",
-      ),
-    );
-  }
-  if (usable(i.conditions, HYPERTENSION) && !within(i.bp)) {
-    cards.push(
-      card(
-        "Hypertension: no blood pressure recorded in the last 12 months",
-        "warning",
-        "Care gap based on confirmed, active hypertension.",
-      ),
-    );
-  }
+  for (const gap of careGaps(i, now)) cards.push(card(gap.summary, "warning", gap.detail));
   return cards;
 }
