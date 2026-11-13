@@ -76,7 +76,7 @@ test("add the narration to the demo video", async ({ page }) => {
       ]);
       const rec = new MediaRecorder(stream, {
         mimeType: "video/webm;codecs=vp9,opus",
-        videoBitsPerSecond: 3_000_000,
+        videoBitsPerSecond: 900_000,
         audioBitsPerSecond: 128_000,
       });
       rec.ondataavailable = async (e) => {
