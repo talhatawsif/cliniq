@@ -47,6 +47,8 @@ test("worklist, search and empty result", async ({ page }) => {
   await page.goto("/patients");
   await expect(page.getByRole("link", { name: /ABSHIRE/ })).toBeVisible();
   await expect(page.getByText("20 patients · page 1 of 1")).toBeVisible(); // the cohort fits one page
+  await expect(page.getByRole("columnheader", { name: "Active problems" })).toBeVisible();
+  await expect(page.getByRole("row", { name: /ABSHIRE/ })).toContainText(/\d{2}\/\d{2}\/\d{4}/); // last encounter date
   await page.goto("/patients?q=Zzzz");
   await expect(page.getByText("No patients match that search.")).toBeVisible();
 });

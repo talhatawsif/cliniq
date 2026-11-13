@@ -37,6 +37,16 @@ const sections = (b: Bundle) => (b.entry![0].resource as Composition).section!;
 const ids = (b: Bundle) => b.entry!.map((e) => `${e.resource!.resourceType}/${e.resource!.id}`);
 
 describe("AU Patient Summary builder", () => {
+  it("author and custodian are in the document and named for the owner", () => {
+    const b = buildPatientSummary(base);
+    const c = b.entry![0].resource as Composition;
+    expect(c.author?.[0].reference).toBe("Practitioner/cliniq-author");
+    expect(c.custodian?.reference).toBe("Organization/cliniq-custodian");
+    expect(ids(b)).toEqual(
+      expect.arrayContaining(["Practitioner/cliniq-author", "Organization/cliniq-custodian"]),
+    );
+  });
+
   it("a patient with no allergies gets an empty Allergies section with an empty reason, not a dropped section", () => {
     const allergies = sections(buildPatientSummary(base)).find(
       (s) => s.title === "Allergies and adverse reactions",

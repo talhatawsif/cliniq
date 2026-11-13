@@ -228,6 +228,7 @@ export function buildPatientSummary(src: Source, now = new Date()): Bundle {
     composition,
     patient,
     author,
+    custodian,
     ...problemEntries,
     ...allergyEntries,
     ...medEntries,

@@ -71,3 +71,32 @@ export async function getChartData(id: string) {
   );
   return { medications, medicationById, immunizations, encounters };
 }
+
+/** Worklist extras for one page of patients: active problem count and last encounter date. */
+export async function getWorklistExtras(ids: string[]) {
+  const safe = ids.filter(isFhirId);
+  const extras = new Map<string, { active: number; lastEncounter?: string }>(
+    safe.map((id) => [id, { active: 0 }]),
+  );
+  if (!safe.length) return extras;
+  const [conditions, encounters] = await Promise.all([
+    fhirSearch<Condition>(
+      `Condition?patient=${safe.join(",")}&clinical-status=active&_elements=subject&_count=500`,
+    ),
+    Promise.all(
+      safe.map((id) =>
+        fhirSearch<Encounter>(`Encounter?patient=${id}&_sort=-date&_count=1&_elements=period`, {
+          maxPages: 1,
+        }),
+      ),
+    ),
+  ]);
+  for (const c of conditions) {
+    const e = extras.get(c.subject?.reference?.split("/")[1] ?? "");
+    if (e) e.active += 1;
+  }
+  safe.forEach((id, i) => {
+    extras.get(id)!.lastEncounter = encounters[i][0]?.period?.start;
+  });
+  return extras;
+}
