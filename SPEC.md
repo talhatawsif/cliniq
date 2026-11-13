@@ -176,7 +176,7 @@ the assistant and n8n add breadth last.
 
 **Done when**
 - `npm run ci` exits 0 and ESLint reports 0 `any`.
-- `rtk grep "localhost:8080" src` returns nothing.
+- `grep -r "localhost:8080" src` returns nothing.
 - The Vercel URL returns 200 on `/api/health`, and with `FHIR_BASE_URL` unset the home page shows
   the "FHIR server not configured" state instead of an error.
 
@@ -191,7 +191,7 @@ idempotent `PUT` by id, concurrency-limited, report with pass/fail and database 
 - Unit tests pass for: IHI Luhn (`8003608833357361` valid, `8003608833357362` invalid); unit
   conversion (creatinine 1.00 mg/dL → 88.4 µmol/L coded `14682-9`; glucose 100 mg/dL →
   5.55 mmol/L; cholesterol 200 mg/dL → 5.17 mmol/L; HbA1c 7.0 % → 53 mmol/mol).
-- `rtk grep` over `data/cohort` finds no `us-core`, no `Claim`, no name containing a digit, and no
+- `grep -r` over `data/cohort` finds no `us-core`, no `Claim`, no name containing a digit, and no
   "Anthem"/"hispanic" in decoded note text (script check).
 - `docs/validation/au-core-cohort.md` exists with a table (resource type × count × passing ×
   profile claimed); 20/20 Patients pass AU Core Patient; the script exits non-zero if any resource
@@ -238,7 +238,7 @@ from an explicit no-known-allergy record. Problem list split by `clinicalStatus`
 - Unit tests: age at date, age at death, IHI formatting, problem-list filtering by status,
   medicine strength formatting (`5.0 mg` → `5 mg`, `.5 mg` → `0.5 mg`).
 - `docs/UI.md` §9 checks 1–5 pass for sign-in, patient list and chart; the page title and favicon
-  are no longer the Next.js defaults; no Geist font remains (`rtk grep "Geist" src` is empty).
+  are no longer the Next.js defaults; no Geist font remains (`grep -ri "geist" src` is empty).
 
 ### M4 — Pathology, vitals, FHIR JSON
 Observations by category with full paging; trends grouped by analyte (table below); BP as one

@@ -1,10 +1,13 @@
 import { getPatientDetail } from "@/lib/fhir";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import VitalsChart from "@/components/VitalsChart";
 
 export default async function PatientDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { patient, observations, conditions, allergies } = await getPatientDetail(id);
+  const detail = await getPatientDetail(id);
+  if (!detail) notFound();
+  const { patient, observations, conditions, allergies } = detail;
 
   return (
     <main className="p-8 max-w-3xl mx-auto">

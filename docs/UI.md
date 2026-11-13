@@ -199,7 +199,7 @@ Each card that touches UI is done only when:
    saved to `docs/ui/screens/<card>/` and committed.
 2. axe reports no serious or critical violations on those screens, in both themes.
 3. Every interactive element is reachable and operable by keyboard, with a visible focus ring.
-4. `rtk grep` finds no raw hex colours and no Tailwind palette colour classes in `src/components`
+4. `grep -r` finds no raw hex colours and no Tailwind palette colour classes in `src/components`
    or `src/app` (tokens only).
 5. The session re-reads §2 against its own screenshots and states, item by item, that nothing on
    the banned list is present.
