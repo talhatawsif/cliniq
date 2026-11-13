@@ -1,7 +1,8 @@
 # ClinIQ
 
-Clinical notes → SNOMED CT / ICD-10 codes → FHIR resources with provenance, shown on an EHR-style
-patient chart. Built on FHIR R4 (HAPI FHIR), SMART on FHIR, CDS Hooks and LOINC.
+Clinical notes and HL7 v2 pathology results → SNOMED CT-AU / LOINC coded FHIR resources with
+provenance, shown on an EHR-style patient chart. Built on FHIR R4 (HAPI FHIR), AU Core, CDS Hooks,
+SMART on FHIR and HL7 v2.
 
 > Portfolio prototype. Synthetic data only (Synthea). Not a medical device and not clinically validated.
 
