@@ -1,12 +1,61 @@
 # ClinIQ
 
-Clinical notes and HL7 v2 pathology results → SNOMED CT-AU / LOINC coded FHIR resources with
-provenance, shown on an EHR-style patient chart. Built on FHIR R4 (HAPI FHIR), AU Core, CDS Hooks,
-SMART on FHIR and HL7 v2.
+A small EHR-style clinical app built to show Australian health-interoperability skills: a private
+FHIR R4 server in Sydney, an Australian synthetic cohort, a patient chart with pathology and vital
+trends, a CDS Hooks decision-support service, and HL7 v2 pathology results mapped to FHIR with ACKs.
 
-> Portfolio prototype. Synthetic data only (Synthea). Not a medical device and not clinically validated.
+> **Honest framing.** Portfolio prototype. Synthetic data only (Synthea, Australianised; the IHIs are
+> reserved test values). Not a medical device, not clinically validated, no regulatory claim.
+> Decision-support cards are informational demos.
 
-**Live:** https://cliniq-inky-ten.vercel.app (no patient data until the FHIR server is deployed in M2)
+**Live:** https://cliniq-inky-ten.vercel.app. Sign in with the "Sign in as demo clinician" button.
+Outside Australian daytime the FHIR server is asleep (Cloud Run scales to zero), so the first
+request can take up to two minutes to wake it.
+
+## What it does
+
+- **Chart:** worklist, banner with allergies, problems, medicines, immunisations, encounters;
+  pathology and vitals trend charts by analyte; a "View FHIR JSON" drawer on every row.
+- **Decision support:** CDS Hooks `patient-view` service (eGFR by CKD-EPI 2021, BMI, diabetes and
+  hypertension care gaps), driven by prefetch only. The chart shows the same cards from the same rules.
+  See [`docs/cds-hooks.md`](docs/cds-hooks.md).
+- **HL7 v2 in:** `POST /api/hl7v2` takes an ORU^R01, maps it to a FHIR transaction, validates it with
+  `$validate`, writes it and replies with an ACK. Repeats are idempotent, corrections update the same
+  Observation, unknown patients are rejected (never created), failures are kept in a message log.
+  Try it on `/hl7` with a dry run.
+- **Safety and operations:** sign-in, an audit log shaped like FHIR AuditEvent, daily quotas, security
+  headers ([`docs/SECURITY.md`](docs/SECURITY.md)), and a budget-triggered spend cap on the cloud project (the billing-detach step itself is untested).
+
+## Architecture
+
+```mermaid
+flowchart LR
+  B[Browser] --> V["Vercel: Next.js 16<br/>UI, route handlers,<br/>/cds-services, /api/hl7v2"]
+  EXT["CDS Hooks client<br/>HL7 v2 sender"] --> V
+  V -- "FHIR R4 + Google ID token" --> H["Cloud Run Sydney<br/>HAPI FHIR 8.12 (private)"]
+  H --> P[("Supabase Postgres<br/>schema hapi")]
+  V -- "service role, RLS on" --> S[("Supabase<br/>auth, audit_events,<br/>quotas, hl7_messages")]
+  BUD["Budget 1 AUD"] --> F["billing-cap function"] -. "detaches billing" .-> H
+```
+
+The browser never talks to the FHIR server; only the app's service account can invoke it.
+
+## Standards and versions
+
+| Area | Used |
+|---|---|
+| FHIR | R4 (4.0.1), HAPI FHIR server `hapiproject/hapi:v8.12.0-2` |
+| Profiles | AU Core 2.0.0: every cohort resource that claims an AU Core profile validates ([report](docs/validation/au-core-cohort.md)) |
+| Identifiers | IHI (`http://ns.electronichealth.net.au/id/hi/ihi/1.0`), reserved test values |
+| Codes | LOINC for pathology and vitals, UCUM units, SNOMED CT where Synthea supplies it |
+| HL7 v2 | 2.4 ORU^R01 in the style of Australian pathology (AS 4700.2), mapped following the HL7 v2-to-FHIR guide. Hand-written parser |
+| CDS Hooks | `patient-view`, prefetch only. Sandbox check still to do |
+| Calculators | CKD-EPI 2021 eGFR (race-free), BMI |
+| Stack | Next.js 16, React 19, TypeScript strict, Recharts, Supabase Auth, Vitest, Playwright, axe |
+
+Not built yet: AU Patient Summary export, SNOMED CT-AU coding from notes (needs the terminology
+service), SMART on FHIR launch, the chart assistant. ICD-10-AM is not included: it is licensed by
+IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 
 ## Status
 
@@ -22,7 +71,7 @@ SMART on FHIR and HL7 v2.
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Live check needs the demo password set in Vercel |
 | M8–M15 | Not started |
 
-The build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
+Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
 [`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
 
 ## Run locally

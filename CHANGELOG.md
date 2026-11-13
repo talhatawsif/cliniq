@@ -1,5 +1,33 @@
 # Changelog
 
+## M7 — HL7 v2 pathology to FHIR (14 Nov 2026)
+
+- `src/lib/hl7v2/`: parser, ORU^R01 to FHIR transaction mapper, ACK builder, processor (pure, injected
+  dependencies). `POST /api/hl7v2` (session or `x-api-key`), `/hl7` page with dry run, `hl7_messages` log.
+- Ids derive from the filler order number, so resends and corrections update, not duplicate.
+- H1–H16 pass; live write, duplicate and correction tested against HAPI.
+
+## M6 — Sign-in, audit, quotas (14 Nov 2026)
+
+- One-click demo sign-in (Supabase Auth), `src/proxy.ts` guarding pages and APIs, `audit_events` and `/audit`,
+  daily quotas with a 50 kB body cap, CSP and other security headers, `docs/SECURITY.md`, `npm run reset-demo`.
+
+## M5 — CDS Hooks (14 Nov 2026)
+
+- `/cds-services` discovery and `cliniq-patient-view` (eGFR CKD-EPI 2021, BMI, care gaps); chart decision support.
+
+## M4 — Pathology, vitals, FHIR JSON (14 Nov 2026)
+
+- Analyte trend charts, observation tables with flags, FHIR JSON drawer.
+
+## M3 — Design and chart (14 Nov 2026)
+
+- Design tokens, app shell, worklist, patient chart, Playwright smoke and axe tests.
+
+## M2 — Private FHIR server in Sydney (14 Nov 2026)
+
+- HAPI on Cloud Run (private) with Supabase Postgres, IAM-signed access from the app, billing hard cap.
+
 ## M1 — Australian cohort (13 Nov 2026)
 
 - `data/cohort/`: 20 curated, trimmed, Australianised Synthea patients (9 MB) plus shared
