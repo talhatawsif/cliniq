@@ -326,7 +326,7 @@ Known and left (documented in SECURITY.md, CLINICAL-SAFETY.md or here): care-gap
 - The CDS Hooks sandbox check was run with Playwright against the public sandbox (`playwright.sandbox.config.ts`): it accepted the discovery URL and showed ClinIQ's cards (screenshot in `docs/ui/screens/m5/`).
 
 ## Model chain re-ordered from published benchmarks (14 Nov 2026)
-The chain is now `nvidia/nemotron-3-ultra` → `baidu/ernie-5.5-flash-preview` → `cohere/north-mini-code` (it was cohere first). `cohere/north-mini-code` is a coding model that happened to pass the probe; Nemotron 3 Ultra has the strongest published instruction-following and long-context scores and also passed. Evidence and caveats are in `docs/llm-model-choice.md`. The 20-question evaluation is not repeated (it would use most of the key's 50 free requests); it will be run once when the limit has reset.
+The chain is now `cohere/north-mini-code` → `baidu/ernie-5.5-flash-preview` → `nvidia/nemotron-3-ultra` (reordered 14 Nov after the second evaluation: nemotron timed out at 20 s on every call, so it moved last; the working model goes first so a question does not wait on failed ones). `cohere/north-mini-code` is a coding model that happened to pass the probe; Nemotron 3 Ultra has the strongest published instruction-following and long-context scores and also passed. Evidence and caveats are in `docs/llm-model-choice.md`. The 20-question evaluation is not repeated (it would use most of the key's 50 free requests); it will be run once when the limit has reset.
 
 ## Bug hunt (14 Nov 2026)
 Found by crawling every page for every patient, odd inputs, validating all 20 patient summaries, scanning every patient's assistant facts, and pasting a real one-line note. Each fixed with a test:
