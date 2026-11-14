@@ -2,8 +2,8 @@ import "server-only";
 import { after } from "next/server";
 import { getPatient } from "@/lib/fhir";
 import { smartSession } from "@/lib/smart/session";
-import { currentUserId } from "@/lib/supabase";
-import { admin } from "@/lib/supabase";
+import { LIMITS, consumeQuota } from "@/lib/quota";
+import { admin, currentUserId } from "@/lib/supabase";
 
 export type AuditAction = "view" | "export" | "write" | "review" | "sign-in";
 
@@ -18,6 +18,13 @@ export async function audit(
   const agent =
     agentOverride ?? (await currentUserId()) ?? ((await smartSession()) ? "smart-launch" : "anonymous");
   after(async () => {
+    // Views and sign-ins are open to any visitor of the demo: capped per day so a loop cannot fill the database.
+    // Writes and reviews are always recorded.
+    if (
+      (action === "view" || action === "sign-in") &&
+      !(await consumeQuota("audit", LIMITS.audit).catch(() => true))
+    )
+      return;
     const { error } = await admin().from("audit_events").insert({ agent, action, entity, outcome, detail });
     if (error) console.error("audit write failed:", error.code);
   });

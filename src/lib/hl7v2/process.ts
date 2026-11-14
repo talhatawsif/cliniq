@@ -39,16 +39,21 @@ export async function processMessage(
   opts: { dryRun?: boolean; now?: Date } = {},
 ): Promise<Result> {
   let msg: Hl7Message | null = null;
+  // MSH-10 is only unique per sender: two labs can both send "1". The log and the duplicate check use sender + id.
+  const dedupeKey = (m: Hl7Message) => [3, 4, 10].map((n) => val(m.segments[0], n, m.delims)).join("^");
   const done = async (code: AckCode, outcome: string, extra: Partial<Result> = {}): Promise<Result> => {
     const status = extra.status ?? (code === "AA" ? "accepted" : "failed");
     if (!opts.dryRun && msg && status !== "dry-run") {
-      await deps.log({
-        controlId: val(msg.segments[0], 10, msg.delims),
-        messageType: val(msg.segments[0], 9, msg.delims, 1) + "^" + val(msg.segments[0], 9, msg.delims, 2),
-        status: status as "accepted" | "duplicate" | "failed",
-        outcome,
-        raw: text,
-      });
+      // A failed log write must not hide the ACK (the message may already be stored).
+      await deps
+        .log({
+          controlId: dedupeKey(msg),
+          messageType: val(msg.segments[0], 9, msg.delims, 1) + "^" + val(msg.segments[0], 9, msg.delims, 2),
+          status: status as "accepted" | "duplicate" | "failed",
+          outcome,
+          raw: text,
+        })
+        .catch((e) => console.error("hl7 message log failed:", e instanceof Error ? e.message : e));
     }
     return {
       ack: buildAck(msg, code, outcome, opts.now),
@@ -71,7 +76,7 @@ export async function processMessage(
   if (type !== "ORU" || trigger !== "R01") return done(AR, `Unsupported message type ${type}^${trigger}`);
   const controlId = val(msg.segments[0], 10, d);
   if (!controlId) return done(AR, "MSH-10 (message control id) is required");
-  if (await deps.alreadyAccepted(controlId))
+  if (await deps.alreadyAccepted(dedupeKey(msg)))
     return done("AA", "Duplicate message control id; nothing written", { status: "duplicate" });
 
   const ihi = ihiOf(msg);

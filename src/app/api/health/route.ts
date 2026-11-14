@@ -2,6 +2,13 @@ import { z } from "zod";
 import { env, flags, invalidSettings } from "@/lib/env";
 import { FhirError, fhirFetch } from "@/lib/fhir/client";
 
+// The deep check wakes the FHIR server and calls Supabase, and the route is public: reuse one result for 30 s.
+let recent: { at: number; result: ReturnType<typeof deepCheck> } | undefined;
+const cachedDeepCheck = () => {
+  if (!recent || Date.now() - recent.at > 30_000) recent = { at: Date.now(), result: deepCheck() };
+  return recent.result;
+};
+
 async function deepCheck() {
   const started = Date.now();
   const [fhir, db] = await Promise.allSettled([
@@ -30,7 +37,7 @@ async function deepCheck() {
 
 export async function GET(request: Request) {
   const deep = z.literal("1").safeParse(new URL(request.url).searchParams.get("deep")).success
-    ? await deepCheck()
+    ? await cachedDeepCheck()
     : undefined;
   const degraded = invalidSettings.length > 0 || (deep && (deep.fhir === "down" || deep.database === "down"));
   return Response.json(

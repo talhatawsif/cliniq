@@ -1,8 +1,8 @@
 import "server-only";
 import { admin } from "@/lib/supabase";
 
-/** Daily global caps (UTC day) so a public demo cannot fill the database or burn free-tier limits. */
-export const LIMITS = { hl7: 50, pipeline: 50, assistant: 40 } as const;
+/** Daily global caps (UTC day; `audit` caps view and sign-in rows, which anyone can generate) so a public demo cannot fill the database or burn free-tier limits. */
+export const LIMITS = { hl7: 50, pipeline: 50, assistant: 40, audit: 5000 } as const;
 export const MAX_BODY_BYTES = 50_000;
 
 /** Takes one unit of a daily quota. False means the limit is reached. */

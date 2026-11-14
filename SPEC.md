@@ -371,7 +371,7 @@ OBX|3|ST|5778-6^Color of Urine^LN||Pale \T\ clear||||||F
 | H8 | Reference range `<5.0` | `high` 5.0 only; unparseable range → `referenceRange.text` |
 | H9 | OBX-2 `SN` value `<^5` | `valueQuantity` 5 with `comparator` `<` |
 | H10 | OBX-11 `P` / `C` | `preliminary` / `corrected` |
-| H11 | Same MSH-10 sent twice | Second reply is `AA`, no new resources |
+| H11 | Same sender and MSH-10 sent twice | Second reply is `AA`, no new resources |
 | H12 | Corrected result (`C`) for the same filler number and code | Existing Observation updated (version 2), not duplicated |
 | H13 | `ADT^A01` | ACK `AR` ("unsupported message type") |
 | H14 | Success | ACK `MSH…\|ACK^R01\|…\|2.4` + `MSA\|AA\|MSG00001`, sending and receiving fields swapped |

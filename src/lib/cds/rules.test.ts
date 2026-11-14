@@ -96,6 +96,11 @@ describe("cards", () => {
     const creatinine = [quantity("2160-0", 2.0, "mg/dL", 10), quantity("2160-0", 2.0, "mg/dL", 120)];
     expect(evaluate(inputs(patient("male", 70), { creatinine }), NOW)[0].detail).not.toContain("3 months");
   });
+  it("a cancelled or wrongly entered low result does not count as persistent", () => {
+    const bad = { ...quantity("2160-0", 2.0, "mg/dL", 120), status: "entered-in-error" as const };
+    const creatinine = [quantity("2160-0", 2.0, "mg/dL", 10), bad];
+    expect(evaluate(inputs(patient("male", 70), { creatinine }), NOW)[0].detail).toContain("3 months");
+  });
   it("summary stays within 140 characters and cards have the required fields", () => {
     const cards = evaluate(
       inputs(patient("male", 70), { creatinine: [quantity("2160-0", 2.0, "mg/dL")] }),
@@ -128,6 +133,13 @@ describe("BMI", () => {
   });
   it("91.9 kg / 1.75 m is 30.0, obese (classified after rounding)", () => {
     expect(bmiCategory(91.9 / 1.75 ** 2)).toEqual({ value: 30, category: "obese" });
+  });
+  it("a weight in pounds or a height in inches gets no BMI card", () => {
+    const p = patient("female", 40);
+    const lb = { weight: [quantity("29463-7", 154, "[lb_av]")], height: [quantity("8302-2", 175, "cm")] };
+    const inch = { weight: [quantity("29463-7", 70, "kg")], height: [quantity("8302-2", 69, "[in_i]")] };
+    expect(evaluate(inputs(p, lb), NOW)).toEqual([]);
+    expect(evaluate(inputs(p, inch), NOW)).toEqual([]);
   });
   it("age 10 gets no BMI card", () => expect(withBmi(10, 40, 1.4)).toEqual([]));
 });

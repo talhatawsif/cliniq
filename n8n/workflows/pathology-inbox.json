@@ -184,6 +184,15 @@
                 "type": "number",
                 "operation": "lt"
               }
+            },
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.data || '' }}",
+              "rightValue": "MSA|",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
             }
           ],
           "combinator": "and"

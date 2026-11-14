@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import DataTable from "@/components/DataTable";
-import { banner, getPatient } from "@/lib/fhir";
+import FhirNotice from "@/components/FhirNotice";
+import { FhirError, banner, getPatient } from "@/lib/fhir";
 import { fhirFetch } from "@/lib/fhir/client";
 import { listReview } from "@/lib/pipeline/review";
 import { noteText } from "@/lib/pipeline/run";
@@ -13,31 +14,37 @@ export const metadata: Metadata = { title: "Review queue" };
 export default async function ReviewPage() {
   await connection();
   const { pending, decided } = await listReview();
-  const cards = await Promise.all(
-    pending.map(async (i) => {
-      const [patient, doc] = await Promise.all([
-        getPatient(i.patient_id),
-        fhirFetch<DocumentReference>(`DocumentReference/${i.document_id}`),
-      ]);
-      const text = doc ? noteText(doc) : "";
-      const b = patient ? banner(patient) : null;
-      return {
-        id: i.id,
-        patient: b
-          ? `${b.family}, ${b.given} · DOB ${b.dob} (${b.status}) · IHI ${b.ihi ?? "not recorded"}`
-          : `Patient/${i.patient_id}`,
-        before: text.slice(Math.max(0, i.span_start - 120), i.span_start),
-        span: text.slice(i.span_start, i.span_end) || i.term,
-        after: text.slice(i.span_end, i.span_end + 120),
-        code: i.code,
-        display: i.display,
-        confidence: Number(i.confidence),
-        rationale: i.rationale,
-        alternatives: i.alternatives,
-        engine: i.engine,
-      };
-    }),
-  );
+  let cards;
+  try {
+    cards = await Promise.all(
+      pending.map(async (i) => {
+        const [patient, doc] = await Promise.all([
+          getPatient(i.patient_id),
+          fhirFetch<DocumentReference>(`DocumentReference/${i.document_id}`),
+        ]);
+        const text = doc ? noteText(doc) : "";
+        const b = patient ? banner(patient) : null;
+        return {
+          id: i.id,
+          patient: b
+            ? `${b.family}, ${b.given} · DOB ${b.dob} (${b.status}) · IHI ${b.ihi ?? "not recorded"}`
+            : `Patient/${i.patient_id}`,
+          before: text.slice(Math.max(0, i.span_start - 120), i.span_start),
+          span: text.slice(i.span_start, i.span_end) || i.term,
+          after: text.slice(i.span_end, i.span_end + 120),
+          code: i.code,
+          display: i.display,
+          confidence: Number(i.confidence),
+          rationale: i.rationale,
+          alternatives: i.alternatives,
+          engine: i.engine,
+        };
+      }),
+    );
+  } catch (e) {
+    if (e instanceof FhirError) return <FhirNotice error={e} />;
+    throw e;
+  }
   return (
     <main className="flex-1 space-y-6 px-4 py-4 xl:px-6">
       <h1 className="text-xl font-semibold">Review queue</h1>

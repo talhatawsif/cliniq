@@ -1,5 +1,13 @@
 # Changelog
 
+## Audit fixes (14 Nov 2026)
+
+- HL7: duplicate check is per sender (MSH-3, MSH-4, MSH-10); a second OBR is refused (AR) instead of dropped; a failed log write still returns the ACK.
+- CDS: cancelled or entered-in-error creatinine no longer counts as "persistent"; BMI only from kg and cm or m.
+- Pipeline: a rerun queues an extracted Condition whose review row was never written. Audit rows for views and sign-ins are capped per day.
+- Health: deep check is cached for 30 s; `db_size()` migration added (apply it to the project). Pages that read FHIR show the notice instead of a 500.
+- Billing cap does nothing unless the cost is clearly at or over budget; `reset-demo` refuses a non-local target without `CONFIRM_RESET`.
+
 ## M15 — Evaluation, safety documents, polish (14 Nov 2026)
 
 - `npm run eval` / `eval:draft` (gold labels are the owner's), hazard log with a test that checks its evidence exists, 8 ADRs, About page

@@ -5,7 +5,7 @@ rule logic stays in the tested TypeScript behind the endpoints.
 
 | Workflow | File | Trigger | What it does |
 |---|---|---|---|
-| ClinIQ pathology inbox | `workflows/pathology-inbox.json` | Webhook `POST /webhook/cliniq-hl7` | Sends the HL7 v2 text to `POST /api/hl7v2`. On ACK `AA` it saves the file to `hl7/done/`. On `AE`/`AR`/an error it retries 3 times (2 s, 4 s, 8 s back-off), then saves it to `hl7/failed/` with a `.notice.txt` and replies 502 with the ACK. A failed message is also kept in the app's `hl7_messages` log |
+| ClinIQ pathology inbox | `workflows/pathology-inbox.json` | Webhook `POST /webhook/cliniq-hl7` | Sends the HL7 v2 text to `POST /api/hl7v2`. On ACK `AA` it saves the file to `hl7/done/`. If no ACK comes back (an HTTP error, FHIR down) it retries 3 times (2 s, 4 s, 8 s back-off); an `AE` or `AR` is a final answer and is not retried. Then it saves it to `hl7/failed/` with a `.notice.txt` and replies 502 with the ACK. A failed message is also kept in the app's `hl7_messages` log |
 | ClinIQ weekly care-gap sweep | `workflows/care-gap-sweep.json` | Mondays 07:00 Sydney, or "Run now" | `POST /api/care-gaps/sweep`: one FHIR `Task` per open care gap (same rules as the CDS card), created once. Retries 3 times |
 | ClinIQ error notice | `workflows/error-notice.json` | Error workflow of the two above | Writes a notice file under `notices/` |
 
@@ -27,12 +27,12 @@ Diagrams: [`docs/n8n/`](../docs/n8n/README.md).
 
 ```bash
 n8n/drop.sh data/hl7v2/oru-demo-creatinine.hl7     # -> ACK AA, file in hl7/done/, creatinine 132 on the chart
-n8n/drop.sh data/hl7v2/oru-creatinine.hl7          # unknown patient -> AE, retries, file in hl7/failed/
+n8n/drop.sh data/hl7v2/oru-creatinine.hl7          # unknown patient -> AE (not retried), file in hl7/failed/
 docker exec n8n-n8n-1 ls /home/node/.n8n-files/hl7/done /home/node/.n8n-files/hl7/failed
 ```
 
-A message with a control id that was already accepted gets `AA` again and writes nothing, so use a fresh control id
-(MSH-10) to send the demo file twice.
+A message with a control id (MSH-10) and sender (MSH-3, MSH-4) that were already accepted gets `AA` again and writes nothing, so use a
+fresh control id to send the demo file twice.
 
 ## Limits
 

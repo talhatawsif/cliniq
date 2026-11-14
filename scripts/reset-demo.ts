@@ -3,6 +3,9 @@
 import { execFileSync } from "node:child_process";
 
 const BASE = process.env.LOAD_BASE ?? "http://localhost:8080/fhir";
+// Wipes everything: anything but the local server needs the target repeated in CONFIRM_RESET.
+if (!/^https?:\/\/(localhost|127\.0\.0\.1)[:/]/.test(BASE) && process.env.CONFIRM_RESET !== BASE)
+  throw new Error(`Refusing to wipe ${BASE}. Set CONFIRM_RESET=${BASE} to confirm.`);
 const headers: Record<string, string> = { "Content-Type": "application/fhir+json" };
 if (process.env.LOAD_TOKEN) headers.Authorization = `Bearer ${process.env.LOAD_TOKEN}`;
 

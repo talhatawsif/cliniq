@@ -5,7 +5,7 @@ import DataTable from "@/components/DataTable";
 import FhirNotice from "@/components/FhirNotice";
 import { JsonButton } from "@/components/JsonDrawer";
 import { auditChartView } from "@/lib/audit";
-import { quotaRemaining } from "@/lib/quota";
+import { LIMITS, quotaRemaining } from "@/lib/quota";
 import { smartSession } from "@/lib/smart/session";
 import { inputsForChart } from "@/lib/cds/prefetch";
 import { evaluate } from "@/lib/cds/rules";
@@ -108,7 +108,7 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
 
       {assistantLeft !== null && (
         <Section title="Ask about this record">
-          <AssistantPanel patientId={id} remaining={assistantLeft} />
+          <AssistantPanel patientId={id} remaining={assistantLeft} limit={LIMITS.assistant} />
         </Section>
       )}
 

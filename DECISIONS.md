@@ -231,8 +231,8 @@ into tests; SPEC §0 makes this a rule.
 - Resource ids are a hash of filler order number (+ test code + OBX-4), written as a transaction of PUTs. A resend or a correction updates the same resource (version 2) instead of duplicating; no search-then-write race.
 - Bundle `fullUrl` values are deterministic `urn:uuid`s because HAPI's validator requires absolute URLs; references stay `Type/id`.
 - A timestamp with no offset in the field or MSH-7 is cut to a date rather than guessing a time zone.
-- Duplicate = same MSH-10 already stored as accepted. Failed messages are logged, so a corrected resend of the same id is processed.
-- ACK text escapes `^` etc. (`ADT\S\A01`), as HL7 requires. HTTP status is 200 for every processed message; the ACK carries the result. FHIR down returns 503 and nothing is logged, so the sender retries.
+- Duplicate = same sender (MSH-3, MSH-4) and MSH-10 already stored as accepted (two labs can both send "1"). Failed messages are logged, so a corrected resend of the same id is processed.
+- ACK text escapes `^` etc. (`ADT\S\A01`), as HL7 requires. HTTP status is 200 for every processed message; the ACK carries the result. FHIR down returns 503 and nothing is logged, so the sender retries. A message with a second OBR gets AR (one order per message); a failed log write is reported on the server and the ACK is still returned.
 - Spec reference message uses IHI 8003608833357361, which is not in the cohort, so it is the "unknown patient" sample; `oru-demo-creatinine.hl7` targets a real cohort patient.
 - Shortcut: one OBR per message; extra orders are ignored.
 

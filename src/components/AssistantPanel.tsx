@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { Resource } from "fhir/r4";
 import { useJsonDrawer } from "@/components/JsonDrawer";
+import { SUGGESTIONS } from "@/lib/assistant/scripted";
 
 type Sentence = { text: string; ids: string[] };
 type Citation = { id: string; label: string; resource: Resource | null };
@@ -18,10 +19,15 @@ type Reply = {
   remaining: number;
 };
 
-const SUGGESTED = ["Active problems", "Current medicines", "Allergies", "Last encounter", "Immunisations"];
-const LIMIT = 40;
-
-export default function AssistantPanel({ patientId, remaining }: { patientId: string; remaining: number }) {
+export default function AssistantPanel({
+  patientId,
+  remaining,
+  limit,
+}: {
+  patientId: string;
+  remaining: number;
+  limit: number;
+}) {
   const openJson = useJsonDrawer();
   const [question, setQuestion] = useState("");
   const [reply, setReply] = useState<Reply | null>(null);
@@ -56,7 +62,7 @@ export default function AssistantPanel({ patientId, remaining }: { patientId: st
   return (
     <div className="space-y-3" data-testid="assistant">
       <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested questions">
-        {SUGGESTED.map((s) => (
+        {SUGGESTIONS.map((s) => (
           <button
             key={s}
             type="button"
@@ -96,7 +102,7 @@ export default function AssistantPanel({ patientId, remaining }: { patientId: st
         </button>
       </form>
       <p className="text-xs text-muted">
-        Reports what is in the record. No advice. AI questions left today: {left} of {LIMIT}
+        Reports what is in the record. No advice. AI questions left today: {left} of {limit}
       </p>
 
       <div aria-live="polite" className="min-h-6">

@@ -1,8 +1,10 @@
 import { auditChartView } from "@/lib/audit";
+import FhirNotice from "@/components/FhirNotice";
 import DataTable from "@/components/DataTable";
 import { JsonButton } from "@/components/JsonDrawer";
 import TrendChart from "@/components/TrendChart";
 import {
+  FhirError,
   buildTrends,
   codeableText,
   flagOf,
@@ -22,8 +24,15 @@ export default async function ObservationsView({
   category: "laboratory" | "vital-signs";
   title: string;
 }) {
-  await auditChartView(id, category);
-  const trends = buildTrends(await getObservations(id, category));
+  let observations;
+  try {
+    await auditChartView(id, category);
+    observations = await getObservations(id, category);
+  } catch (e) {
+    if (e instanceof FhirError) return <FhirNotice error={e} />;
+    throw e;
+  }
+  const trends = buildTrends(observations);
   const charted = trends.series.filter((s) => s.points.length >= 2);
   const slug = (k: string) => `s-${k.replace(/[^A-Za-z0-9]+/g, "-")}`;
 

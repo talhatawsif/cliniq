@@ -104,6 +104,33 @@ export async function runPipeline(input: {
   let engine =
     extraction.engine === "medspacy" ? "medspaCy" : `precomputed NLP output (${extraction.reason})`;
 
+  // The queue row for a Condition. Idempotent: a rerun repairs a Condition whose first queue write failed.
+  const queueReview = async (
+    conditionId: string,
+    row: EntityRow,
+    coding: Awaited<ReturnType<typeof codeCondition>>,
+  ) => {
+    const best = coding.best!;
+    const { error } = await admin().from("review_items").upsert(
+      {
+        patient_id: note.patientId,
+        document_id: note.docId,
+        condition_id: conditionId,
+        term: row.text,
+        span_start: row.start,
+        span_end: row.end,
+        code: best.code,
+        display: best.display,
+        confidence: best.confidence,
+        rationale: best.rationale,
+        alternatives: coding.alternatives,
+        engine,
+      },
+      { onConflict: "condition_id", ignoreDuplicates: true },
+    );
+    if (error) throw new Error(`review queue write failed: ${error.code}`);
+  };
+
   // 4. Coding, one entity at a time
   const coded = await timed(
     "Code",
@@ -125,10 +152,14 @@ export async function runPipeline(input: {
         const { code, display, confidence } = coding.best;
         row.code = { code, display, confidence };
         const key = findingKey(note.docId, code);
+        const prior = existing.find((c) => c.identifier?.some((i) => i.value === key));
         if (claimed.has(code)) row.reason = "same code already found in this note";
-        else if (existing.some((c) => c.identifier?.some((i) => i.value === key)))
+        else if (prior) {
           row.reason = "already extracted from this note";
-        else if (
+          // Repair: the Condition exists but its queue write may have failed last time. A no-op when the row exists.
+          if (!input.dryRun && prior.id && prior.verificationStatus?.coding?.[0]?.code === "unconfirmed")
+            await queueReview(prior.id, row, coding);
+        } else if (
           existing.some(
             (c) =>
               c.code?.coding?.some((x) => x.system === SNOMED && x.code === code) &&
@@ -181,24 +212,7 @@ export async function runPipeline(input: {
         if (!conditionId) throw new Error("The server did not report the new Condition's id");
         row.conditionId = conditionId;
         written.push({ conditionId, code: coding.best.code, display: coding.best.display });
-        const { error } = await admin().from("review_items").upsert(
-          {
-            patient_id: note.patientId,
-            document_id: note.docId,
-            condition_id: conditionId,
-            term: row.text,
-            span_start: row.start,
-            span_end: row.end,
-            code: coding.best.code,
-            display: coding.best.display,
-            confidence: coding.best.confidence,
-            rationale: coding.best.rationale,
-            alternatives: coding.alternatives,
-            engine,
-          },
-          { onConflict: "condition_id", ignoreDuplicates: true },
-        );
-        if (error) throw new Error(`review queue write failed: ${error.code}`);
+        await queueReview(conditionId, row, coding);
         await audit("write", `Condition/${conditionId}`, "auto-extracted Condition", "success", input.userId);
         log.push({ text: row.text, written: `Condition/${conditionId}` });
       }

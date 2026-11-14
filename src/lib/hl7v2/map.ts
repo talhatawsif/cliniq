@@ -191,7 +191,8 @@ export function mapOru(msg: Hl7Message, patientId: string): Bundle {
       flush();
       current = { obx: s, notes: [] };
     } else if (s.name === "NTE") (current ? current.notes : reportNotes).push(val(s, 3, d));
-    else if (s.name === "OBR" && s !== obr) break; // shortcut: one order per message
+    else if (s.name === "OBR" && s !== obr)
+      throw new Hl7MapError("More than one OBR: send one order per message"); // shortcut: one order per message, refused not dropped
   }
   flush();
   if (!observations.length) throw new Hl7MapError("ORU^R01 has no OBX segments");

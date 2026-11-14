@@ -200,4 +200,26 @@ describe("HL7 v2 to FHIR (H1-H16)", () => {
     expect(new Set(all.map((o) => o.id)).size).toBe(4);
     expect(all[0].id).toBe(obs(REF)[0].id); // the first keeps its id, so a correction still finds it
   });
+  it("a second OBR is refused (AR), not silently dropped", async () => {
+    const two =
+      REF.replace(/\r$/, "") +
+      "\rOBR|2||F-2|2160-0^Creatinine^LN\rOBX|1|NM|2160-0^Creatinine^LN||90|umol/L^umol/L^UCUM|||||F\r";
+    const f = fakes();
+    expect((await processMessage(two, f.deps)).ack).toContain("MSA|AR|MSG00001|More than one OBR");
+    expect(f.written).toHaveLength(0);
+  });
+
+  it("the same control id from another sender is not a duplicate", async () => {
+    const f = fakes();
+    await processMessage(REF, f.deps);
+    const other = REF.replace(/^MSH\|\^~\\&\|[^|]*\|[^|]*\|/, "MSH|^~\\&|OTHERLAB|OTHERFAC|");
+    expect(other).not.toBe(REF);
+    expect((await processMessage(other, f.deps)).status).toBe("accepted");
+    expect((await processMessage(REF, f.deps)).status).toBe("duplicate");
+  });
+
+  it("a failed log write still returns the ACK", async () => {
+    const f = fakes({ log: async () => Promise.reject(new Error("db down")) });
+    expect((await processMessage(REF, f.deps)).code).toBe("AA");
+  });
 });

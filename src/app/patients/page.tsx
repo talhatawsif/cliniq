@@ -11,7 +11,7 @@ export default async function Patients({ searchParams }: PageProps<"/patients">)
   await connection(); // patient data is read per request, never at build time
   const params = await searchParams;
   const q = (typeof params.q === "string" ? params.q : "").trim().slice(0, 100);
-  const page = Math.max(1, Number(params.page) || 1);
+  const page = Math.min(10_000, Math.max(1, Math.trunc(Number(params.page)) || 1));
 
   let result;
   let extras;

@@ -15,7 +15,7 @@ const body = z.object({
 
 export async function POST(request: Request) {
   const text = await request.text();
-  if (text.length > MAX_BYTES)
+  if (Buffer.byteLength(text) > MAX_BYTES)
     return Response.json({ error: "Request too large" }, { status: 413, headers: CORS });
   let parsed;
   try {

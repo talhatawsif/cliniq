@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { banner, getPatientsPage } from "@/lib/fhir";
+import FhirNotice from "@/components/FhirNotice";
+import { FhirError, banner, getPatientsPage } from "@/lib/fhir";
 import { listSampleNotes, noteText } from "@/lib/pipeline/run";
 import PipelineForm from "./PipelineForm";
 
@@ -8,7 +9,13 @@ export const metadata: Metadata = { title: "Pipeline" };
 
 export default async function PipelinePage() {
   await connection();
-  const [notes, { patients }] = await Promise.all([listSampleNotes(), getPatientsPage("", 1)]);
+  let notes, patients;
+  try {
+    [notes, { patients }] = await Promise.all([listSampleNotes(), getPatientsPage("", 1)]);
+  } catch (e) {
+    if (e instanceof FhirError) return <FhirNotice error={e} />;
+    throw e;
+  }
   const samples = notes.map((d) => ({
     id: d.id!,
     title: d.description ?? d.id!,

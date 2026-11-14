@@ -62,6 +62,7 @@ export async function loadFacts(patientId: string, question: string, extraNotes:
       ...data.observations,
       ...data.encounters,
       ...data.immunizations,
+      ...data.notes,
     ]
       .map((r) => r.meta?.lastUpdated ?? "")
       .sort()

@@ -92,7 +92,9 @@ export default function TrendChart({
                 <tr key={`${l.name}${p.t}`} className="border-t border-line">
                   <td className="px-3 py-1">{date(p.t)}</td>
                   <td className="px-3 py-1">{l.name}</td>
-                  <td className="px-3 py-1 text-right">{p.value.toFixed(p.value % 1 ? 1 : 0)}</td>
+                  <td className="px-3 py-1 text-right">
+                    {new Intl.NumberFormat("en-AU", { maximumFractionDigits: 2 }).format(p.value)}
+                  </td>
                 </tr>
               )),
             )}

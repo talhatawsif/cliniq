@@ -64,10 +64,9 @@ export function bmiCategory(bmi: number) {
 
 const when = (o: Observation) => o.effectiveDateTime ?? o.effectivePeriod?.start ?? o.issued;
 const ms = (o: Observation) => Date.parse(when(o) ?? "");
+const valid = (o: Observation) => o.status !== "entered-in-error" && o.status !== "cancelled";
 const latest = (obs: Observation[]) =>
-  obs
-    .filter((o) => o.status !== "entered-in-error" && o.status !== "cancelled" && !Number.isNaN(ms(o)))
-    .sort((a, b) => ms(b) - ms(a))[0];
+  obs.filter((o) => valid(o) && !Number.isNaN(ms(o))).sort((a, b) => ms(b) - ms(a))[0];
 const hasCode = (o: Observation, codes: string[]) =>
   o.code?.coding?.some((c) => codes.includes(c.code ?? ""));
 
@@ -121,7 +120,7 @@ export function egfrFor(patient: Patient, creatinine: Observation[], now: Date):
 
 /** Two results at least 90 days apart that are both below 60 mL/min/1.73 m². */
 function persistentlyLow(patient: Patient, creatinine: Observation[]): boolean {
-  const low = creatinine.flatMap((o) => {
+  const low = creatinine.filter(valid).flatMap((o) => {
     const scr = creatinineMgDl(o);
     const age = ageInYears(patient.birthDate, when(o));
     const sex = patient.gender;
@@ -139,7 +138,8 @@ function persistentlyLow(patient: Patient, creatinine: Observation[]): boolean {
 const meters = (o: Observation) => {
   const q = o.valueQuantity;
   if (q?.value === undefined) return undefined;
-  return (q.code ?? q.unit) === "m" ? q.value : q.value / 100; // cm otherwise
+  const unit = q.code ?? q.unit;
+  return unit === "m" ? q.value : unit === "cm" ? q.value / 100 : undefined;
 };
 
 export type CareGap = { type: "diabetes-hba1c" | "hypertension-bp"; summary: string; detail: string };
@@ -195,7 +195,8 @@ export function evaluate(i: Inputs, now: Date = new Date()): Card[] {
     cards.push(card(`eGFR not calculated: ${egfr.reason}`, "info"));
   }
 
-  const kg = latest(i.weight)?.valueQuantity?.value;
+  const w = latest(i.weight)?.valueQuantity;
+  const kg = w && (w.code ?? w.unit) === "kg" ? w.value : undefined;
   const m = latest(i.height) && meters(latest(i.height)!);
   if (age !== undefined && age >= 18 && kg && m) {
     const { value, category } = bmiCategory(kg / m ** 2);
