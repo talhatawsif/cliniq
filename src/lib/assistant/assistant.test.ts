@@ -421,3 +421,23 @@ describe("cache", () => {
     );
   });
 });
+
+describe("filter: reply shapes seen in the second evaluation", () => {
+  const f = facts();
+  const [f1, f2] = [idOf("Result", "132"), idOf("Result", "118")];
+  it("an inline (F12) or (F1, F2) is a citation, and its digits are not numbers in the claim", () => {
+    const r = filterReply(`Creatinine was 132 µmol/L (${f1}) and 118 µmol/L (${f1}, ${f2}) [${f1}][${f2}]`, f);
+    expect(r).toMatchObject({ kind: "ok", removed: 0 });
+  });
+  it("two sentences on one line are checked separately; the uncited one is removed", () => {
+    const r = filterReply(
+      `Creatinine was 132 µmol/L on 10/11/2026 [${f1}]. This shows kidney function is stable.`,
+      f,
+    );
+    expect(r).toMatchObject({ kind: "ok", removed: 1 });
+    expect(r.kind === "ok" && r.sentences[0].text).toBe("Creatinine was 132 µmol/L on 10/11/2026.");
+  });
+  it("a number from a different cited fact still has to appear in one of the cited facts", () => {
+    expect(filterReply(`Creatinine was 140 µmol/L (${f1}) [${f1}]`, f).kind).toBe("no_answer");
+  });
+});

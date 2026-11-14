@@ -26,15 +26,20 @@ export function filterReply(reply: string, facts: Fact[]): Filtered {
   const byId = new Map(facts.map((f) => [f.id, f]));
   const kept: Sentence[] = [];
   let removed = 0;
-  for (const raw of trimmed.split("\n")) {
+  // Models also write "(F2)" or "(F69, F70)" in the text: read those as citations too.
+  const bracketed = trimmed.replace(/\(\s*(F\d+(?:\s*,\s*F\d+)*)\s*\)/g, (_, l: string) =>
+    l.split(/\s*,\s*/).map((id) => `[${id}]`).join(""),
+  );
+  // A line may hold several sentences; each is checked on its own.
+  const sentences = bracketed.split("\n").flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z])/));
+  for (const raw of sentences) {
     const line = raw.replace(/^\s*(?:[-*•]|\d+[.)])\s+/, "").trim();
     if (!line || line === "NO_ANSWER") continue;
-    const cited = TRAILING.exec(line);
-    const ids = cited ? [...cited[1].matchAll(/\[(F\d+)\]/g)].map((m) => m[1]) : [];
-    const body = cited ? line.slice(0, cited.index).trim() : line;
+    const ids = [...line.matchAll(/\[(F\d+)\]/g)].map((m) => m[1]);
+    const body = stripIds(line).replace(/\s+/g, " ").replace(/\s+([.,;])/g, "$1").trim();
     const evidence = ids.map((id) => byId.get(id)?.text ?? "").join(" ");
     const supported =
-      ids.length > 0 &&
+      TRAILING.test(line) &&
       ids.every((id) => byId.has(id)) &&
       numbers(body).every((n) => numbers(evidence).includes(n));
     if (supported && body) kept.push({ text: body, ids: [...new Set(ids)] });

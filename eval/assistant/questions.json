@@ -60,10 +60,9 @@
     },
     {
       "id": "a9",
-      "type": "answerable",
+      "type": "not_in_record",
       "patient": "abshire",
-      "q": "Did she have a respiratory illness in March 2021?",
-      "mustCiteAny": ["coronavirus", "Cough", "Fever"]
+      "q": "Did she have a respiratory illness in March 2021?"
     },
     {
       "id": "a10",
