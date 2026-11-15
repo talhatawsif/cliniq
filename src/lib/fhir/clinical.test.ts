@@ -54,6 +54,21 @@ describe("problemList", () => {
     expect(active).toHaveLength(2);
     expect(inactive).toHaveLength(1);
   });
+
+  it("moves social and admin findings out of the problems", () => {
+    const withCode = (code: string): Condition => ({
+      ...cond("active"),
+      code: { coding: [{ system: "http://snomed.info/sct", code }] },
+    });
+    const { active, context } = problemList([
+      withCode("73438004"), // unemployed
+      withCode("314529007"), // medication review due
+      withCode("73595000"), // stress stays clinical
+      withCode("714628002"), // prediabetes
+    ]);
+    expect(context).toHaveLength(2);
+    expect(active).toHaveLength(2);
+  });
 });
 
 describe("allergyStatus", () => {

@@ -43,13 +43,28 @@ export function banner(p: Patient, now: Date = new Date()): Banner {
 
 const code = (c: Condition["clinicalStatus"]) => c?.coding?.[0]?.code;
 
-/** Problem list: refuted and entered-in-error are dropped; active first, then the rest. */
+// SNOMED codes Synthea files as Condition but that are social history or admin, not diagnoses.
+// shortcut: fixed list covering the demo cohort; real data needs a value set (e.g. Gravity SDOH).
+const SOCIAL_ADMIN = new Set([
+  "160903007", "160904001", "741062008", "73438004", // employment
+  "473461003", "224299000", "224295006", // education
+  "422650009", "423315002", "424393004", "706893006", // isolation, violence
+  "105531004", "266948004", "266934004", "713458007", // housing, record, transport
+  "160968000", "361055000", "10939881000119105", // risk behaviour
+  "314529007", // medication review due
+]);
+const isSocialAdmin = (c: Condition) =>
+  !!c.code?.coding?.some((k) => k.system === "http://snomed.info/sct" && SOCIAL_ADMIN.has(k.code ?? ""));
+
+/** Problem list: refuted and entered-in-error are dropped; social/admin split out; active first, then the rest. */
 export function problemList(conditions: Condition[]) {
   const shown = conditions.filter(
     (c) => !["refuted", "entered-in-error"].includes(code(c.verificationStatus) ?? ""),
   );
+  const context = shown.filter(isSocialAdmin);
+  const clinical = shown.filter((c) => !isSocialAdmin(c));
   const active = (c: Condition) => ["active", "recurrence", "relapse"].includes(code(c.clinicalStatus) ?? "");
-  return { active: shown.filter(active), inactive: shown.filter((c) => !active(c)) };
+  return { active: clinical.filter(active), inactive: clinical.filter((c) => !active(c)), context };
 }
 
 /** "none-recorded" (nothing on file) is not the same as "no-known" (an explicit statement). */

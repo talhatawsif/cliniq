@@ -158,6 +158,22 @@ export default async function PatientChart({ params }: PageProps<"/patient/[id]"
         )}
       </Section>
 
+      {problems.context.length > 0 && (
+        <Section title="Social & admin">
+          <DataTable
+            caption="Social and admin findings"
+            rows={problems.context}
+            rowKey={(c) => c.id ?? ""}
+            empty=""
+            columns={[
+              { header: "Finding", cell: (c) => codeableText(c.code, "Unknown finding") },
+              { header: "Recorded", cell: (c) => formatDate(c.onsetDateTime ?? c.recordedDate) },
+              { header: "Record", cell: (c) => <JsonButton resource={c} label={codeableText(c.code)} /> },
+            ]}
+          />
+        </Section>
+      )}
+
       <Section title="Medicines">
         <DataTable
           caption="Active medicines"
