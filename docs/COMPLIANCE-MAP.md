@@ -22,7 +22,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T8 | Transport encryption (ASVS V9; HIPAA 164.312(e)) | Met | HTTPS and HSTS (`max-age=63072000; preload`) seen on the live site; private Cloud Run |
 | T9 | Security headers | Partial | CSP, `nosniff`, `no-referrer`, `Permissions-Policy` set (`next.config.ts`). CSP allows `'unsafe-inline'` scripts |
 | T10 | Encryption at rest | Partial | Provider-managed (Supabase, Cloud Run/HAPI database). Not configured or verified by the project |
-| T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, rows never deleted, not write-once, refusals other than sign-in/HL7 not logged |
+| T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, 90-day retention (migration written, not yet applied), not write-once. Other refusals are in Vercel request logs, not the audit table (deliberate: it would let anyone fill it) |
 | T12 | Integrity of clinical data | Met | FHIR validation before write, idempotent HL7 keys per sender, human review queue for extracted conditions |
 | T13 | Dependency vulnerabilities (ASVS V14) | Met (15 Nov) | `next@16.3.3` had a critical RCE chain and `sharp` a high. Upgraded to `next@16.4.6`; `npm audit --omit=dev` reports 0. CI now runs it (`--audit-level=high`) and Dependabot is on (`.github/dependabot.yml`) |
 | T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user. CDS Hooks endpoint: in-app limit is per server instance and did not trigger on Vercel; a Vercel Firewall rule is planned (see `docs/SECURITY.md`) |
@@ -38,7 +38,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | P3 | APP 6 use and disclosure | **Gap for real data** | The assistant sends chart text to free third-party LLM endpoints that may log prompts (`docs/AI.md`, `docs/llm-model-choice.md`). Never use with real data |
 | P4 | APP 8 cross-border disclosure | Gap | Same LLM calls: providers' regions are not controlled |
 | P5 | APP 11 security of personal information | Partial | See T1-T16 |
-| P6 | APP 11.2 destruction or de-identification when no longer needed | Gap | No retention schedule. Audit rows are never deleted |
+| P6 | APP 11.2 destruction or de-identification when no longer needed | Partial | Audit rows: 90-day purge (migration written, not yet applied). No retention rule for FHIR data (synthetic, reloadable) |
 | P7 | APP 12/13 access and correction | N/A | Single demo user |
 | P8 | Notifiable Data Breaches scheme | Gap | No breach response procedure |
 | P9 | Data minimisation in logs | Met | No resource content in logs; audit detail is a tab name |
@@ -57,7 +57,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 
 1. ~~T13~~ done.
 2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** CSP nonces still open.
-3. **T11, P6:** retention rule and cleanup for `audit_events`; log refused requests.
+3. ~~T11, P6~~ migration written (apply it); refused requests stay in Vercel logs by choice.
 4. **P1, P3, P8, T16:** short privacy notice, a one-page breach procedure, a documented backup note, and a banner on the assistant stating that it uses third-party models and must not receive real data.
 5. **T2, T3:** per-user sign-in with MFA (Supabase supports it). Largest change and the only one that moves toward real use.
 
