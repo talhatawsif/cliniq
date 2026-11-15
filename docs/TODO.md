@@ -21,7 +21,6 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | V12 | Check that the public CSIRO Ontoserver endpoint may be used for a public demo | Y | `DECISIONS.md` ("Not verified"); the app uses it when NCTS credentials are not set |
 | V10 | Run the Playwright suite in CI | C, Y adds the GitHub secrets | Needs a HAPI service container with the cohort loaded and the Supabase keys as GitHub secrets. If that is too heavy, start with the tests that need no Supabase |
 | P2 | Signed-out landing page; `/` redirects to `/patients` (then to sign-in) | C | First thing a visitor sees |
-| P3 | `/api/health` should report assistant usage (today's count and the last outcome per model) | C | `docs/AI.md` section 7 says it does; it does not yet |
 | P6 | Screenshot of an unconfirmed Condition (the "Auto-extracted, pending review" badge on the chart) | C | No fixture patient has one; run a note on the local app and capture it |
 | V13 | Re-record `cliniq-n8n.webm`: it still shows an unknown patient retried three times, but AE and AR are now final. Script label and docs are fixed | C records, Y needs n8n running | Only matters if the video is shown |
 | B4 | Extraction eval: show "n/a", not 0.0%, for classes with no gold spans (for example "historical") | C | Published in `eval/REPORT.md` |

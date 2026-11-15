@@ -20,7 +20,7 @@ Prototype with synthetic data only. Not for real patient data without the change
 - Failed sign-ins and refused HL7 writes are now audited with outcome `failure`.
 
 ## Known limits
-- `/api/health?deep=1` is public by design (the keep-alive pinger) and wakes the FHIR server; it reports the database size. The result is reused for 30 s per server instance.
+- `/api/health?deep=1` is public by design (the keep-alive pinger) and wakes the FHIR server; it reports the database size, today's assistant model calls and the latest outcome per model (names and counts only). The result is reused for 30 s per server instance.
 - Audit rows for chart views and sign-ins are capped at 5,000 a day (`audit` quota); writes and reviews are always recorded. Rows older than 90 days are deleted daily by a `pg_cron` job (`supabase/migrations/20261115000000_audit_retention.sql`).
 - The CDS Hooks endpoint is public and does no I/O (prefetch only). An in-app limit of 60 requests a minute per caller IP (`src/lib/cds/ratelimit.ts`) counts per server instance. On Vercel requests spread across instances, so it does **not** reliably limit (62 requests in a row were all served on 15 Nov). The real control is a Vercel Firewall rate-limit rule (path `/cds-services/cliniq-patient-view`, POST, 60 per 60 s per IP, deny), not yet created.
 - Refused requests other than sign-in and HL7 (401s, 403 `smart-read-only`, 429s) are not written to the audit log. They show as status codes in the Vercel request logs. Writing them to the audit table would let anyone fill it, so it is skipped on purpose.

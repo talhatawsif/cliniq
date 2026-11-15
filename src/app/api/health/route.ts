@@ -9,16 +9,31 @@ const cachedDeepCheck = () => {
   return recent.result;
 };
 
+type Call = { model: string; outcome: string; at: string };
+
+/** Model calls today and the latest outcome per model, from the last 200 rows of llm_calls (no question or answer text is stored there). */
+function assistantUsage(rows: unknown) {
+  if (!Array.isArray(rows)) return null;
+  const calls = rows as Call[];
+  const today = new Date().toISOString().slice(0, 10);
+  const lastByModel: Record<string, { outcome: string; at: string }> = {};
+  for (const c of calls) lastByModel[c.model] ??= { outcome: c.outcome, at: c.at }; // newest first
+  return { callsToday: calls.filter((c) => c.at.slice(0, 10) === today).length, lastByModel };
+}
+
 async function deepCheck() {
   const started = Date.now();
-  const [fhir, db] = await Promise.allSettled([
-    fhirFetch("Patient?_summary=count&_count=0", { retries: 0, timeoutMs: 12_000 }),
-    fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/db_size`, {
-      method: "POST",
+  const supabase = (path: string, init?: RequestInit) =>
+    fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${path}`, {
+      ...init,
       headers: { apikey: env.SUPABASE_SECRET_KEY!, Authorization: `Bearer ${env.SUPABASE_SECRET_KEY}` },
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),
-    }).then((r) => (r.ok ? (r.json() as Promise<number>) : Promise.reject(new Error(String(r.status))))),
+    }).then((r) => (r.ok ? (r.json() as Promise<unknown>) : Promise.reject(new Error(String(r.status)))));
+  const [fhir, db, calls] = await Promise.allSettled([
+    fhirFetch("Patient?_summary=count&_count=0", { retries: 0, timeoutMs: 12_000 }),
+    supabase("rpc/db_size", { method: "POST" }) as Promise<number>,
+    supabase("llm_calls?select=model,outcome,at&order=at.desc&limit=200"),
   ]);
   return {
     // A timeout is a scaled-to-zero server still starting, not an outage: the request has woken it, and a pinger with a
@@ -31,6 +46,7 @@ async function deepCheck() {
           : "down",
     database: db.status === "fulfilled" ? "ok" : flags.supabase ? "down" : "not configured",
     databaseBytes: db.status === "fulfilled" ? db.value : null,
+    assistant: calls.status === "fulfilled" ? assistantUsage(calls.value) : null,
     ms: Date.now() - started,
   };
 }
