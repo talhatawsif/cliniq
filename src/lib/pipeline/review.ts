@@ -56,7 +56,10 @@ export async function decide(itemId: string, decision: Decision, userId: string,
     if (!alternative) throw new Error("Choose one of the suggested alternatives");
   }
   const condition = await fhirFetch<Condition>(`Condition/${item.condition_id}`);
-  if (!condition) throw new Error("The Condition no longer exists");
+  if (!condition) {
+    await db.from("review_items").delete().eq("id", itemId); // left over from a wiped server: drop it from the queue
+    throw new Error("The Condition no longer exists; the item was removed from the queue");
+  }
   const verification = condition.verificationStatus?.coding?.[0]?.code;
   if (verification !== "unconfirmed") {
     // The record was decided but the queue row was not updated (a failure between the two writes): close the row.

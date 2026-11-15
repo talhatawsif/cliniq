@@ -1,4 +1,5 @@
 import { loadEnvFile } from "node:process";
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
@@ -17,9 +18,19 @@ test("signed out: pages redirect to sign-in, APIs return 401, public routes stay
   await page.goto("/audit");
   await expect(page).toHaveURL(/\/sign-in$/);
   expect((await request.get("/api/anything")).status()).toBe(401);
-  for (const path of ["/api/health", "/cds-services", "/about", "/sign-in"]) {
+  for (const path of ["/", "/api/health", "/cds-services", "/about", "/sign-in"]) {
     expect((await request.get(path)).status(), path).toBe(200);
   }
+});
+
+test("the landing page offers sign-in and the about page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { name: "ClinIQ" })).toBeVisible();
+  const axe = await new AxeBuilder({ page }).analyze();
+  expect(axe.violations.filter((v) => ["serious", "critical"].includes(v.impact ?? ""))).toEqual([]);
+  await page.getByRole("link", { name: "Sign in" }).click();
+  await expect(page).toHaveURL(/\/sign-in$/);
 });
 
 test("security headers: CSP, frame-ancestors, referrer-policy", async ({ request }) => {

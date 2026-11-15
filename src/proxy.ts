@@ -3,9 +3,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { access } from "@/lib/access";
 import { open } from "@/lib/smart/seal";
 
-// Public: sign-in, about, CDS Hooks, health. Everything else needs a session.
+// Public: the landing page, sign-in, about, CDS Hooks, health. Everything else needs a session.
 const PUBLIC = ["/sign-in", "/about", "/cds-services", "/api/health", "/smart"];
-const isPublic = (path: string) => PUBLIC.some((p) => path === p || path.startsWith(`${p}/`));
+const isPublic = (path: string) => path === "/" || PUBLIC.some((p) => path === p || path.startsWith(`${p}/`));
 
 const dev = process.env.NODE_ENV === "development";
 // Scripts need this request's nonce (Next adds it to its own scripts); styles still allow inline (Tailwind/Next).

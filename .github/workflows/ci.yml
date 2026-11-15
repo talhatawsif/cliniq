@@ -15,3 +15,17 @@ jobs:
       - run: npm ci
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run ci
+  nlp:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/nlp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11" # the version of the service's Docker image
+          cache: pip
+          cache-dependency-path: services/nlp/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q

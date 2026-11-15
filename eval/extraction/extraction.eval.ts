@@ -157,7 +157,11 @@ Overall assertion accuracy: ${pct(accuracy)} (${allMatched.length} matched).
 
 | Assertion | Precision | Recall | F1 | Gold count |
 |---|---|---|---|---|
-${ASSERTIONS.map((t: Assertion) => `| ${t} | ${pct(a[t].precision)} | ${pct(a[t].recall)} | ${pct(a[t].f1)} | ${a[t].tp + a[t].fn} |`).join("\n")}
+${ASSERTIONS.map((t: Assertion) => {
+  const none = a[t].tp + a[t].fp + a[t].fn === 0; // nothing gold, nothing predicted: a rate would be 0/0
+  const p = (x: number) => (none ? "n/a" : pct(x));
+  return `| ${t} | ${p(a[t].precision)} | ${p(a[t].recall)} | ${p(a[t].f1)} | ${a[t].tp + a[t].fn} |`;
+}).join("\n")}
 
 ## Coding (top-1 SNOMED CT code, affirmed matched mentions with a gold code)
 

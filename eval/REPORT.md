@@ -1,4 +1,4 @@
-# Extraction evaluation (2026-11-13)
+# Extraction evaluation (2026-11-15)
 
 - **N = 12 notes** (of 12), labelled by: Claude Sonnet 5.5 (AI). Labelled by reading each note, not from the pipeline's output. Not reviewed by a clinician.
 - Extraction: precomputed. Coding: csiro terminology server, SNOMED CT-AU 20261031.
@@ -31,7 +31,7 @@ Overall assertion accuracy: 99.2% (123 matched).
 | affirmed | 100.0% | 98.6% | 99.3% | 72 |
 | negated | 100.0% | 100.0% | 100.0% | 29 |
 | family | 100.0% | 100.0% | 100.0% | 16 |
-| historical | 0.0% | 0.0% | 0.0% | 0 |
+| historical | n/a | n/a | n/a | 0 |
 | hypothetical | 100.0% | 100.0% | 100.0% | 4 |
 | uncertain | 66.7% | 100.0% | 80.0% | 2 |
 

@@ -36,4 +36,4 @@ FHIR data is synthetic and reloads from `data/cohort` (`npm run reset-demo`). Su
 Use **Workload Identity Federation** (Vercel OIDC → GCP) instead of the service-account key, per-user sign-in with MFA, and a write-once audit store.
 
 ## Reset
-`npm run reset-demo` expunges all FHIR data and reloads the cohort (`LOAD_BASE`/`LOAD_TOKEN` for the cloud server; it needs `HAPI_FHIR_EXPUNGE_ENABLED` and `HAPI_FHIR_ALLOW_MULTIPLE_DELETE`, already set locally and on Cloud Run).
+`npm run reset-demo` expunges all FHIR data and reloads the cohort (`LOAD_BASE`/`LOAD_TOKEN` for the cloud server; it needs `HAPI_FHIR_EXPUNGE_ENABLED` and `HAPI_FHIR_ALLOW_MULTIPLE_DELETE`, already set locally and on Cloud Run). The review queue and HL7 message log in Supabase are kept; add `CLEAN_QUEUE=1` to clear them (it clears every environment that shares the project). A queued finding whose Condition is gone is dropped when someone tries to decide it.

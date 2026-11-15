@@ -17,14 +17,10 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | V1 | `npm run e2e:smart` (SMART launch) under the new CSP | C | Needs network access to the SMART sandbox; the proxy rewrite touched every path |
 | V2 | Send a message through the n8n inbox with `n8n/drop.sh` | C | Writes to the chart; ask first |
 | V3 | Check "ClinIQ pathology inbox" shows Active in the n8n UI after the re-import | Y | |
-| V9 | Run the Python NLP tests (`services/nlp`, 25 tests) in CI | C | They pass locally; CI runs only the Node checks |
 | V12 | Check that the public CSIRO Ontoserver endpoint may be used for a public demo | Y | `DECISIONS.md` ("Not verified"); the app uses it when NCTS credentials are not set |
 | V10 | Run the Playwright suite in CI | C, Y adds the GitHub secrets | Needs a HAPI service container with the cohort loaded and the Supabase keys as GitHub secrets. If that is too heavy, start with the tests that need no Supabase |
-| P2 | Signed-out landing page; `/` redirects to `/patients` (then to sign-in) | C | First thing a visitor sees |
 | P6 | Screenshot of an unconfirmed Condition (the "Auto-extracted, pending review" badge on the chart) | C | No fixture patient has one; run a note on the local app and capture it |
 | V13 | Re-record `cliniq-n8n.webm`: it still shows an unknown patient retried three times, but AE and AR are now final. Script label and docs are fixed | C records, Y needs n8n running | Only matters if the video is shown |
-| B4 | Extraction eval: show "n/a", not 0.0%, for classes with no gold spans (for example "historical") | C | Published in `eval/REPORT.md` |
-| B5 | `review_items` rows for wiped Conditions remain after `npm run reset-demo` | C | Stale cards can show in `/review` |
 | B9 | Regenerated screenshots in `docs/ui/screens/m4` and `m11` are uncommitted | Y decides | Commit or discard |
 
 ## 2. Optional: claims in the README that could be refreshed
