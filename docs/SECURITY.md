@@ -25,7 +25,7 @@ Prototype with synthetic data only. Not for real patient data without the change
 - The CDS Hooks endpoint is public and does no I/O (prefetch only). An in-app limit of 60 requests a minute per caller IP (`src/lib/cds/ratelimit.ts`) counts per server instance. On Vercel requests spread across instances, so it does **not** reliably limit (62 requests in a row were all served on 15 Nov). The real control is a Vercel Firewall rate-limit rule (path `/cds-services/cliniq-patient-view`, POST, 60 per 60 s per IP, deny), not yet created.
 - Refused requests other than sign-in and HL7 (401s, 403 `smart-read-only`, 429s) are not written to the audit log. They show as status codes in the Vercel request logs. Writing them to the audit table would let anyone fill it, so it is skipped on purpose.
 - One shared demo account: audit "who" is the same user. Fine for a demo, not for attribution.
-- CSP allows inline scripts (Next bootstrap). Move to nonces in the proxy before real data.
+- Scripts run only with a per-request nonce (`'strict-dynamic'`, set in `src/proxy.ts`; every page is dynamic). Styles still allow `'unsafe-inline'` (Tailwind/Next inline styles), so CSS injection is not blocked. The patient summary page renders the Composition narrative with `dangerouslySetInnerHTML`; the strict script policy limits the damage, but the HTML is not sanitised.
 - Audit rows are written after the response; a failed write is logged (error code only) and the page still loads.
 - `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived secrets in Vercel.
 

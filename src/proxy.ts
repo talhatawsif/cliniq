@@ -6,7 +6,38 @@ import { open } from "@/lib/smart/seal";
 const PUBLIC = ["/sign-in", "/about", "/cds-services", "/api/health", "/smart"];
 const isPublic = (path: string) => PUBLIC.some((p) => path === p || path.startsWith(`${p}/`));
 
+const dev = process.env.NODE_ENV === "development";
+// Scripts need this request's nonce (Next adds it to its own scripts); styles still allow inline (Tailwind/Next).
+const policy = (nonce: string) =>
+  [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ""}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    `connect-src 'self'${dev ? " ws:" : ""}`,
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "object-src 'none'",
+  ].join("; ");
+
 export async function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const csp = policy(nonce);
+  // Built when called, so it carries any cookies Supabase refreshed on this request.
+  const next = () => {
+    const headers = new Headers(request.headers);
+    headers.set("x-nonce", nonce);
+    headers.set("Content-Security-Policy", csp);
+    return NextResponse.next({ request: { headers } });
+  };
+  const response = await handle(request, next);
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
+async function handle(request: NextRequest, next: () => NextResponse) {
   const { pathname } = request.nextUrl;
 
   // SMART mode (launched from the sandbox) is read-only: no write of any kind, on any path, while the cookie is valid.
@@ -27,12 +58,12 @@ export async function proxy(request: NextRequest) {
     );
   }
 
-  if (isPublic(pathname)) return NextResponse.next();
+  if (isPublic(pathname)) return next();
 
   // In SMART mode the launching patient's chart is the whole app: no demo sign-in needed for it.
   if (inSmartMode && smart) {
     if (pathname === `/patient/${smart.patient}` || pathname.startsWith(`/patient/${smart.patient}/`))
-      return NextResponse.next();
+      return next();
     if (pathname === "/" || pathname === "/patients")
       return NextResponse.redirect(new URL(`/patient/${smart.patient}`, request.url));
   }
@@ -42,7 +73,7 @@ export async function proxy(request: NextRequest) {
     (pathname === "/api/hl7v2" || pathname === "/api/care-gaps/sweep") &&
     request.headers.has("x-api-key")
   ) {
-    return NextResponse.next();
+    return next();
   }
 
   // A fresh clone without Supabase keys: say so instead of crashing every page.
@@ -52,7 +83,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in?error=config", request.url));
   }
 
-  let response = NextResponse.next({ request });
+  let response = next();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -61,7 +92,7 @@ export async function proxy(request: NextRequest) {
         getAll: () => request.cookies.getAll(),
         setAll: (list) => {
           list.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          response = next();
           list.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
         },
       },
