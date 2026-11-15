@@ -41,7 +41,7 @@
     "@playwright/test": "^1.65.0",
     "@tailwindcss/postcss": "^4",
     "@types/fhir": "^0.0.44",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
