@@ -22,7 +22,7 @@ Prototype with synthetic data only. Not for real patient data without the change
 ## Known limits
 - `/api/health?deep=1` is public by design (the keep-alive pinger) and wakes the FHIR server; it reports the database size. The result is reused for 30 s per server instance.
 - Audit rows for chart views and sign-ins are capped at 5,000 a day (`audit` quota); writes and reviews are always recorded. Rows are never deleted.
-- The CDS Hooks endpoint is public and has no rate limit (it does no I/O: prefetch only).
+- The CDS Hooks endpoint is public and does no I/O (prefetch only). It allows 60 requests a minute per caller IP, counted per server instance (`src/lib/cds/ratelimit.ts`), so a flood is blunted but the limit is not exact.
 - Refused requests other than sign-in and HL7 (401s, 403 `smart-read-only`, 429s) are not written to the audit log.
 - One shared demo account: audit "who" is the same user. Fine for a demo, not for attribution.
 - CSP allows inline scripts (Next bootstrap). Move to nonces in the proxy before real data.

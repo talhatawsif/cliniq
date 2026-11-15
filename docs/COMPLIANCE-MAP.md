@@ -20,12 +20,12 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T6 | Constant-time comparison of the integration key | Met | `src/lib/integration.ts` |
 | T7 | Cookies: httpOnly, SameSite, encrypted (AES-256-GCM) | Met | `src/lib/smart/session.ts`, `seal.ts` |
 | T8 | Transport encryption (ASVS V9; HIPAA 164.312(e)) | Met | HTTPS and HSTS (`max-age=63072000; preload`) seen on the live site; private Cloud Run |
-| T9 | Security headers | Partial | CSP, `nosniff`, `no-referrer` set (`next.config.ts`). CSP allows `'unsafe-inline'` scripts. No `Permissions-Policy` |
+| T9 | Security headers | Partial | CSP, `nosniff`, `no-referrer`, `Permissions-Policy` set (`next.config.ts`). CSP allows `'unsafe-inline'` scripts |
 | T10 | Encryption at rest | Partial | Provider-managed (Supabase, Cloud Run/HAPI database). Not configured or verified by the project |
 | T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, rows never deleted, not write-once, refusals other than sign-in/HL7 not logged |
 | T12 | Integrity of clinical data | Met | FHIR validation before write, idempotent HL7 keys per sender, human review queue for extracted conditions |
 | T13 | Dependency vulnerabilities (ASVS V14) | Met (15 Nov) | `next@16.3.3` had a critical RCE chain and `sharp` a high. Upgraded to `next@16.4.6`; `npm audit --omit=dev` reports 0. CI now runs it (`--audit-level=high`) and Dependabot is on (`.github/dependabot.yml`) |
-| T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user or per IP. CDS Hooks endpoint is public with no limit |
+| T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user. CDS Hooks endpoint: 60/min per IP, per server instance |
 | T15 | Secret hygiene and rotation | Partial | `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived. Production: Workload Identity Federation |
 | T16 | Backup and recovery (HIPAA 164.308(a)(7)) | Gap | Demo data is reloadable (`reset-demo`). No backup or recovery plan documented |
 
@@ -56,7 +56,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 ## Order of work
 
 1. ~~T13~~ done.
-2. **T9, T14:** add `Permissions-Policy`, rate-limit the public CDS endpoint, CSP nonces.
+2. ~~`Permissions-Policy`, CDS rate limit~~ done. **T9:** CSP nonces still open.
 3. **T11, P6:** retention rule and cleanup for `audit_events`; log refused requests.
 4. **P1, P3, P8, T16:** short privacy notice, a one-page breach procedure, a documented backup note, and a banner on the assistant stating that it uses third-party models and must not receive real data.
 5. **T2, T3:** per-user sign-in with MFA (Supabase supports it). Largest change and the only one that moves toward real use.
