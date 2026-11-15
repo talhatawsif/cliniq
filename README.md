@@ -82,7 +82,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M15 | Built: axe clean on every page (light/dark, desktop/tablet), [hazard log](docs/CLINICAL-SAFETY.md) (17 hazards, each checked against the repo), [ADRs](docs/adr/README.md), [extraction evaluation](eval/REPORT.md) on 12 notes (precision 93%, recall 58%, assertion accuracy 99%; labels are AI-written, not clinician-reviewed) |
 
 Decisions and their reasons are in [`DECISIONS.md`](DECISIONS.md); the build is specified in [`SPEC.md`](SPEC.md); the plan and next steps are in
-[`docs/PLAN.md`](docs/PLAN.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
+[`docs/PLAN.md`](docs/PLAN.md); open work is in [`docs/TODO.md`](docs/TODO.md); decisions are in [`DECISIONS.md`](DECISIONS.md).
 
 ## Run locally
 
