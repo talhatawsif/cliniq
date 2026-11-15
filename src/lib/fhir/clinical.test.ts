@@ -63,10 +63,11 @@ describe("problemList", () => {
     const { active, context } = problemList([
       withCode("73438004"), // unemployed
       withCode("314529007"), // medication review due
+      withCode("446654005"), // refugee (a "person" concept, not a finding)
       withCode("73595000"), // stress stays clinical
       withCode("714628002"), // prediabetes
     ]);
-    expect(context).toHaveLength(2);
+    expect(context).toHaveLength(3);
     expect(active).toHaveLength(2);
   });
 });

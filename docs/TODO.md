@@ -14,13 +14,9 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | S7 | Try staff sign-in on the live site: `node --env-file=.env.local scripts/create-staff.ts <email>`, then scan the QR code | Y | Only tested locally, against the same Supabase project |
 | S10 | Check Supabase free-plan backups in the dashboard | Y | Stated from memory in `docs/SECURITY.md`; restore never tested [T16] |
 | S11 | Turn off open sign-ups in Supabase Auth | Y | The proxy already refuses users who are not the demo account or staff; this stops junk accounts |
-| V1 | `npm run e2e:smart` (SMART launch) under the new CSP | C | Needs network access to the SMART sandbox; the proxy rewrite touched every path |
-| V2 | Send a message through the n8n inbox with `n8n/drop.sh` | C | Writes to the chart; ask first |
-| V3 | Check "ClinIQ pathology inbox" shows Active in the n8n UI after the re-import | Y | |
+| V3 | Check "ClinIQ pathology inbox" shows Active in the n8n UI after the re-import | Y | Its webhook already answers (tested 15 Nov), so it is active; this is only a look at the toggle |
 | V12 | Check that the public CSIRO Ontoserver endpoint may be used for a public demo | Y | `DECISIONS.md` ("Not verified"); the app uses it when NCTS credentials are not set |
 | V10 | Run the Playwright suite in CI | C, Y adds the GitHub secrets | Needs a HAPI service container with the cohort loaded and the Supabase keys as GitHub secrets. If that is too heavy, start with the tests that need no Supabase |
-| P6 | Screenshot of an unconfirmed Condition (the "Auto-extracted, pending review" badge on the chart) | C | No fixture patient has one; run a note on the local app and capture it |
-| V13 | Re-record `cliniq-n8n.webm`: it still shows an unknown patient retried three times, but AE and AR are now final. Script label and docs are fixed | C records, Y needs n8n running | Only matters if the video is shown |
 | B9 | Regenerated screenshots in `docs/ui/screens/m4` and `m11` are uncommitted | Y decides | Commit or discard |
 
 ## 2. Optional: claims in the README that could be refreshed

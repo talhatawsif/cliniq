@@ -199,7 +199,7 @@ into tests; SPEC §0 makes this a rule.
 - Patient list shows name, DOB (age), sex and IHI. Active-problems and last-encounter columns (UI.md §7) are skipped: they cost two extra FHIR queries per row. Revisit if the worklist needs them.
 - Chart sections are anchors on one page, not separate routes; the right rail (decision support) and the 768–1279 px drawer arrive with M5.
 - The old Recharts `VitalsChart` was deleted (smoothed lines and raw hex breach UI.md §2); charts are rebuilt in M4.
-- Unconfirmed conditions use the machine treatment, but no fixture patient has one, so it is not yet seen in screenshots.
+- Unconfirmed conditions use the machine treatment, but no fixture patient has one, so it was not in the first screenshots; `docs/ui/screens/m11/chart-unconfirmed.png` (15 Nov) shows the badge on a chart after notes were run.
 - E2E runs against local Docker HAPI (`docker compose up -d && npm run load && npm run e2e`); paging past one page is untested because 20 patients fit on one page.
 - Not done: shadcn/Radix primitives (no drawer or dialog needed yet) and the frontend-design / Playwright MCP tools (not installed; Playwright runs as a test dependency instead).
 - 14 Nov 2026: after an idle period the Sydney HAPI hung with all 5 Hikari connections stuck (dead sockets; Cloud Run freezes CPU between requests and the pooler drops idle connections). Fixed on the service with `socketTimeout=15&connectTimeout=10&tcpKeepAlive=true` on the JDBC URL plus Hikari `maxLifetime=120000` and `keepaliveTime=30000`. Verified fresh, **not yet verified after a long idle** — check after the next idle gap.
