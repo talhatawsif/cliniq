@@ -20,7 +20,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T6 | Constant-time comparison of the integration key | Met | `src/lib/integration.ts` |
 | T7 | Cookies: httpOnly, SameSite, encrypted (AES-256-GCM) | Met | `src/lib/smart/session.ts`, `seal.ts` |
 | T8 | Transport encryption (ASVS V9; HIPAA 164.312(e)) | Met | HTTPS and HSTS (`max-age=63072000; preload`) seen on the live site; private Cloud Run |
-| T9 | Security headers | Partial | CSP with per-request script nonce (`src/proxy.ts`, tested in `tests/e2e/csp.spec.ts`), `nosniff`, `no-referrer`, `Permissions-Policy`. Styles still `'unsafe-inline'`; summary narrative HTML is not sanitised |
+| T9 | Security headers | Partial | CSP with per-request script nonce (`src/proxy.ts`, tested in `tests/e2e/csp.spec.ts`), `nosniff`, `no-referrer`, `Permissions-Policy`. Styles still `'unsafe-inline'`. The summary narrative HTML is app-built and escaped |
 | T10 | Encryption at rest | Partial | Provider-managed (Supabase, Cloud Run/HAPI database). Not configured or verified by the project |
 | T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, 90-day retention (migration written, not yet applied), not write-once. Other refusals are in Vercel request logs, not the audit table (deliberate: it would let anyone fill it) |
 | T12 | Integrity of clinical data | Met | FHIR validation before write, idempotent HL7 keys per sender, human review queue for extracted conditions |
@@ -56,7 +56,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 ## Order of work
 
 1. ~~T13~~ done.
-2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** script nonces done; sanitise the summary narrative HTML next.
+2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** script nonces done.
 3. ~~T11, P6~~ migration written (apply it); refused requests stay in Vercel logs by choice.
 4. ~~P1, P8, T16~~ done: privacy section, breach procedure, backup note. The assistant warning is added, but P3/P4 stay open: chart text still goes to a third-party model.
 5. ~~T2, T3~~ staff sign-in with MFA done. Still open: recovery codes, roles beyond "staff".
