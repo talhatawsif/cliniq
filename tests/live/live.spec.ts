@@ -35,19 +35,25 @@ test("live: run a sample note, confirm a finding in /review", async ({ page }) =
   await page.goto("/sign-in");
   await page.getByRole("button", { name: "Sign in as demo clinician" }).click();
   await page.waitForURL("**/patients", { timeout: 180_000 });
+  test.setTimeout(400_000);
   await page.goto("/pipeline");
-  const label = (await page
-    .getByRole("option", { name: /cardiology/i })
-    .first()
-    .textContent())!;
-  await page.getByRole("combobox", { name: /Note/ }).selectOption({ label });
-  await page.getByRole("checkbox", { name: /Dry run/ }).uncheck();
-  await page.getByRole("button", { name: "Run" }).click();
+  const labels = await page.getByRole("option").allTextContents();
   const result = page.getByTestId("pipeline-result");
-  await expect(result).toBeVisible({ timeout: 180_000 });
-  console.log((await result.innerText()).slice(0, 1500));
-  await expect(result).toContainText("Engine: medspaCy"); // the live NLP service answered, not the saved output
-  await expect(result).toContainText("Written, pending review");
+  // Notes already run on an earlier pass write nothing, so try each until one writes a new finding.
+  let written = false;
+  for (const label of labels) {
+    await page.goto("/pipeline"); // clears the previous result
+    await page.getByRole("combobox", { name: /Note/ }).selectOption({ label });
+    await page.getByRole("checkbox", { name: /Dry run/ }).uncheck();
+    await page.getByRole("button", { name: "Run" }).click();
+    await expect(result).toBeVisible({ timeout: 180_000 });
+    await expect(result).toContainText("Engine: medspaCy"); // the live NLP service answered, not the saved output
+    if ((await result.innerText()).includes("Written, pending review")) {
+      written = true;
+      break;
+    }
+  }
+  expect(written, "every sample note was already run: npm run reset-demo, or wait for new notes").toBe(true);
   await page.screenshot({ path: "docs/ui/screens/m11/live-pipeline.png", fullPage: true });
   await page.goto("/review");
   const card = page.getByTestId("review-item").first();
