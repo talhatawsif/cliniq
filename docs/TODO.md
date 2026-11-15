@@ -19,6 +19,10 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | V3 | Check "ClinIQ pathology inbox" shows Active in the n8n UI after the re-import | Y | |
 | V9 | Run the Python NLP tests (`services/nlp`, 25 tests) in CI | C | They pass locally; CI runs only the Node checks |
 | V12 | Check that the public CSIRO Ontoserver endpoint may be used for a public demo | Y | `DECISIONS.md` ("Not verified"); the app uses it when NCTS credentials are not set |
+| V10 | Run the Playwright suite in CI | C, Y adds the GitHub secrets | Needs a HAPI service container with the cohort loaded and the Supabase keys as GitHub secrets. If that is too heavy, start with the tests that need no Supabase |
+| P2 | Signed-out landing page; `/` redirects to `/patients` (then to sign-in) | C | First thing a visitor sees |
+| P3 | `/api/health` should report assistant usage (today's count and the last outcome per model) | C | `docs/AI.md` section 7 says it does; it does not yet |
+| P6 | Screenshot of an unconfirmed Condition (the "Auto-extracted, pending review" badge on the chart) | C | No fixture patient has one; run a note on the local app and capture it |
 | V13 | Re-record `cliniq-n8n.webm`: it still shows an unknown patient retried three times, but AE and AR are now final. Script label and docs are fixed | C records, Y needs n8n running | Only matters if the video is shown |
 | B4 | Extraction eval: show "n/a", not 0.0%, for classes with no gold spans (for example "historical") | C | Published in `eval/REPORT.md` |
 | B5 | `review_items` rows for wiped Conditions remain after `npm run reset-demo` | C | Stale cards can show in `/review` |
@@ -65,10 +69,9 @@ Checked and left out on purpose, so they are not raised again:
 - **`minimatch` notice in `npm audit`:** moderate, dev-only (`typescript-eslint`), not deployed. Dependabot is on.
 - **Test the billing cap's detach path:** untested on purpose, it switches billing off.
 - **Add `gemma-4-31b-it:free` to the model chain:** unverified (rate-limited in the probe) and marginal.
-- **Playwright in CI:** needs the local FHIR server and Supabase secrets; heavy for the value.
 - **Re-record the demo video for staff sign-in:** the current one is accurate, only older.
 - **`tests/bugs` follow-ups:** exploratory checks that need a local server; not part of CI by design.
 - **Other facts written from memory** (ACMA fictional phone numbers, Cloud Run Sydney price multiplier, Supabase pooler limits): no decision depends on them.
 - **Cohort build edge cases** (`scrubNote` turning "CA125" into "CA", the email builder for a practitioner with no name, character versus byte size check): a one-off run on fixed Synthea data that is already committed.
 - **Old `hl7_messages` control ids, live Supabase migration numbering, dependency updates:** writes are idempotent; the numbering matters only if the Supabase CLI is used; Dependabot covers updates.
-- **Product gaps recorded in the docs, working as intended:** patient list problem and encounter columns (two extra FHIR queries per row), a signed-out landing page, assistant usage in `/api/health`, prompt as a Markdown file and a cache table, reopening a completed care-gap Task, a screenshot of an unconfirmed Condition, the 58% extraction recall and AI-written labels, shadcn/Radix and the design tools, SMART limits (no refresh token, sandbox issuer only), and the 14 Nov assistant snapshot (see V7).
+- **Product gaps recorded in the docs, working as intended:** patient list problem and encounter columns (two extra FHIR queries per row), prompt as a Markdown file and a cache table, reopening a completed care-gap Task, the 58% extraction recall and AI-written labels, shadcn/Radix and the design tools, SMART limits (no refresh token, sandbox issuer only), and the 14 Nov assistant snapshot (see V7).
