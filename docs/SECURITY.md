@@ -29,6 +29,9 @@ Prototype with synthetic data only. Not for real patient data without the change
 - Audit rows are written after the response; a failed write is logged (error code only) and the page still loads.
 - `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived secrets in Vercel.
 
+## Backup and recovery
+FHIR data is synthetic and reloads from `data/cohort` (`npm run reset-demo`). Supabase's free plan does not include backups (check the dashboard), so audit rows, quotas and the review queue are lost if that project is deleted; the app recreates the tables from `supabase/migrations/`. Acceptable for a demo, not for real records. Breach steps: `docs/BREACH-RESPONSE.md`.
+
 ## Production replacement
 Use **Workload Identity Federation** (Vercel OIDC → GCP) instead of the service-account key, per-user sign-in with MFA, and a write-once audit store.
 

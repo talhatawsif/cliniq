@@ -104,6 +104,10 @@ export default function AssistantPanel({
       <p className="text-xs text-muted">
         Reports what is in the record. No advice. AI questions left today: {left} of {limit}
       </p>
+      <p className="text-xs text-muted">
+        Sends this patient&rsquo;s record facts to a free third-party AI model that may keep them. Demo data only:
+        never use with real patient information.
+      </p>
 
       <div aria-live="polite" className="min-h-6">
         {busy && <p className="text-muted">Thinking…</p>}

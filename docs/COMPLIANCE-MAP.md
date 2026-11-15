@@ -27,20 +27,20 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T13 | Dependency vulnerabilities (ASVS V14) | Met (15 Nov) | `next@16.3.3` had a critical RCE chain and `sharp` a high. Upgraded to `next@16.4.6`; `npm audit --omit=dev` reports 0. CI now runs it (`--audit-level=high`) and Dependabot is on (`.github/dependabot.yml`) |
 | T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user. CDS Hooks endpoint: in-app limit is per server instance and did not trigger on Vercel; a Vercel Firewall rule is planned (see `docs/SECURITY.md`) |
 | T15 | Secret hygiene and rotation | Partial | `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived. Production: Workload Identity Federation |
-| T16 | Backup and recovery (HIPAA 164.308(a)(7)) | Gap | Demo data is reloadable (`reset-demo`). No backup or recovery plan documented |
+| T16 | Backup and recovery (HIPAA 164.308(a)(7)) | Partial | Documented in `docs/SECURITY.md`: demo data reloads, no real backups (Supabase free plan). Restore never tested |
 
 ## Privacy (APPs)
 
 | # | Principle | Status | Evidence / gap |
 |---|---|---|---|
-| P1 | APP 1 open, transparent management; privacy policy | Gap | No privacy notice in the app |
+| P1 | APP 1 open, transparent management; privacy policy | Partial | Privacy section on `/about`; assistant panel warns about the third-party model. No full privacy policy (demo has no real users) |
 | P2 | APP 3 collection limited to what is needed | N/A | Synthetic data. The extraction pipeline stores only extracted findings |
 | P3 | APP 6 use and disclosure | **Gap for real data** | The assistant sends chart text to free third-party LLM endpoints that may log prompts (`docs/AI.md`, `docs/llm-model-choice.md`). Never use with real data |
 | P4 | APP 8 cross-border disclosure | Gap | Same LLM calls: providers' regions are not controlled |
 | P5 | APP 11 security of personal information | Partial | See T1-T16 |
 | P6 | APP 11.2 destruction or de-identification when no longer needed | Partial | Audit rows: 90-day purge (migration written, not yet applied). No retention rule for FHIR data (synthetic, reloadable) |
 | P7 | APP 12/13 access and correction | N/A | Single demo user |
-| P8 | Notifiable Data Breaches scheme | Gap | No breach response procedure |
+| P8 | Notifiable Data Breaches scheme | Partial | Procedure written (`docs/BREACH-RESPONSE.md`); never exercised, no named privacy officer |
 | P9 | Data minimisation in logs | Met | No resource content in logs; audit detail is a tab name |
 
 ## Clinical safety and regulatory
@@ -58,7 +58,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 1. ~~T13~~ done.
 2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** CSP nonces still open.
 3. ~~T11, P6~~ migration written (apply it); refused requests stay in Vercel logs by choice.
-4. **P1, P3, P8, T16:** short privacy notice, a one-page breach procedure, a documented backup note, and a banner on the assistant stating that it uses third-party models and must not receive real data.
+4. ~~P1, P8, T16~~ done: privacy section, breach procedure, backup note. The assistant warning is added, but P3/P4 stay open: chart text still goes to a third-party model.
 5. **T2, T3:** per-user sign-in with MFA (Supabase supports it). Largest change and the only one that moves toward real use.
 
 ## What can be claimed

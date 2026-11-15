@@ -102,6 +102,24 @@ export default function About() {
         </ul>
       </Section>
 
+      <Section title="Privacy">
+        <ul className="list-disc pl-5">
+          <li>All patients are synthetic (Synthea). Do not enter real personal or health information.</li>
+          <li>
+            The demo sign-in is shared and asks for no name or email. The audit log records which screen was
+            opened or what was written, never patient content.
+          </li>
+          <li>
+            Only the chart assistant sends data to a third party (see Limitations). Notes you paste into the
+            pipeline are processed by this project&rsquo;s own services.
+          </li>
+          <li>
+            This is a design reference, not a certified or compliant product. See the gap analysis in{" "}
+            <code>docs/COMPLIANCE-MAP.md</code> in the repository.
+          </li>
+        </ul>
+      </Section>
+
       <Section title="Path to production">
         <p>
           Real use would need: TGA assessment of software as a medical device (including the clinical decision
