@@ -14,13 +14,13 @@ export default defineConfig({
     { name: "setup", testMatch: /auth\.setup\.ts/ },
     {
       name: "signed-in",
-      testIgnore: [/auth\.setup\.ts/, /security\.spec\.ts/],
+      testIgnore: [/auth\.setup\.ts/, /security\.spec\.ts/, /staff\.spec\.ts/],
       dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"], storageState: "tests/e2e/.auth.json" },
     },
     {
       name: "anonymous",
-      testMatch: /security\.spec\.ts/,
+      testMatch: /(security|staff)\.spec\.ts/,
       dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"] },
     },

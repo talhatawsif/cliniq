@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { access } from "@/lib/access";
 import { open } from "@/lib/smart/seal";
 
 // Public: sign-in, about, CDS Hooks, health. Everything else needs a session.
@@ -99,7 +100,16 @@ async function handle(request: NextRequest, next: () => NextResponse) {
     },
   );
   const { data } = await supabase.auth.getClaims(); // refreshes an expired session
-  if (data?.claims) return response;
+  if (data?.claims) {
+    const verdict = access(data.claims, process.env.DEMO_CLINICIAN_EMAIL);
+    if (verdict === "allow" || (verdict === "mfa" && pathname === "/mfa")) return response;
+    if (pathname.startsWith("/api/"))
+      return Response.json(
+        { error: verdict === "mfa" ? "Authenticator code required" : "Not authorised" },
+        { status: 403 },
+      );
+    return NextResponse.redirect(new URL(verdict === "mfa" ? "/mfa" : "/sign-in?error=denied", request.url));
+  }
 
   if (pathname.startsWith("/api/")) return Response.json({ error: "Sign in required" }, { status: 401 });
   return NextResponse.redirect(new URL("/sign-in", request.url));

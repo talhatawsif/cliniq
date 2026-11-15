@@ -13,8 +13,8 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | # | Control | Status | Evidence / gap |
 |---|---|---|---|
 | T1 | Authentication on every page and API (ASVS V2; HIPAA 164.312(d)) | Met | `src/proxy.ts`; `tests/e2e/security.spec.ts` |
-| T2 | Multi-factor authentication | Gap | One shared demo account, no MFA. Production: per-user sign-in with MFA |
-| T3 | Per-user identity and roles (HIPAA 164.312(a)(1), APP 11) | Gap | Audit "who" is always the demo user |
+| T2 | Multi-factor authentication | Partial | Staff sign-in requires a TOTP code (`src/app/mfa`, enforced in `src/proxy.ts`, tested in `tests/e2e/staff.spec.ts`). The demo account stays password-only by design. No recovery codes |
+| T3 | Per-user identity and roles (HIPAA 164.312(a)(1), APP 11) | Partial | Staff accounts are named and the audit log records their id. One role only ("staff", no least-privilege split). Demo visitors still share one identity |
 | T4 | Server-side input validation (ASVS V5) | Met | Patient id and IHI checks (`docs/SECURITY.md`), HL7 parser tests, body limit 50 kB |
 | T5 | Secrets never reach the browser | Met | `server-only` Supabase client; RLS on with no policies |
 | T6 | Constant-time comparison of the integration key | Met | `src/lib/integration.ts` |
@@ -59,7 +59,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** script nonces done; sanitise the summary narrative HTML next.
 3. ~~T11, P6~~ migration written (apply it); refused requests stay in Vercel logs by choice.
 4. ~~P1, P8, T16~~ done: privacy section, breach procedure, backup note. The assistant warning is added, but P3/P4 stay open: chart text still goes to a third-party model.
-5. **T2, T3:** per-user sign-in with MFA (Supabase supports it). Largest change and the only one that moves toward real use.
+5. ~~T2, T3~~ staff sign-in with MFA done. Still open: recovery codes, roles beyond "staff".
 
 ## What can be claimed
 
