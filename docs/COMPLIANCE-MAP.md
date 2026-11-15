@@ -25,7 +25,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, rows never deleted, not write-once, refusals other than sign-in/HL7 not logged |
 | T12 | Integrity of clinical data | Met | FHIR validation before write, idempotent HL7 keys per sender, human review queue for extracted conditions |
 | T13 | Dependency vulnerabilities (ASVS V14) | Met (15 Nov) | `next@16.3.3` had a critical RCE chain and `sharp` a high. Upgraded to `next@16.4.6`; `npm audit --omit=dev` reports 0. CI now runs it (`--audit-level=high`) and Dependabot is on (`.github/dependabot.yml`) |
-| T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user. CDS Hooks endpoint: 60/min per IP, per server instance |
+| T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user. CDS Hooks endpoint: in-app limit is per server instance and did not trigger on Vercel; a Vercel Firewall rule is planned (see `docs/SECURITY.md`) |
 | T15 | Secret hygiene and rotation | Partial | `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived. Production: Workload Identity Federation |
 | T16 | Backup and recovery (HIPAA 164.308(a)(7)) | Gap | Demo data is reloadable (`reset-demo`). No backup or recovery plan documented |
 
@@ -56,7 +56,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 ## Order of work
 
 1. ~~T13~~ done.
-2. ~~`Permissions-Policy`, CDS rate limit~~ done. **T9:** CSP nonces still open.
+2. `Permissions-Policy` done. **T14:** create the Vercel Firewall rate-limit rule for the CDS endpoint (dashboard), then drop the in-app limiter. **T9:** CSP nonces still open.
 3. **T11, P6:** retention rule and cleanup for `audit_events`; log refused requests.
 4. **P1, P3, P8, T16:** short privacy notice, a one-page breach procedure, a documented backup note, and a banner on the assistant stating that it uses third-party models and must not receive real data.
 5. **T2, T3:** per-user sign-in with MFA (Supabase supports it). Largest change and the only one that moves toward real use.
