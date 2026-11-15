@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { decide } from "@/lib/pipeline/review";
-import { currentUserId } from "@/lib/supabase";
+import { currentUser } from "@/lib/supabase";
 
 export type State = { error?: string; done?: string } | null;
 
@@ -16,8 +16,10 @@ const input = z.object({
 });
 
 export async function review(_prev: State, form: FormData): Promise<State> {
-  const user = await currentUserId();
-  if (!user) return { error: "Sign in required" };
+  const me = await currentUser();
+  if (!me) return { error: "Sign in required" };
+  if (me.readOnly) return { error: "This account is read-only" };
+  const user = me.id;
   const parsed = input.safeParse({
     id: form.get("id"),
     decision: form.get("decision"),

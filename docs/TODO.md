@@ -11,7 +11,6 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | S1 | Create the Vercel Firewall rate-limit rule for `/cds-services/cliniq-patient-view` (POST, 60 per 60 s per IP, deny) | Y | Dashboard: Project, Firewall. The connector got a 403. Then C tests it and removes `src/lib/cds/ratelimit.ts` [T14] |
 | S2 | Apply `supabase/migrations/20261115000000_audit_retention.sql` (90-day purge, enables `pg_cron`) | Y says go, C runs | Confirm 90 days is right [T11, P6] |
 | S3 | Rotate the Supabase secret key and the GCP service-account key | Y | `DECISIONS.md` (M2) says both were shared in chat. Steps in `docs/DEPLOY.md`, "Rotating secrets". Skip if already done [T15] |
-| S6 | MFA recovery codes (Supabase experimental setting) and roles beyond "staff" (for example read-only) | C | Today a lost authenticator means the owner deletes the factor in the Supabase dashboard [T2, T3] |
 | S7 | Try staff sign-in on the live site: `node --env-file=.env.local scripts/create-staff.ts <email>`, then scan the QR code | Y | Only tested locally, against the same Supabase project |
 | S10 | Check Supabase free-plan backups in the dashboard | Y | Stated from memory in `docs/SECURITY.md`; restore never tested [T16] |
 | S11 | Turn off open sign-ups in Supabase Auth | Y | The proxy already refuses users who are not the demo account or staff; this stops junk accounts |
@@ -61,6 +60,7 @@ Do none of these for the demo. Each one matters only if the app ever handles rea
 
 Checked and left out on purpose, so they are not raised again:
 
+- **MFA recovery codes (S6):** the hosted Supabase project has the feature switched off (`mfa_recovery_codes_enroll_not_enabled`). Instead: `scripts/reset-staff-mfa.ts`, and a read-only "viewer" role was added.
 - **Sanitise the summary page HTML:** it is built by the app (`src/lib/ps/build.ts`), and every value is escaped.
 - **`minimatch` notice in `npm audit`:** moderate, dev-only (`typescript-eslint`), not deployed. Dependabot is on.
 - **Test the billing cap's detach path:** untested on purpose, it switches billing off.

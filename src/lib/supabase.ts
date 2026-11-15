@@ -2,6 +2,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { readOnly } from "@/lib/access";
 import { env } from "@/lib/env";
 
 /** Service-role client: bypasses RLS. Server only; the only reader of audit_events and quotas. */
@@ -23,6 +24,13 @@ export async function sessionClient() {
       },
     },
   });
+}
+
+/** The signed-in user and whether the account is read-only (role "viewer"), or null. */
+export async function currentUser() {
+  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) return null;
+  const { data } = await (await sessionClient()).auth.getClaims();
+  return data ? { id: data.claims.sub, readOnly: readOnly(data.claims) } : null;
 }
 
 /** The signed-in user's id, or null. Verified against the JWT signing keys. */

@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { createHmac } from "node:crypto";
 import { loadEnvFile } from "node:process";
 import { expect, test, type Page } from "@playwright/test";
@@ -78,6 +79,42 @@ test("staff: password alone gets nothing; set up an authenticator, then in; no s
   const { error } = await fresh.auth.mfa.enroll({ factorType: "totp" });
   expect(error, "enrolling a second factor at password level must fail").not.toBeNull();
   void request;
+});
+
+test("a viewer reads everything and writes nothing", async ({ page }) => {
+  const email = await makeUser("viewer");
+  await staffSignIn(page, email);
+  await expect(page).toHaveURL(/\/mfa$/);
+  await page.getByRole("button", { name: "Set up authenticator" }).click();
+  const secret = (await page.locator("code").innerText()).trim();
+  await page.getByLabel(/Code from your authenticator/).fill(totp(secret));
+  await page.getByRole("button", { name: "Verify" }).click();
+  await expect(page).toHaveURL(/\/patients$/);
+
+  expect((await page.request.get("/audit")).status()).toBe(200);
+  const write = await page.request.post("/api/hl7v2?dryRun=1", { data: "MSH|^~\\&|a|b|c|d|20260101||ORU^R01|X|P|2.4" });
+  expect(write.status()).toBe(403);
+  expect(await write.json()).toEqual({ error: "This account is read-only" });
+  expect((await page.request.post("/api/care-gaps/sweep?dryRun=1")).status()).toBe(403);
+
+  await page.goto("/pipeline");
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect(page.getByText("This account is read-only")).toBeVisible();
+});
+
+test("reset-staff-mfa removes a lost authenticator so a new one can be set up", async () => {
+  const email = await makeUser("staff");
+  const c = createClient(URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false } });
+  await c.auth.signInWithPassword({ email, password });
+  const { data: e } = await c.auth.mfa.enroll({ factorType: "totp" });
+  await c.auth.mfa.challengeAndVerify({ factorId: e!.id, code: totp(e!.totp.secret) });
+  expect((await c.auth.mfa.listFactors()).data!.totp).toHaveLength(1);
+
+  execFileSync("node", ["scripts/reset-staff-mfa.ts", email], { stdio: "pipe" });
+
+  const after = createClient(URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false } });
+  await after.auth.signInWithPassword({ email, password });
+  expect((await after.auth.mfa.listFactors()).data!.all).toHaveLength(0);
 });
 
 test("a signed-in user without the staff role is refused, even if they set up a code", async ({ page }) => {

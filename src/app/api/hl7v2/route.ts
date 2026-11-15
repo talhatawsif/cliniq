@@ -3,15 +3,17 @@ import { hasIntegrationKey } from "@/lib/integration";
 import { FhirError } from "@/lib/fhir";
 import { guardRequest } from "@/lib/quota";
 import { runHl7 } from "@/lib/hl7v2/server";
-import { currentUserId } from "@/lib/supabase";
+import { currentUser } from "@/lib/supabase";
 
 const query = z.object({ dryRun: z.enum(["0", "1"]).default("0") });
 
 /** Text body in, HL7 ACK out. Needs a session, or the integration key in `x-api-key`. */
 export async function POST(request: Request) {
   const keyed = hasIntegrationKey(request);
-  const user = keyed ? null : await currentUserId();
-  if (!keyed && !user) return Response.json({ error: "Sign in required" }, { status: 401 });
+  const me = keyed ? null : await currentUser();
+  if (!keyed && !me) return Response.json({ error: "Sign in required" }, { status: 401 });
+  if (me?.readOnly) return Response.json({ error: "This account is read-only" }, { status: 403 });
+  const user = me?.id ?? null;
 
   const parsed = query.safeParse(Object.fromEntries(new URL(request.url).searchParams));
   if (!parsed.success) return Response.json({ error: "dryRun must be 0 or 1" }, { status: 400 });

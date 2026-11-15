@@ -3,13 +3,15 @@ import { FhirError } from "@/lib/fhir";
 import { guardText } from "@/lib/quota";
 import type { Result } from "@/lib/hl7v2/process";
 import { runHl7 } from "@/lib/hl7v2/server";
-import { currentUserId } from "@/lib/supabase";
+import { currentUser } from "@/lib/supabase";
 
 export type State = { result?: Result; error?: string } | null;
 
 export async function sendHl7(_prev: State, form: FormData): Promise<State> {
-  const user = await currentUserId();
-  if (!user) return { error: "Sign in required" };
+  const me = await currentUser();
+  if (!me) return { error: "Sign in required" };
+  if (me.readOnly) return { error: "This account is read-only" };
+  const user = me.id;
   const text = String(form.get("message") ?? "");
   const refused = await guardText(text, "hl7");
   if (refused) return { error: ((await refused.json()) as { error: string }).error };
