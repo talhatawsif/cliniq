@@ -36,8 +36,12 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | V8 | Add `google/gemma-4-31b-it:free` to the assistant model chain after a one-request probe | C | `docs/llm-model-choice.md` |
 | V9 | Run the Python NLP tests in CI | C | They pass locally (25 of 25) but CI runs only Node checks |
 | V10 | Run the Playwright suite in CI | C | CI runs lint, typecheck, unit tests and build only |
-| V11 | Read what has not been read: `tests/video`, `tests/bugs`, most of `docs/` | C | |
+| V11 | ~~Read `tests/video`, `tests/bugs`, `docs/`~~ done 15 Nov. Not read line by line: `docs/UI.md`, `docs/AI.md` (sections 1-6), the 8 ADRs, `docs/validation/*`, `docs/history/*`, the narration script | C | Skimmed or searched for open items only |
 | V12 | Facts written from memory: ACMA fictional phone numbers; Cloud Run Sydney price multiplier; Supabase pooler limits; whether the public CSIRO Ontoserver may be used for a public demo | Y | `DECISIONS.md` ("Not verified") |
+
+| V13 | Re-record `cliniq-n8n.webm`: it still shows an unknown patient being retried three times, but AE and AR are now final. The script label and docs are fixed; the recording (not in git) is not | C records, Y needs n8n running |
+| V14 | Re-record `cliniq-demo.webm` to show staff sign-in and the Social & admin section (the current one is still accurate, just older) | C, optional |
+| V15 | `tests/bugs/*` (crawl and paste checks) need a running server on port 3100, a saved sign-in and, for paste, a local NLP container; they are not in CI. The crawl does not cover `/mfa`, the staff sign-in or the new endpoints | C |
 
 ## 3. Known bugs and small fixes
 
@@ -67,6 +71,8 @@ Security and privacy rows also appear in `docs/COMPLIANCE-MAP.md` (control ids i
 | P8 | Extraction recall is 58% by design (the target list is about 100 terms); labels are AI-written, one labeller, no clinician review | Y for a clinician review |
 | P9 | Only one HL7 sender path; no multi-tenancy | C, only for real use |
 | P10 | shadcn/Radix primitives and design MCP tools were not installed | skip unless needed |
+| P11 | SMART mode (`docs/smart.md`): no refresh token (session ends in about an hour), no `user/*` scopes, one launch patient per session, only the sandbox as issuer, no audit rows under a user id | C, only if SMART matters |
+| P12 | Assistant: 4 of 10 answerable questions came back "not in the record" in the 14 Nov run; `docs/assistant-eval.md` is a dated snapshot of free models | see V7 |
 
 ## 5. Owner steps from `docs/PLAN.md`
 

@@ -33,6 +33,8 @@ Add to the service env: `SPRING_DATASOURCE_URL` ending `&socketTimeout=15&connec
 ## M6 environment (Vercel, production and preview)
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `DEMO_CLINICIAN_EMAIL` (plain) and `DEMO_CLINICIAN_PASSWORD` (sensitive). The demo user is created once with the Supabase admin API (`email_confirm: true`); its password lives in `.env.local` and Vercel only.
 
+`DEMO_CLINICIAN_EMAIL` must be set wherever the app runs: the proxy (`src/lib/access.ts`) uses it to tell the demo account from staff, and refuses every other account. Staff accounts: `node --env-file=.env.local scripts/create-staff.ts <email>` (see `docs/SECURITY.md`).
+
 ## Rotating secrets (owner steps)
 - **Service-account key** (`GCP_SA_KEY`): `gcloud iam service-accounts keys create new.json --iam-account cliniq-web@cliniq-507000.iam.gserviceaccount.com`, paste the file into the Vercel variable (Sensitive), redeploy, check `/api/health?deep=1`, then `gcloud iam service-accounts keys delete <old key id> --iam-account ...` and delete `new.json`.
 - **Supabase secret key** (`SUPABASE_SECRET_KEY`): Dashboard → Project Settings → API Keys → create a new secret key, update Vercel and `.env.local`, redeploy, then delete the old key.

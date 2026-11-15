@@ -8,7 +8,7 @@ flowchart TD
   P --> S["POST /api/hl7v2 (x-api-key)"]
   S --> Q{"ACK is AA?"}
   Q -- yes --> D["Write hl7/done/"] --> A["Reply 200 with the ACK"]
-  Q -- no --> T{"Retries left? (3)"}
+  Q -- no --> T{"No ACK came back, and retries left? (3)"}
   T -- yes --> W["Back off 2, 4, 8 s"] --> S
   T -- no --> F["Write hl7/failed/ and a .notice.txt"] --> X["Reply 502 with the ACK"]
 ```

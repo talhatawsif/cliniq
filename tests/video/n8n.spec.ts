@@ -68,7 +68,7 @@ test("record the n8n video", async ({ page }) => {
   const bad = sh("n8n/drop.sh data/hl7v2/oru-creatinine.hl7").replace(/\r/g, "\n");
   await type(
     bad.split("\n").filter(Boolean).join("\n") +
-      `   (${((Date.now() - t1) / 1000).toFixed(1)} s: 3 retries with back-off)`,
+      `   (${((Date.now() - t1) / 1000).toFixed(1)} s: AE is final, not retried)`,
   );
   await wait(3500);
   await type("$ ls hl7/failed; cat the notice");
