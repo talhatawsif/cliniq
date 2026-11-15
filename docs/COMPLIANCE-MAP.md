@@ -24,7 +24,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 | T10 | Encryption at rest | Partial | Provider-managed (Supabase, Cloud Run/HAPI database). Not configured or verified by the project |
 | T11 | Audit controls (HIPAA 164.312(b)) | Partial | Writes, reviews, failed sign-ins, refused HL7 audited. Views capped at 5,000/day, rows never deleted, not write-once, refusals other than sign-in/HL7 not logged |
 | T12 | Integrity of clinical data | Met | FHIR validation before write, idempotent HL7 keys per sender, human review queue for extracted conditions |
-| T13 | Dependency vulnerabilities (ASVS V14) | **Gap, fix first** | `npm audit --omit=dev`: **next 16.3.3 has 1 critical RCE chain** (image optimisation, `use cache`) plus high/moderate items, and sharp has 1 high. `next@16.4.6` fixes them and is not a major bump. CI does not run `npm audit` and there is no Dependabot config |
+| T13 | Dependency vulnerabilities (ASVS V14) | Met (15 Nov) | `next@16.3.3` had a critical RCE chain and `sharp` a high. Upgraded to `next@16.4.6`; `npm audit --omit=dev` reports 0. CI now runs it (`--audit-level=high`) and Dependabot is on (`.github/dependabot.yml`) |
 | T14 | Rate limiting and abuse control | Partial | Daily global quotas on HL7, pipeline, assistant. None per user or per IP. CDS Hooks endpoint is public with no limit |
 | T15 | Secret hygiene and rotation | Partial | `GCP_SA_KEY` and `SUPABASE_SECRET_KEY` are long-lived. Production: Workload Identity Federation |
 | T16 | Backup and recovery (HIPAA 164.308(a)(7)) | Gap | Demo data is reloadable (`reset-demo`). No backup or recovery plan documented |
@@ -55,7 +55,7 @@ Records Act are out of scope: real IHIs and real records may only be handled by 
 
 ## Order of work
 
-1. **T13:** upgrade `next` to 16.4.6 and `sharp`, re-run tests, redeploy. Add `npm audit --omit=dev --audit-level=high` to CI and a Dependabot config. Real vulnerability, small change.
+1. ~~T13~~ done.
 2. **T9, T14:** add `Permissions-Policy`, rate-limit the public CDS endpoint, CSP nonces.
 3. **T11, P6:** retention rule and cleanup for `audit_events`; log refused requests.
 4. **P1, P3, P8, T16:** short privacy notice, a one-page breach procedure, a documented backup note, and a banner on the assistant stating that it uses third-party models and must not receive real data.
