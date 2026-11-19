@@ -1,0 +1,20 @@
+ClinIQ third-party notices
+
+Code and documents written for this project are by Talha Tawsif.
+
+Terminology
+- SNOMED CT and SNOMED CT-AU: the property of SNOMED International and the Australian Digital Health
+  Agency. ClinIQ accesses them through the National Clinical Terminology Service (NCTS) under the
+  terms of the author's NCTS registration (non-commercial student portfolio use). This repository
+  does not relicense them. The offline subset in data/terminology/offline.json and the codes in
+  data/cohort/, services/nlp/targets.json and eval/gold/ are included for demonstration only.
+- LOINC codes: Regenstrief Institute (https://loinc.org).
+- ICD-10-AM is not included (separately licensed by IHACPA).
+
+Data
+- Patient data in data/cohort/ is synthetic: generated with Synthea (Apache-2.0) and modified.
+- scripts/cohort/test-identifiers.json: reserved test identifiers from HL7 Australia's
+  au-fhir-test-data (recorded in the file as CC0).
+
+Credentials for NCTS and other services are supplied by environment variables and are not part of
+this repository.

@@ -8,6 +8,14 @@ trends, a CDS Hooks decision-support service, and HL7 v2 pathology results mappe
 > reserved test values). Not a medical device, not clinically validated, no regulatory claim.
 > Decision-support cards are informational demos.
 
+> **Licensed terminology.** I am a registered user of the Australian National Clinical Terminology
+> Service (NCTS, run by the Australian Digital Health Agency). My access was approved in November 2026
+> for this non-commercial student portfolio project, so ClinIQ can look up SNOMED CT-AU through the
+> national FHIR terminology server instead of an offline copy. SNOMED CT content belongs to SNOMED
+> International and the Agency; this repository does not relicense it (see [`NOTICE`](NOTICE)).
+> Credentials live only in environment variables and are never committed. If they are absent, the app
+> falls back to a small offline subset and labels it as such.
+
 **Live:** https://cliniq-inky-ten.vercel.app. Sign in with the "Sign in as demo clinician" button.
 Outside Australian daytime the FHIR server is asleep (Cloud Run scales to zero), so the first
 request can take about a minute to wake it (57 s measured).
@@ -74,7 +82,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on all 20 cohort patients ([report](docs/validation/au-ps.md)) |
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback; used live by the pipeline |
-| M10 | Built: SNOMED CT-AU coding (NCTS when credentials exist, CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
+| M10 | Built: SNOMED CT-AU coding (NCTS credentials issued Nov 2026 (live NCTS run pending), CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally and the flow is verified live ([screenshot](docs/ui/screens/m11/live-review.png)) |
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
 | M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). The 14 Nov evaluation answered 6/10 answerable questions, 4/4 not-in-record, 3/3 refusals, 3/3 injections resisted; three misses were a filter bug (fixed, replayed offline, not re-run live) and one was a mislabelled question (a9) |
