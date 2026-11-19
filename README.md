@@ -9,10 +9,11 @@ trends, a CDS Hooks decision-support service, and HL7 v2 pathology results mappe
 > Decision-support cards are informational demos.
 
 > **Licensed terminology.** I am a registered user of the Australian National Clinical Terminology
-> Service (NCTS, run by the Australian Digital Health Agency). My access was approved in November 2026
-> for this non-commercial student portfolio project, so ClinIQ can look up SNOMED CT-AU through the
+> Service (NCTS, run by the Australian Digital Health Agency). On 19 November 2026 I accepted the
+> SNOMED CT Affiliate Licence and the Australian National Terminology Licence on the NCTS portal, for
+> this non-commercial student portfolio project. That lets ClinIQ look up SNOMED CT-AU through the
 > national FHIR terminology server instead of an offline copy. SNOMED CT content belongs to SNOMED
-> International and the Agency; this repository does not relicense it (see [`NOTICE`](NOTICE)).
+> International and the Agency, and this repository does not relicense it (see [`NOTICE`](NOTICE)).
 > Credentials live only in environment variables and are never committed. If they are absent, the app
 > falls back to a small offline subset and labels it as such.
 

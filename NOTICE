@@ -5,7 +5,8 @@ Code and documents written for this project are by Talha Tawsif.
 Terminology
 - SNOMED CT and SNOMED CT-AU: the property of SNOMED International and the Australian Digital Health
   Agency. ClinIQ accesses them through the National Clinical Terminology Service (NCTS) under the
-  terms of the author's NCTS registration (non-commercial student portfolio use). This repository
+  SNOMED CT Affiliate Licence and the Australian National Terminology Licence, both accepted by the
+  author on the NCTS portal on 19 November 2026 (non-commercial student portfolio use). This repository
   does not relicense them. The offline subset in data/terminology/offline.json and the codes in
   data/cohort/, services/nlp/targets.json and eval/gold/ are included for demonstration only.
 - LOINC codes: Regenstrief Institute (https://loinc.org).
