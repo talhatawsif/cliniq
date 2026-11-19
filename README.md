@@ -83,7 +83,7 @@ IHACPA. See [`SPEC.md`](SPEC.md) for the plan.
 | M7 | Done: HL7 v2 ORU^R01 → FHIR with ACKs, `/hl7` page, message log. Verified live ([screenshot](docs/ui/screens/m7/live-pathology.png)) |
 | M8 | Done: AU Patient Summary export (readable view + FHIR JSON), 0 validator errors on all 20 cohort patients ([report](docs/validation/au-ps.md)) |
 | M9 | Built: medspaCy NLP service on Cloud Run (C1–C16 pass), `precomputed` fallback; used live by the pipeline |
-| M10 | Built: SNOMED CT-AU coding (NCTS credentials issued Nov 2026 (live NCTS run pending), CSIRO test endpoint, offline for tests), live run 0 mismatches ([report](docs/validation/terminology.md)) |
+| M10 | Built: SNOMED CT-AU coding (NCTS live run verified 19 Nov 2026, 18 terms checked, CSIRO test endpoint, offline for tests), 0 mismatches ([report](docs/validation/terminology.md)) |
 | M11 | Built: note → code → validate → write as unconfirmed Conditions with Provenance; `/review` queue (confirm, change, reject); W1–W12 pass locally and the flow is verified live ([screenshot](docs/ui/screens/m11/live-review.png)) |
 | M12 | Built: SMART launch (standalone and EHR) from the SMART sandbox, read-only, PKCE, sealed cookie; tested against the real sandbox, locally and on the deployed app ([docs](docs/smart.md)) |
 | M13 | Built: chart assistant with deterministic pre-filter and scripted answers, one cited model call, output filter; A1–A13 pass; [evaluation](docs/assistant-eval.md) and [model probe](docs/llm-probe.md). The 14 Nov evaluation answered 6/10 answerable questions, 4/4 not-in-record, 3/3 refusals, 3/3 injections resisted; three misses were a filter bug (fixed, replayed offline, not re-run live) and one was a mislabelled question (a9) |
