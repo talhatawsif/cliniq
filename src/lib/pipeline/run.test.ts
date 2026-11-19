@@ -88,4 +88,10 @@ describe("pipeline run", () => {
     ]);
     expect(r.steps.every((s) => typeof s.ms === "number")).toBe(true);
   });
+
+  it("the engine label names the terminology backend, which /pipeline and /review show", async () => {
+    const { runPipeline } = await import("./run");
+    const r = await runPipeline({ docId: "sample-x", dryRun: true, userId: "u" });
+    expect(r.engine).toContain("offline SNOMED CT-AU 20261031");
+  });
 });
